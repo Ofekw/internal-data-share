@@ -9,6 +9,7 @@
     "url": "https://github.com/Ofekw/internal-data-share.git"
   },
   "dependencies": {
+    "babel-core": "^6.13.2",
     "material-ui": "^0.15.4",
     "react": "^15.3.0"
   }
