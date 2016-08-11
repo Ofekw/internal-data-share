@@ -1,0 +1,15 @@
+{
+  "name": "interna-data-share",
+  "version": "1.0.0",
+  "keywords": [],
+  "author": "team-sensemaking",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ofekw/internal-data-share.git"
+  },
+  "dependencies": {
+    "material-ui": "^0.15.4",
+    "react": "^15.3.0"
+  }
+}
