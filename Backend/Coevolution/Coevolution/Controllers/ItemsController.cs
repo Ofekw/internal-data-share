@@ -17,110 +17,89 @@ namespace Coevolution.Controllers
         private ModelContext db = new ModelContext();
 
         // GET: api/Items
-        public IQueryable<DtoItem> GetItems()
+        public IQueryable<Item> GetItems()
         {
-            var dtoItems = from d in db.Items
-                            where !d.Deleted
-                            select new DtoItem()
-                            {
-                                Id = d.Id,
-                                Key = d.Key,
-                                Parent = d.Parent.Id,
-                                Date = d.Date,
-                                Deleted = d.Deleted,
-                                Labels = d.Labels,
-                                Notes = d.Notes
-                            };
-            return dtoItems;
+            return db.Items;
         }
 
         // GET: api/Items/5
-        [ResponseType(typeof(DtoItem))]
+        [ResponseType(typeof(Item))]
         public IHttpActionResult GetItem(int id)
         {
             Item item = db.Items.Find(id);
-            if (item == null || item.Deleted)
+            if (item == null)
             {
                 return NotFound();
             }
 
-            return Ok(new DtoItem()
-                            {
-                                Id = item.Id,
-                                Key = item.Key,
-                                Parent = item.Parent.Id,
-                                Date = item.Date,
-                                Deleted = item.Deleted,
-                                Labels = item.Labels,
-                                Notes = item.Notes
-                            });
+            return Ok(item);
         }
 
         // PUT: api/Items/5
         [ResponseType(typeof(void))]
-        //public IHttpActionResult PutItem(int id, DtoItem item)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        public IHttpActionResult PutItem(int id, Item item)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    if (id != item.Id)
-        //    {
-        //        return BadRequest();
-        //    }
+            if (id != item.Id)
+            {
+                return BadRequest();
+            }
 
-        //    db.Entry(item).State = EntityState.Modified;
+            db.Entry(item).State = EntityState.Modified;
 
-        //    try
-        //    {
-        //        db.SaveChanges();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!ItemExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-        //    return StatusCode(HttpStatusCode.NoContent);
-        //}
+            return StatusCode(HttpStatusCode.NoContent);
+        }
 
         // POST: api/Items
-        //[ResponseType(typeof(DtoItem))]
-        //public IHttpActionResult PostItem(DtoItem item)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [ResponseType(typeof(Item))]
+        public IHttpActionResult PostItem(Item item)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    db.Items.Add(item);
-        //    db.SaveChanges();
+            db.Items.Add(item);
+            db.SaveChanges();
 
-        //    return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
-        //}
+            return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
+        }
 
         // DELETE: api/Items/5
-        //[ResponseType(typeof(DtoItem))]
-        //public IHttpActionResult DeleteItem(int id)
-        //{
-        //    Item item = db.Items.Find(id);
-        //    if (item == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [ResponseType(typeof(Item))]
+        public IHttpActionResult DeleteItem(int id)
+        {
+            Item item = db.Items.Find(id);
+            if (item == null)
+            {
+                return NotFound();
+            }
 
-        //    db.Items.Remove(item);
-        //    db.SaveChanges();
+            db.Items.Remove(item);
+            db.SaveChanges();
 
-        //    return Ok(item);
-        //}
+            return Ok(item);
+        }
 
         protected override void Dispose(bool disposing)
         {

@@ -175,9 +175,11 @@
     <Compile Include="Models\DtoLeaf.cs" />
     <Compile Include="Models\DtoNode.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Label.cs" />
     <Compile Include="Models\Leaf.cs" />
     <Compile Include="Models\ModelContext.cs" />
     <Compile Include="Models\Node.cs" />
+    <Compile Include="Models\Note.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
