@@ -17,9 +17,12 @@ namespace Coevolution.Controllers
         private ModelContext db = new ModelContext();
 
         // GET: api/Items
-        public IQueryable<Item> GetItems()
+        public List<DtoItem> GetItems()
         {
-            return db.Items;
+
+            var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => DtoConverter.ConvertToDto(item)).ToList();
+            
+            return dbItems;
         }
 
         // GET: api/Items/5

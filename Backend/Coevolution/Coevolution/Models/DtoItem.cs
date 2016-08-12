@@ -9,7 +9,7 @@ namespace Coevolution.Models
     {
         public int Id { get; set; }
         public string Key { get; set; }
-        public virtual int Parent { get; set; }
+        public virtual int? Parent { get; set; }
         public long Date { get; set; }
         public bool Deleted { get; set; }
 
