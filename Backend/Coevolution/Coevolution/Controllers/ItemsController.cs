@@ -23,7 +23,7 @@ namespace Coevolution.Controllers
         public List<DtoItem> GetItems()
         {
             var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => DtoConverter.ConvertToDto(item)).ToList();
-            
+
             return dbItems;
         }
 
@@ -34,16 +34,18 @@ namespace Coevolution.Controllers
         /// <param name="id">
         /// The Id of the Item to be retrieved
         /// </param>
-        [ResponseType(typeof(Item))]
+        [ResponseType(typeof(DtoItem))]
         public IHttpActionResult GetItem(int id)
         {
-            Item item = db.Items.Find(id);
+            Item item = db.Items.Include("Labels").Include("Notes").Where(x => x.Id == id).First();
             if (item == null)
             {
                 return NotFound();
             }
 
-            return Ok(item);
+            var dtoItem = DtoConverter.ConvertToDto(item);
+
+            return Ok(dtoItem);
         }
 
         // PUT: api/Items/5
