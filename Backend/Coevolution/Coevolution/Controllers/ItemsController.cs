@@ -17,6 +17,9 @@ namespace Coevolution.Controllers
         private ModelContext db = new ModelContext();
 
         // GET: api/Items
+        /// <summary>
+        /// Gets some very important data from the server.
+        /// </summary>
         public List<DtoItem> GetItems()
         {
 
