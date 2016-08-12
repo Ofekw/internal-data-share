@@ -483,12 +483,80 @@
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.GetItems">
             <summary>
-            Gets some very important data from the server.
+            Get a list of all current Items
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetItem(System.Int32)">
+            <summary>
+            Gets a single Item from its Id
+            </summary>
+            <param name="id">
+            The Id of the Item to be retrieved
+            </param>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,Coevolution.Models.Item)">
+            <summary>
+            Update an Item with a specified Id
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.Item)">
+            <summary>
+            Add a new Item to the database
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.DeleteItem(System.Int32)">
+            <summary>
+            Remove an Item with the specified Id from the database
+            </summary>
+        </member>
+        <member name="T:Coevolution.Models.DtoItem">
+            <summary>
+            DTO for the Item class
             </summary>
         </member>
         <member name="P:Coevolution.Models.DtoItem.Id">
             <summary>
             Id for storage in DB
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.Key">
+            <summary>
+            Name of Item
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.Parent">
+            <summary>
+            Id of the parent Item
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.Date">
+            <summary>
+            Daet of last modification of the Item in epoch
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.Deleted">
+            <summary>
+            Flag to represent "deleted" old/stale data
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.Labels">
+            <summary>
+            List of Item labels
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.Notes">
+            <summary>
+            List of Item notes
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoLeaf.Value">
+            <summary>
+            Value of the property defined by the key
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNode.Children">
+            <summary>
+            List of Ids that define the child nodes
             </summary>
         </member>
     </members>
