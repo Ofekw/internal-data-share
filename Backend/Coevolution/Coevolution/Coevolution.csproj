@@ -171,6 +171,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608112239179_InitialMigration.cs" />
+    <Compile Include="Migrations\201608112239179_InitialMigration.Designer.cs">
+      <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DtoItem.cs" />
     <Compile Include="Models\DtoLeaf.cs" />
     <Compile Include="Models\DtoNode.cs" />
@@ -232,7 +237,11 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201608112239179_InitialMigration.resx">
+      <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
