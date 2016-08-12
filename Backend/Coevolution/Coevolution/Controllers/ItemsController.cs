@@ -21,21 +21,23 @@ namespace Coevolution.Controllers
         {
 
             var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => DtoConverter.ConvertToDto(item)).ToList();
-            
+
             return dbItems;
         }
 
         // GET: api/Items/5
-        [ResponseType(typeof(Item))]
+        [ResponseType(typeof(DtoItem))]
         public IHttpActionResult GetItem(int id)
         {
-            Item item = db.Items.Find(id);
+            Item item = db.Items.Include("Labels").Include("Notes").Where(x => x.Id == id).First();
             if (item == null)
             {
                 return NotFound();
             }
 
-            return Ok(item);
+            var dtoItem = DtoConverter.ConvertToDto(item);
+
+            return Ok(dtoItem);
         }
 
         // PUT: api/Items/5
