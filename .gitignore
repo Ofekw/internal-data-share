@@ -404,4 +404,4 @@ Temporary Items
 .apdisk
 
 # Frontend webpack output.
-frontend/dist/
+frontend/index.js
