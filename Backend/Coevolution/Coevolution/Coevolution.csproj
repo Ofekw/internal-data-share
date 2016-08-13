@@ -172,7 +172,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\JsonCreationConverter.cs" />
-    <Compile Include="Models\DtoConverter.cs" />
     <Compile Include="Models\DtoItem.cs" />
     <Compile Include="Models\DtoLeaf.cs" />
     <Compile Include="Models\DtoNode.cs" />
