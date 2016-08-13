@@ -7,6 +7,9 @@ namespace Coevolution.Models
 {
     public class DtoNode : DtoItem
     {
+        /// <summary>
+        /// List of Ids that define the child nodes
+        /// </summary>
         public virtual List<int> Children { get; set; }
 
         public DtoNode()

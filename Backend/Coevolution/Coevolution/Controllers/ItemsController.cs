@@ -17,15 +17,25 @@ namespace Coevolution.Controllers
         private ModelContext db = new ModelContext();
 
         // GET: api/Items
+        /// <summary>
+        /// Get a list of all current Items
+        /// </summary>
         public List<DtoItem> GetItems()
         {
 
             var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => item.ToDto()).ToList();
 
+
             return dbItems;
         }
 
         // GET: api/Items/5
+        /// <summary>
+        /// Gets a single Item from its Id
+        /// </summary>
+        /// <param name="id">
+        /// The Id of the Item to be retrieved
+        /// </param>
         [ResponseType(typeof(DtoItem))]
         public IHttpActionResult GetItem(int id)
         {
@@ -41,6 +51,9 @@ namespace Coevolution.Controllers
         }
 
         // PUT: api/Items/5
+        /// <summary>
+        /// Update an Item with a specified Id
+        /// </summary>
         [ResponseType(typeof(void))]
         public IHttpActionResult PutItem(int id, Item item)
         {
@@ -75,6 +88,9 @@ namespace Coevolution.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+        /// <summary>
+        /// Add a new Item to the database
+        /// </summary>
         // POST: api/Items
         [ResponseType(typeof(DtoItem))]
         public IHttpActionResult PostLeaf(DtoItem dtoItem)
@@ -106,6 +122,9 @@ namespace Coevolution.Controllers
         }
 
         // DELETE: api/Items/5
+        /// <summary>
+        /// Remove an Item with the specified Id from the database
+        /// </summary>
         [ResponseType(typeof(Item))]
         public IHttpActionResult DeleteItem(int id)
         {
