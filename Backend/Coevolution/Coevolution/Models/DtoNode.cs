@@ -14,5 +14,23 @@ namespace Coevolution.Models
         {
             Children = new List<int>();
         }
+
+        public override Item ToDomainObject(Node parent)
+        {
+            var newNode = new Node()
+            {
+                Key = this.Key,
+                Parent = parent,
+                Date = this.Date,
+                Deleted = this.Deleted,
+            };
+
+            if (parent != null)
+            {
+                parent.Children.Add(newNode);
+            }
+
+            return newNode;
+        }
     }
 }

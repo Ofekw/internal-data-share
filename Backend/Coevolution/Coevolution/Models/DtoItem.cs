@@ -7,7 +7,7 @@ namespace Coevolution.Models
 {
     public class DtoItem
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string Key { get; set; }
         public virtual int? Parent { get; set; }
         public long Date { get; set; }
@@ -20,6 +20,10 @@ namespace Coevolution.Models
         {
             Labels = new List<String>();
             Notes = new List<String>();
+        }
+
+        public virtual Item ToDomainObject(Node parent){
+            throw new NotImplementedException("ToDomainObject should only be called on subclasses.");
         }
     }
 }

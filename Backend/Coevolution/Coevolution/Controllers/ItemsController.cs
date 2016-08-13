@@ -20,7 +20,7 @@ namespace Coevolution.Controllers
         public List<DtoItem> GetItems()
         {
 
-            var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => DtoConverter.ConvertToDto(item)).ToList();
+            var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => item.ToDto()).ToList();
 
             return dbItems;
         }
@@ -35,7 +35,7 @@ namespace Coevolution.Controllers
                 return NotFound();
             }
 
-            var dtoItem = DtoConverter.ConvertToDto(item);
+            var dtoItem = item.ToDto();
 
             return Ok(dtoItem);
         }
@@ -76,18 +76,33 @@ namespace Coevolution.Controllers
         }
 
         // POST: api/Items
-        [ResponseType(typeof(Item))]
-        public IHttpActionResult PostItem(Item item)
+        [ResponseType(typeof(DtoItem))]
+        public IHttpActionResult PostLeaf(DtoItem dtoItem)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
+            Item potentialParent = null;
+            if (dtoItem.Parent != null)
+            {
+                potentialParent = db.Items.Find(dtoItem.Parent);
+                if (potentialParent == null)
+                {
+                    throw new NullReferenceException("Can't find parent with specified Id"); // TODO: Should return to client a 4XX error, not a 5XX error
+                }
+                if (potentialParent is Leaf)
+                {
+                    throw new System.InvalidOperationException("Parent cannot be Leaf");
+                }
+            }
+            Item item = dtoItem.ToDomainObject((Node)potentialParent);
+
             db.Items.Add(item);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = item.Id }, item);
+            return CreatedAtRoute("DefaultApi", new { id = item.Id }, item.ToDto());
         }
 
         // DELETE: api/Items/5

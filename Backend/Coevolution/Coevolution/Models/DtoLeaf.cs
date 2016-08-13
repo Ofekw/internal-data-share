@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,27 @@ namespace Coevolution.Models
             : base()
         {
 
+        }
+
+        public override Item ToDomainObject(Node parent)
+        {
+            var newLeaf = new Leaf()
+            {
+                Key = this.Key,
+                Parent = parent,
+                Date = this.Date,
+                Deleted = this.Deleted,
+                Value = this.Value
+            };
+
+            if (parent == null)
+            {
+                throw new InvalidDataException("Leaf must have a parent."); // TODO: Throw 4XX rather than 5XX
+            }
+
+            parent.Children.Add(newLeaf);
+
+            return newLeaf;
         }
     }
 }

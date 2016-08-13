@@ -23,5 +23,9 @@ namespace Coevolution.Models
             Labels = new List<Label>();
             Notes = new List<Note>();
         }
+
+        public virtual DtoItem ToDto(){
+            throw new NotImplementedException("ToDto should only be called on subclasses.");
+        }
     }
 }

@@ -57,5 +57,44 @@ namespace Coevolution.Models
             };
         }
 
+        public static Item ConvertToDomainObject(DtoItem dtoItem, Node parent)
+        {
+            if (dtoItem is DtoNode)
+            {
+                return  ConvertToDomainObject((DtoNode) dtoItem, parent);
+            }
+            else if (dtoItem is DtoLeaf)
+            {
+                return ConvertToDomainObject((DtoLeaf)dtoItem, parent);
+            }
+            else
+            {
+                throw new ArgumentException("ConvertToDomainObject only knows how to convert to Node or Leaf");
+            }
+        }
+
+        public static Node ConvertToDomainObject(DtoNode dtoNode, Node parent)
+        {
+            return new Node()
+            {
+                Key = dtoNode.Key,
+                Parent = parent,
+                Date = dtoNode.Date,
+                Deleted = dtoNode.Deleted,
+            };
+        }
+
+        public static Leaf ConvertToDomainObject(DtoLeaf dtoLeaf, Node parent)
+        {
+            return new Leaf()
+            {
+                Key = dtoLeaf.Key,
+                Parent = parent,
+                Date = dtoLeaf.Date,
+                Deleted = dtoLeaf.Deleted,
+                Value = dtoLeaf.Value
+            };
+        }
+
     }
 }
