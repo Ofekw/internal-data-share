@@ -2,11 +2,7 @@ import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TopBar from './TopBar.jsx';
 
-var alertTest = function () {
-  alert('hello');
-};
-
-class AlertButton extends React.Component {
+class App extends React.Component {
   handleTouchTap() {
     alert('hello');
   }
@@ -18,4 +14,4 @@ class AlertButton extends React.Component {
   }
 }
 
-export default AlertButton;
+export default App;
