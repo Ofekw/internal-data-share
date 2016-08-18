@@ -15,13 +15,17 @@ namespace Coevolution.Models
         public long Date { get; set; }
         public bool Deleted { get; set; }
 
-        public List<string> Labels { get; set; }
-        public List<string> Notes { get; set; }
+        public List<Label> Labels { get; set; }
+        public List<Note> Notes { get; set; }
 
         public Item()
         {
-            Labels = new List<String>();
-            Notes = new List<String>();
+            Labels = new List<Label>();
+            Notes = new List<Note>();
+        }
+
+        public virtual DtoItem ToDto(){
+            throw new NotImplementedException("ToDto should only be called on subclasses.");
         }
     }
 }

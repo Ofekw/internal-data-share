@@ -34,6 +34,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>App_Data/XmlDocument.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -167,7 +168,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -176,13 +176,16 @@
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\JsonCreationConverter.cs" />
     <Compile Include="Models\DtoItem.cs" />
     <Compile Include="Models\DtoLeaf.cs" />
     <Compile Include="Models\DtoNode.cs" />
     <Compile Include="Models\Item.cs" />
+    <Compile Include="Models\Label.cs" />
     <Compile Include="Models\Leaf.cs" />
     <Compile Include="Models\ModelContext.cs" />
     <Compile Include="Models\Node.cs" />
+    <Compile Include="Models\Note.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

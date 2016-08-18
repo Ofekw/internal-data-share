@@ -12,13 +12,23 @@ namespace UnitTestProject1
         {
             using (var db = new ModelContext())
             {
-                var node = new Node();
-                var leaf = new Leaf();
+                var node = new Node() { Key = "TheNode" };
+                var leaf = new Leaf() { Key = "TheLeaf", Value = "TheValue" };
+
+                var label = new Label() { Item = node, Content = "This is a Label" };
+                var note = new Note() { Item = node, Content = "This is a Note" };
+
                 node.Children.Add(leaf);
-                node.Labels.Add("This is a Label");
-                node.Notes.Add("This is a Note");
+                leaf.Parent = node;
+
+                node.Labels.Add(label);
+                node.Notes.Add(note);
+
                 db.Items.Add(node);
                 db.Items.Add(leaf);
+                db.Labels.Add(label);
+                db.Notes.Add(note);
+
                 db.SaveChanges();
             }
         }

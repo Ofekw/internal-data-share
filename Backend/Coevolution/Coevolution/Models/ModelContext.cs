@@ -14,6 +14,8 @@ namespace Coevolution.Models
         // connection string in the application configuration file.
 
         public DbSet<Item> Items { get; set; }
+        public DbSet<Label> Labels { get; set; }
+        public DbSet<Note> Notes { get; set; }
 
         public ModelContext()
             : base("name=CoevolutionServer")
