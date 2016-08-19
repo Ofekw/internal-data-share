@@ -1,5 +1,6 @@
 import React from 'react';
 import TextField from 'material-ui/TextField';
+import {List, ListItem} from 'material-ui/List';
 import RaisedButton from 'material-ui/RaisedButton';
 import Save from 'material-ui/svg-icons/content/save';
 
@@ -33,7 +34,7 @@ export default class EditModeField extends React.Component {
 
   render() {
     return (
-      <div>
+      <ListItem>
         <TextField
           name="key"
           floatingLabelText="Key"
@@ -50,7 +51,7 @@ export default class EditModeField extends React.Component {
           icon={<Save />}
           style={styles.rightAllign}
         />
-      </div>
+    </ListItem>
     );
   }
 
