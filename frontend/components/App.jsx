@@ -10,7 +10,7 @@ class App extends React.Component {
   }
 
   render() {
-    var divStyle = {
+    var paperStyle = {
       width: '90%',
       margin: 'auto',
       marginTop: 10
@@ -18,11 +18,9 @@ class App extends React.Component {
 
     return <div>
       <TopBar/>
-      <div style={divStyle}>
-        <Paper zDepth={1}>
+        <Paper style={paperStyle} zDepth={1}>
           <FlatButton />
         </Paper>
-      </div>
     </div>;
   }
 }
