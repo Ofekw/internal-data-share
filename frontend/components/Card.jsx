@@ -1,17 +1,8 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {List, ListItem} from 'material-ui/List';
-import IconMenu from 'material-ui/IconMenu';
-import Popover from 'material-ui/Popover';
-import Menu from 'material-ui/Menu';
-import MenuItem from 'material-ui/MenuItem';
-import IconButton from 'material-ui/IconButton/IconButton';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import NormalModeField from './NormalModeField.jsx';
-import EditModeField from './EditModeField.jsx';
 
 const styles = {
   paleGrey: {
@@ -49,14 +40,14 @@ class CardExampleExpandable extends React.Component {
           actAsExpander={false}
           showExpandableButton={false}
         />
-        <CardActions>
-          <FlatButton label="New" onTouchTap={this.createNew}/>
-        </CardActions>
         <List ref="theList">
           {this.children.map(function(child, index) {
             return child;
           })}
         </List>
+        <CardActions>
+          <FlatButton label="New" onTouchTap={this.createNew}/>
+        </CardActions>
       </Card>
     );
   }

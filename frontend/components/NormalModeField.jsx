@@ -1,20 +1,19 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import IconMenu from 'material-ui/IconMenu';
 import {List, ListItem} from 'material-ui/List'
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton/IconButton';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+
+// Icons
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
 import Delete from 'material-ui/svg-icons/action/Delete';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
-import EditModeField from './EditModeField.jsx';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import Save from 'material-ui/svg-icons/content/save';
 
 const styles = {
