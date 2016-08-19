@@ -67,14 +67,5 @@ namespace Coevolution.Models
             }
             return noteDtos;
         }
-
-        private class DtoNoteConverter : JsonCreationConverter<DtoNote>
-        {
-            protected override DtoNote Create(Type objectType, JObject jObject)
-            {
-                var type = jObject.Value<string>("Type");
-                return new DtoNote();
-            }
-        }
     }
 }
