@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {List, ListItem} from 'material-ui/List';
 import IconMenu from 'material-ui/IconMenu';
 import Popover from 'material-ui/Popover';
@@ -23,9 +24,20 @@ class CardExampleExpandable extends React.Component {
   constructor(props) {
     super(props);
 
+    this.children = [
+      <NormalModeField key="1" identifier="Url" value="http://ec1-257-0-123-999.ap-northnortheast-2.compute.amazonaws.com"/>,
+      <NormalModeField key="2" editable="true" identifier="Password" value="hunter2"/>,
+      <NormalModeField key="3" identifier="Some other key" value="Hello World"/>,
+    ];
+
     this.state = {
-      open: false,
+      open: false
     };
+  }
+
+  createNew = () => {
+    this.children.push(<NormalModeField editable="true" key={Date.now()}/>);
+    this.forceUpdate();
   }
 
   render() {
@@ -38,26 +50,15 @@ class CardExampleExpandable extends React.Component {
           showExpandableButton={false}
         />
         <CardActions>
-          <FlatButton label="Edit" onTouchTap={this.enterEditMode}/>
-          <FlatButton label="Delete" />
+          <FlatButton label="New" onTouchTap={this.createNew}/>
         </CardActions>
-        <List>
-          <NormalModeField identifier="Url" value="http://ec1-257-0-123-999.ap-northnortheast-2.compute.amazonaws.com"/>
-          <NormalModeField editable="true" identifier="Password" value="hunter2"/>
-          <NormalModeField identifier="Some other key" value="Hello World"/>
-          <EditModeField/>
-          <EditModeField identifier="Password" value="Secret"/>
+        <List ref="theList">
+          {this.children.map(function(child, index) {
+            return child;
+          })}
         </List>
       </Card>
     );
-  }
-
-  showMenu() {
-
-  }
-
-  enterEditMode() {
-
   }
 }
 export default CardExampleExpandable;

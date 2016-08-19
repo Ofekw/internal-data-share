@@ -68,7 +68,9 @@ class CardExampleExpandable extends React.Component {
     });
   }
 
-  disableEditMode = () => {
+  disableEditMode = (event) => {
+    event.preventDefault();
+
     this.setState({
       editable: false
     });
@@ -118,6 +120,7 @@ class CardExampleExpandable extends React.Component {
             onRequestClose={this.handleRequestClose}
           >
             <Menu>
+              <MenuItem primaryText="Copy to Clipboard" leftIcon={<ContentCopy />} />
               <MenuItem primaryText="Edit" leftIcon={<Edit />} onTouchTap={this.enableEditMode}/>
               <MenuItem primaryText="Delete" leftIcon={<Delete />}/>
             </Menu>
