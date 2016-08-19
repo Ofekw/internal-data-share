@@ -18,6 +18,9 @@ namespace Coevolution.Models
         public List<Label> Labels { get; set; }
         public List<Note> Notes { get; set; }
 
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
+
         public Item()
         {
             Labels = new List<Label>();
