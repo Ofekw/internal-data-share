@@ -168,12 +168,25 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ItemsController.cs" />
+    <Compile Include="Controllers\LabelsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201608112239179_InitialMigration.cs" />
     <Compile Include="Migrations\201608112239179_InitialMigration.Designer.cs">
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608182322116_labelchange.cs" />
+    <Compile Include="Migrations\201608182322116_labelchange.Designer.cs">
+      <DependentUpon>201608182322116_labelchange.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608190001319_manytomany.cs" />
+    <Compile Include="Migrations\201608190001319_manytomany.Designer.cs">
+      <DependentUpon>201608190001319_manytomany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608190020238_itemnotes.cs" />
+    <Compile Include="Migrations\201608190020238_itemnotes.Designer.cs">
+      <DependentUpon>201608190020238_itemnotes.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\JsonCreationConverter.cs" />
@@ -243,6 +256,15 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201608112239179_InitialMigration.resx">
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608182322116_labelchange.resx">
+      <DependentUpon>201608182322116_labelchange.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608190001319_manytomany.resx">
+      <DependentUpon>201608190001319_manytomany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608190020238_itemnotes.resx">
+      <DependentUpon>201608190020238_itemnotes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

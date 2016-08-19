@@ -10,7 +10,7 @@ namespace Coevolution.Models
     {
         [Key]
         public int Id { get; set; }
-        public Item Item { get; set; }
+        public List<Item> Items { get; set; }
         public String Content { get; set; }
     }
 }

@@ -89,6 +89,37 @@ namespace Coevolution.Controllers
         }
 
         /// <summary>
+        /// Add a label to an existing Item
+        /// </summary>
+        // POST: api/Items
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutItem(int id, int labelId)
+        {
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if(item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if(item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Labels.Add(label);
+
+            db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+
+        /// <summary>
         /// Add a new Item to the database
         /// </summary>
         // POST: api/Items
@@ -135,6 +166,35 @@ namespace Coevolution.Controllers
             }
 
             db.Items.Remove(item);
+            db.SaveChanges();
+
+            return Ok(item);
+        }
+
+        /// <summary>
+        /// Remove an label from specified item
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult DeleteItem(int id, int labelId)
+        {
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if (!item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            item.Labels.Remove(label);
             db.SaveChanges();
 
             return Ok(item);

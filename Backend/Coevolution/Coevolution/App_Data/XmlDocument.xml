@@ -499,7 +499,12 @@
             Update an Item with a specified Id
             </summary>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.Item)">
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.Int32)">
+            <summary>
+            Add a label to an existing Item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PostLeaf(Coevolution.Models.DtoItem)">
             <summary>
             Add a new Item to the database
             </summary>
@@ -508,6 +513,30 @@
             <summary>
             Remove an Item with the specified Id from the database
             </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.DeleteItem(System.Int32,System.Int32)">
+            <summary>
+            Remove an label from specified item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.LabelsController.GetLabels">
+            <summary>
+            Get a list of all Labels
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.JsonCreationConverter`1.CanWrite">
+            <summary>
+            this is very important, otherwise serialization breaks!
+            </summary>
+        </member>
+        <member name="M:Coevolution.Models.JsonCreationConverter`1.Create(System.Type,Newtonsoft.Json.Linq.JObject)">
+            <summary> 
+            Create an instance of objectType, based properties in the JSON object 
+            </summary> 
+            <param name="objectType">type of object expected</param> 
+            <param name="jObject">contents of JSON object that will be 
+            deserialized</param> 
+            <returns></returns> 
         </member>
         <member name="T:Coevolution.Models.DtoItem">
             <summary>

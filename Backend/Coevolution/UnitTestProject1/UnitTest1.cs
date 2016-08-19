@@ -15,8 +15,8 @@ namespace UnitTestProject1
                 var node = new Node() { Key = "TheNode" };
                 var leaf = new Leaf() { Key = "TheLeaf", Value = "TheValue" };
 
-                var label = new Label() { Item = node, Content = "This is a Label" };
-                var note = new Note() { Item = node, Content = "This is a Note" };
+                var label = new Label() { Content = "This is a Label" };
+                var note = new Note() { Content = "This is a Note" };
 
                 node.Children.Add(leaf);
                 leaf.Parent = node;
