@@ -11,7 +11,6 @@ namespace Coevolution.Models
     /// <summary>
     /// DTO for the note class
     /// </summary>
-    [JsonConverter(typeof(DtoNote.DtoNoteConverter))]
     public class DtoNote
     {
         /// <summary>
