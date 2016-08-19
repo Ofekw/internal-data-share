@@ -17,8 +17,8 @@ namespace Coevolution.Migrations
                         Item_Id = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => new { t.Label_Id, t.Item_Id })
-                .ForeignKey("dbo.Labels", t => t.Label_Id, cascadeDelete: true)
-                .ForeignKey("dbo.Items", t => t.Item_Id, cascadeDelete: true)
+                .ForeignKey("dbo.Labels", t => t.Label_Id)
+                .ForeignKey("dbo.Items", t => t.Item_Id)
                 .Index(t => t.Label_Id)
                 .Index(t => t.Item_Id);
             
