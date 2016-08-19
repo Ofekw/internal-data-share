@@ -1,7 +1,6 @@
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
-import FlatButton from 'material-ui/FlatButton';
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
 import Search from 'material-ui/svg-icons/action/search';
 import Collapse from 'react-collapse';
@@ -18,10 +17,11 @@ const TopBar = React.createClass({
       margin: 'auto'
     };
     var searchBox = {
-      marginTop: '10px',
+      marginTop: 10,
+      height: 35,
+      fontSize: 25,
       width: '100%',
-      height: '35px',
-      fontSize: '25px'
+      borderStyle: 'groove'
     }
 
     const {isOpened} = this.state;
@@ -38,7 +38,7 @@ const TopBar = React.createClass({
           }
           >
         </AppBar>
-        <Collapse isOpened={isOpened}>
+        <Collapse isOpened={isOpened} fixedHeight={50}>
           <div style={divStyle}><SearchInput style={searchBox} onChange={this.searchUpdated} /></div>
         </Collapse>
       </div>)

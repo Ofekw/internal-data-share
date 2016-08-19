@@ -1,6 +1,8 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import TopBar from './TopBar.jsx';
+import Paper from 'material-ui/Paper';
+import FlatButton from 'material-ui/FlatButton';
 
 class App extends React.Component {
   handleTouchTap() {
@@ -8,9 +10,20 @@ class App extends React.Component {
   }
 
   render() {
+    var divStyle = {
+      width: '90%',
+      margin: 'auto',
+      marginTop: 10
+    };
+
     return <div>
       <TopBar/>
-      </div>;
+      <div style={divStyle}>
+        <Paper zDepth={1}>
+          <FlatButton />
+        </Paper>
+      </div>
+    </div>;
   }
 }
 
