@@ -41,12 +41,20 @@ namespace Coevolution.Models
         /// <summary>
         /// List of Item notes
         /// </summary>
-        public List<string> Notes { get; set; }
+        public List<DtoNote> Notes { get; set; }
+        /// <summary>
+        /// Date item was create in ISO 8601 Format
+        /// </summary>
+        public string CreatedOn { get; set; }
+        /// <summary>
+        /// Last DateTime item was updated in ISO 8601 Format
+        /// </summary>
+        public string UpdatedOn { get; set; }
 
         public DtoItem()
         {
             Labels = new List<String>();
-            Notes = new List<String>();
+            Notes = new List<DtoNote>();
         }
 
         public virtual Item ToDomainObject(Node parent){
