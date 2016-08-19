@@ -43,7 +43,7 @@ class CardExampleExpandable extends React.Component {
         </CardActions>
         <List>
           <NormalModeField identifier="Url" value="http://ec1-257-0-123-999.ap-northnortheast-2.compute.amazonaws.com"/>
-          <NormalModeField identifier="Password" value="hunter"/>
+          <NormalModeField editable="true" identifier="Password" value="hunter2"/>
           <NormalModeField identifier="Some other key" value="Hello World"/>
           <EditModeField/>
           <EditModeField identifier="Password" value="Secret"/>
