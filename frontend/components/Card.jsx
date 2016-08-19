@@ -4,13 +4,6 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import NormalModeField from './NormalModeField.jsx';
 
-const styles = {
-  paleGrey: {
-    'background-color': '#ddd',
-  },
-};
-
-
 class CardExampleExpandable extends React.Component {
   constructor(props) {
     super(props);
@@ -20,10 +13,6 @@ class CardExampleExpandable extends React.Component {
       <NormalModeField key="2" editable="true" identifier="Password" value="hunter2"/>,
       <NormalModeField key="3" identifier="Some other key" value="Hello World"/>,
     ];
-
-    this.state = {
-      open: false
-    };
   }
 
   createNew = () => {
