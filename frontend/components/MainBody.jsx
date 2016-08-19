@@ -1,5 +1,6 @@
 import React from 'react';
 import Paper from 'material-ui/Paper';
+import Card from './Card.jsx';
 import $ from 'jquery';
 
 const MainBody = React.createClass({
@@ -29,12 +30,13 @@ const MainBody = React.createClass({
         };
         return (
             <Paper style= { paperStyle } zDepth= { 1}>
-                { this.state.items.map(item => {
-                    console.log(item.owner.login)
-                    return <li key={item.id}> {item.owner.login}'s last gist is
-                        <a href={item.owner.html_url}>here</a>.</li>
-                }) }
+            <Card/>
             </Paper >
+                //            { this.state.items.map(item => {
+                //     console.log(item.owner.login)
+                //     return <li key={item.id}> {item.owner.login}'s last gist is
+                //         <a href={item.owner.html_url}>here</a>.</li>
+                // }) }
         )
     }
 
