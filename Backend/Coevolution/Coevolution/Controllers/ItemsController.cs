@@ -93,7 +93,7 @@ namespace Coevolution.Controllers
         /// </summary>
         // POST: api/Items
         [ResponseType(typeof(DtoItem))]
-        public IHttpActionResult PostLeaf(DtoItem dtoItem)
+        public IHttpActionResult PostItem(DtoItem dtoItem)
         {
             if (!ModelState.IsValid)
             {
