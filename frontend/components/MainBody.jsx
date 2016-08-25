@@ -2,6 +2,7 @@ import React from 'react';
 import Paper from 'material-ui/Paper';
 import Card from './Card.jsx';
 import $ from 'jquery';
+import config from '../config.js';
 
 const MainBody = React.createClass({
     getInitialState() {
@@ -11,7 +12,7 @@ const MainBody = React.createClass({
     },
 
     componentDidMount() {
-        this.serverRequest = $.get("https://api.github.com/users/octocat/gists", function (result) {
+        this.serverRequest = $.get(config.apiHost+'/users/octocat/gists', function (result) {
             this.setState({
                 items: result
             });
@@ -30,13 +31,13 @@ const MainBody = React.createClass({
         };
         return (
             <Paper style= { paperStyle } zDepth= { 1}>
-            <Card/>
+                <Card/>
+                { 
+                    this.state.items.map(item => {
+                    console.log(item.owner.login)
+                    return <li key={item.id}> {item.owner.login}'s last gist is <a href={item.owner.html_url}> here</a>.</li>
+                }) }
             </Paper >
-                //            { this.state.items.map(item => {
-                //     console.log(item.owner.login)
-                //     return <li key={item.id}> {item.owner.login}'s last gist is
-                //         <a href={item.owner.html_url}>here</a>.</li>
-                // }) }
         )
     }
 
