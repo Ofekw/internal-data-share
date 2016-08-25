@@ -171,6 +171,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs" />
+    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.Designer.cs">
+      <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DtoNote.cs" />
     <Compile Include="Migrations\201608112239179_InitialMigration.cs" />
     <Compile Include="Migrations\201608112239179_InitialMigration.Designer.cs">
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
@@ -243,6 +248,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201608112239179_InitialMigration.resx">
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.resx">
+      <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

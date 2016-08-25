@@ -499,7 +499,7 @@
             Update an Item with a specified Id
             </summary>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.DtoItem)">
+        <member name="M:Coevolution.Controllers.ItemsController.PostLeaf(Coevolution.Models.DtoItem)">
             <summary>
             Add a new Item to the database
             </summary>
@@ -507,6 +507,31 @@
         <member name="M:Coevolution.Controllers.ItemsController.DeleteItem(System.Int32)">
             <summary>
             Remove an Item with the specified Id from the database
+            </summary>
+        </member>
+        <member name="T:Coevolution.Models.DtoNote">
+            <summary>
+            DTO for the note class
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNote.Id">
+            <summary>
+            DB Id
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNote.Content">
+            <summary>
+            Content of the note
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNote.CreatedOn">
+            <summary>
+            Date the note was created
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNote.UpdatedOn">
+            <summary>
+            Date the note was last updated
             </summary>
         </member>
         <member name="P:Coevolution.Models.JsonCreationConverter`1.CanWrite">
@@ -561,6 +586,16 @@
         <member name="P:Coevolution.Models.DtoItem.Notes">
             <summary>
             List of Item notes
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.CreatedOn">
+            <summary>
+            Date item was create in ISO 8601 Format
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItem.UpdatedOn">
+            <summary>
+            Last DateTime item was updated in ISO 8601 Format
             </summary>
         </member>
         <member name="P:Coevolution.Models.DtoLeaf.Value">

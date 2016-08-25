@@ -28,8 +28,10 @@ namespace Coevolution.Models
                 Date = this.Date,
                 Deleted = this.Deleted,
                 Labels = this.Labels.Select(label => label.Content).ToList(),
-                Notes = this.Notes.Select(note => note.Content).ToList(),
-                Value = this.Value
+                Notes = DtoNote.NoteListToDtos(this.Notes),
+                Value = this.Value,
+                CreatedOn = this.CreatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
+                UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture)
             };
         }
     }
