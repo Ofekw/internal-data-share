@@ -131,7 +131,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <EmbeddedResource Include="Migrations\201608260127459_fresh.resx">
+      <DependentUpon>201608260127459_fresh.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -171,15 +173,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs" />
-    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.Designer.cs">
-      <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
+    <Compile Include="Migrations\201608260127459_fresh.cs" />
+    <Compile Include="Migrations\201608260127459_fresh.Designer.cs">
+      <DependentUpon>201608260127459_fresh.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\DtoNote.cs" />
-    <Compile Include="Migrations\201608112239179_InitialMigration.cs" />
-    <Compile Include="Migrations\201608112239179_InitialMigration.Designer.cs">
-      <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\JsonCreationConverter.cs" />
     <Compile Include="Models\DtoItem.cs" />
@@ -194,6 +192,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\XmlDocument.xml" />
     <Content Include="Areas\HelpPage\HelpPage.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
@@ -244,14 +243,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608112239179_InitialMigration.resx">
-      <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.resx">
-      <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
