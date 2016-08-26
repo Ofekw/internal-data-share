@@ -1,6 +1,9 @@
 import React from 'react';
 import List from './List.jsx';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import $ from 'jquery';
+import config from '../../config.js';
+import Info from '../Card.jsx'
 
 var ListContainer = React.createClass({
 
@@ -10,19 +13,21 @@ var ListContainer = React.createClass({
 		this.state.childNodes = ajax call get children of (this.props.parent) */
 
 	getChildrenNodes: function(){
+		var state = {
+			nodes : []
+		};
 		if(!this.props.parent){
-			var children = { //This would be the async call to get children of root
-					data : 'cardDataObject',
-					childNodes : ["Bank1", "Bank2", "Bank3"]
-				}
+			var self = this;
+			$.get(config.apiHost+'/api/items', function (result) {
+				self.setState({nodes : result});
+			});
 		}else{
-			//Get children of parent
-			var children = { //This would be the async call to get children of parent
-				data : 'cardDataObject',
-				childNodes : ["VM1", "VM2", "VM3"]
-			}
+			var self = this;
+			$.get(config.apiHost+'/api/items/'+self.props.parent.Id, function (result) {
+				self.setState({nodes:result.Children});
+			});
 		}
-		return children;
+		return state;
 	},
 
 	getInitialState: function() {
@@ -30,16 +35,18 @@ var ListContainer = React.createClass({
 	},
 
 	handleClick: function (item){
-		var scope = this;
+		var self = this;
 		this.props.handleClick(item,function(){
-			scope.setState(scope.getChildrenNodes());
-		});	
+			self.getChildrenNodes();
+		});
 	},
 
 	render: function(){
+		
 		return (
 			<Card>
-				<List listItems={this.state.childNodes} handleClick={this.handleClick}></List>
+			//TODO pass node object to card to be populated
+				<List listItems={this.state.nodes} handleClick={this.handleClick}></List>
 			</Card>
 		)
 	}
