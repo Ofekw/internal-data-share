@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -156,14 +157,25 @@ namespace Coevolution.Controllers
                 potentialParent = db.Items.Find(dtoItem.Parent);
                 if (potentialParent == null)
                 {
-                    throw new NullReferenceException("Can't find parent with specified Id"); // TODO: Should return to client a 4XX error, not a 5XX error
+                    return BadRequest("Can't find parent with specified Id");
                 }
                 if (potentialParent is Leaf)
                 {
                     throw new System.InvalidOperationException("Parent cannot be Leaf");
                 }
             }
-            Item item = dtoItem.ToDomainObject((Node)potentialParent);
+
+            Item item;
+
+            try
+            {
+                item = dtoItem.ToDomainObject((Node)potentialParent);
+            }
+            catch (InvalidDataException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+
             item.Created();
             db.Items.Add(item);
             db.SaveChanges();
