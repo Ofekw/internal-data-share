@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Coevolution.Models;
@@ -247,6 +248,64 @@ namespace Coevolution.Controllers
             return Ok(item);
         }
 
+        // Get: api/Items/Search/Note/{query}
+        /// <summary>
+        /// Search all notes for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="query">The string being searched for</param>
+        /// 
+        [Route("Items/Search/Note/{query}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchNotes(string query)
+        {
+            query = Regex.Escape(query);
+            return Ok(db.Notes.Where(x => x.Content.Contains(query)).Select(x => x.Item.ToDto()).ToArray());
+        }
+
+        // Get: api/Items/Search/Note/{query}
+        /// <summary>
+        /// Search all notes for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="label">The id of the label being searched for</param>
+        /// 
+        [Route("Items/Search/Note/{label}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchLabel(Label label)
+        {
+            return Ok(db.Items.Where(x => x.Labels.Contains(label)).Select(x => x.ToDto()).ToArray());
+        }
+
+        // Get: api/Items/Search/Key/{query}
+        /// <summary>
+        /// Search all items keys for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="query">The string being searched for</param>
+        /// 
+        [Route("Items/Search/Key/{query}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchKeys(string query)
+        {
+            query = Regex.Escape(query);
+            return Ok(db.Items.Where(x => x.Key.Contains(query)).Select(x => x.ToDto()).ToArray());
+        }
+
+        // Get: api/Items/Search/Value/{query}
+        /// <summary>
+        /// Search all items values for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="query">The string being searched for</param>
+        /// 
+        [Route("Items/Search/Value/{query}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchValues(string query)
+        {
+            query = Regex.Escape(query);
+            return Ok(db.Items.Where(x => x.GetType() == typeof(Leaf)).Select(x => (Leaf)x).Where(x => x.Value.Contains(query)).Select(x => x.ToDto()).ToArray());
+        }
 
         protected override void Dispose(bool disposing)
         {
