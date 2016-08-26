@@ -172,27 +172,31 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs" />
-    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.Designer.cs">
-      <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DtoNote.cs" />
     <Compile Include="Migrations\201608112239179_InitialMigration.cs" />
-    <Compile Include="Migrations\201608112239179_InitialMigration.Designer.cs">
+    <Compile Include="Migrations\201608112239179_InitialMigration.designer.cs">
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201608182322116_labelchange.cs" />
-    <Compile Include="Migrations\201608182322116_labelchange.Designer.cs">
+    <Compile Include="Migrations\201608182322116_labelchange.designer.cs">
       <DependentUpon>201608182322116_labelchange.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201608190001319_manytomany.cs" />
-    <Compile Include="Migrations\201608190001319_manytomany.Designer.cs">
+    <Compile Include="Migrations\201608190001319_manytomany.designer.cs">
       <DependentUpon>201608190001319_manytomany.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201608190020238_itemnotes.cs" />
-    <Compile Include="Migrations\201608190020238_itemnotes.Designer.cs">
+    <Compile Include="Migrations\201608190020238_itemnotes.designer.cs">
       <DependentUpon>201608190020238_itemnotes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs" />
+    <Compile Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.designer.cs">
+      <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608260229387_itemparent.cs" />
+    <Compile Include="Migrations\201608260229387_itemparent.Designer.cs">
+      <DependentUpon>201608260229387_itemparent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DtoNote.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\JsonCreationConverter.cs" />
     <Compile Include="Models\DtoItem.cs" />
@@ -259,6 +263,14 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="packages.config" />
+    <None Include="Project_Readme.html" />
+    <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="Migrations\201608112239179_InitialMigration.resx">
       <DependentUpon>201608112239179_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
@@ -268,17 +280,15 @@
     <EmbeddedResource Include="Migrations\201608190001319_manytomany.resx">
       <DependentUpon>201608190001319_manytomany.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608190020238_itemnotes.resx">
+      <DependentUpon>201608190020238_itemnotes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608190152353_AddCreatedUpdatedDateToNotesAndItems.resx">
       <DependentUpon>201608190152353_AddCreatedUpdatedDateToNotesAndItems.cs</DependentUpon>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="packages.config" />
-    <None Include="Project_Readme.html" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <EmbeddedResource Include="Migrations\201608260229387_itemparent.resx">
+      <DependentUpon>201608260229387_itemparent.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
