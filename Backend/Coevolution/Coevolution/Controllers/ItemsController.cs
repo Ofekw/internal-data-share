@@ -50,10 +50,10 @@ namespace Coevolution.Controllers
             return Ok(dtoItem);
         }
 
-        // PUT: api/Items/5
         /// <summary>
         /// Update an Item with a specified Id
         /// </summary>
+        // PUT: api/Items/5
         [ResponseType(typeof(void))]
         public IHttpActionResult PutItem(int id, Item item)
         {
@@ -66,9 +66,8 @@ namespace Coevolution.Controllers
             {
                 return BadRequest();
             }
-
+            item.Updated();
             db.Entry(item).State = EntityState.Modified;
-
             try
             {
                 db.SaveChanges();
@@ -87,6 +86,56 @@ namespace Coevolution.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
+
+        /// <summary>
+        /// Add a note to an existing Item
+        /// </summary>
+        // PUT: api/Items/5?noteContent=NewNote
+        [ResponseType(typeof(int))]
+        public IHttpActionResult PutItem(int id, String noteContent)
+        {
+            Note note = new Note();
+            note.Content = noteContent;
+
+            Item item = db.Items.Find(id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Notes.Add(note);
+            db.SaveChanges();
+            return Ok(note.Id);
+        }
+        
+        /// <summary>
+        /// Add a label to an existing Item
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutItem(int id, int labelId)
+        {
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if (item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Labels.Add(label);
+
+            db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
 
         /// <summary>
         /// Add a new Item to the database
@@ -114,7 +163,7 @@ namespace Coevolution.Controllers
                 }
             }
             Item item = dtoItem.ToDomainObject((Node)potentialParent);
-
+            item.Created();
             db.Items.Add(item);
             db.SaveChanges();
 
@@ -129,6 +178,7 @@ namespace Coevolution.Controllers
         public IHttpActionResult DeleteItem(int id)
         {
             Item item = db.Items.Find(id);
+            item.Updated();
             if (item == null)
             {
                 return NotFound();
@@ -139,6 +189,64 @@ namespace Coevolution.Controllers
 
             return Ok(item);
         }
+
+        /// <summary>
+        /// Remove an label from specified item
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult DeleteItem(int id, int labelId)
+        {
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if (!item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            item.Labels.Remove(label);
+            db.SaveChanges();
+
+            return Ok(item);
+        }
+
+        // DELETE: api/Items/5
+        /// <summary>
+        /// Remove a note with the specified Id from the database
+        /// </summary>
+        [ResponseType(typeof(Item))]
+        public IHttpActionResult DeleteNote(int id, int noteId)
+        {
+            Item item = db.Items.Include("Notes").First(u => u.Id == id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            Note note = db.Notes.Find(noteId);
+            if (note == null)
+            {
+                return NotFound();
+            }
+            if (!item.Notes.Contains(note))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Notes.Remove(note);
+            db.Notes.Remove(note);
+            db.SaveChanges();
+
+            return Ok(item);
+        }
+
 
         protected override void Dispose(bool disposing)
         {
