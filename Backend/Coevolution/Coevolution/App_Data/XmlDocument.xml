@@ -481,7 +481,7 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetItems">
+        <member name="M:Coevolution.Controllers.ItemsController.GetItems(System.String)">
             <summary>
             Get a list of all current Items
             </summary>
@@ -499,7 +499,7 @@
             Update an Item with a specified Id
             </summary>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PostLeaf(Coevolution.Models.DtoItem)">
+        <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.DtoItem)">
             <summary>
             Add a new Item to the database
             </summary>
