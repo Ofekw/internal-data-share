@@ -1,18 +1,21 @@
 import React from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
+import TopBar from './TopBar.jsx';
+import MainBody from './MainBody.jsx';
+import Paper from 'material-ui/Paper';
+import FlatButton from 'material-ui/FlatButton';
 
-var alertTest = function () {
-  alert('hello');
-};
-
-class AlertButton extends React.Component {
+class App extends React.Component {
   handleTouchTap() {
     alert('hello');
   }
 
   render() {
-    return <RaisedButton label="Default" onTouchTap={this.handleTouchTap} />;
+    return <div>
+      <TopBar/>
+      <MainBody/>
+    </div>;
   }
 }
 
-export default AlertButton;
+export default App;
