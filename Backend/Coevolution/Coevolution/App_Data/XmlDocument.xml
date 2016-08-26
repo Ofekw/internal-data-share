@@ -509,6 +509,22 @@
             Remove an Item with the specified Id from the database
             </summary>
         </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchNotes(System.String)">
+            <summary>
+            Search all notes for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(Coevolution.Models.Label)">
+            <summary>
+            Search all notes for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="label">The id of the label being searched for</param>
+            
+        </member>
         <member name="T:Coevolution.Models.DtoNote">
             <summary>
             DTO for the note class
