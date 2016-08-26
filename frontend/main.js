@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import MyAwesomeReactComponent from './components/App.jsx';
+import MainContainer from './components/App.jsx';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 // Needed for onTouchTap
@@ -10,7 +10,7 @@ injectTapEventPlugin();
 
 const App = () => (
   <MuiThemeProvider>
-    <MyAwesomeReactComponent />
+    <MainContainer />
   </MuiThemeProvider>
 );
 

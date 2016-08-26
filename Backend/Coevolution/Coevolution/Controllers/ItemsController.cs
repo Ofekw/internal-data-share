@@ -66,9 +66,8 @@ namespace Coevolution.Controllers
             {
                 return BadRequest();
             }
-
+            item.Updated();
             db.Entry(item).State = EntityState.Modified;
-
             try
             {
                 db.SaveChanges();
@@ -93,7 +92,7 @@ namespace Coevolution.Controllers
         /// </summary>
         // POST: api/Items
         [ResponseType(typeof(DtoItem))]
-        public IHttpActionResult PostLeaf(DtoItem dtoItem)
+        public IHttpActionResult PostItem(DtoItem dtoItem)
         {
             if (!ModelState.IsValid)
             {
@@ -114,7 +113,7 @@ namespace Coevolution.Controllers
                 }
             }
             Item item = dtoItem.ToDomainObject((Node)potentialParent);
-
+            item.Created();
             db.Items.Add(item);
             db.SaveChanges();
 
@@ -129,6 +128,7 @@ namespace Coevolution.Controllers
         public IHttpActionResult DeleteItem(int id)
         {
             Item item = db.Items.Find(id);
+            item.Updated();
             if (item == null)
             {
                 return NotFound();

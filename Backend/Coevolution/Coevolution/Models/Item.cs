@@ -27,6 +27,19 @@ namespace Coevolution.Models
             Notes = new List<Note>();
         }
 
+        public Item Updated()
+        {
+            this.UpdatedOn = DateTime.Now;
+            return this;
+        }
+
+        public Item Created()
+        {
+            this.CreatedOn = DateTime.Now;
+            Updated();
+            return this;
+        }
+
         public virtual DtoItem ToDto(){
             throw new NotImplementedException("ToDto should only be called on subclasses.");
         }
