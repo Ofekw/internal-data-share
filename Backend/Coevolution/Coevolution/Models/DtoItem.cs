@@ -68,7 +68,7 @@ namespace Coevolution.Models
                 var type = jObject.Value<string>("Type");
                 if (type == null)
                 {
-                    throw new InvalidDataException("DtoItem sent by client must have non-null type field."); // TODO: Throw 4XX rather than 5XX
+                    throw new InvalidDataException("DtoItem sent by client must have non-null type field.");
                 }
                 else if (type.Equals("node"))
                 {
