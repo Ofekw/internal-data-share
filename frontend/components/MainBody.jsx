@@ -3,18 +3,34 @@ import Paper from 'material-ui/Paper';
 import Card from './Card.jsx';
 import $ from 'jquery';
 import config from '../config.js';
+import CircularProgress from 'material-ui/CircularProgress';
 
 const MainBody = React.createClass({
     getInitialState() {
         return {
+            loading: true,
             items: []
         };
     },
 
+    enableLoadingMode() {
+        this.setState({
+            loading: true
+        });
+    },
+
+    disableLoadingMode() {
+        this.setState({
+            loading: false
+        });
+     },
+
     componentDidMount() {
+        this.enableLoadingMode;
         this.serverRequest = $.get(config.apiHost+'/users/octocat/gists', function (result) {
             this.setState({
-                items: result
+                items: result,
+                loading: false
             });
         }.bind(this));
     },
@@ -29,16 +45,28 @@ const MainBody = React.createClass({
             margin: 'auto',
             marginTop: 10
         };
-        return (
-            <Paper style= { paperStyle } zDepth= { 1}>
-                <Card/>
-                { 
-                    this.state.items.map(item => {
-                    console.log(item.owner.login)
-                    return <li key={item.id}> {item.owner.login}'s last gist is <a href={item.owner.html_url}> here</a>.</li>
-                }) }
-            </Paper >
-        )
+        
+        if (this.state.loading){
+            return (
+                <Paper style= { paperStyle } zDepth= { 1}>
+                    <CircularProgress />
+                </Paper >
+            )
+        } else {
+            return (
+                <Paper style= { paperStyle } zDepth= { 1}>
+                    { 
+                        this.state.items.map ( item => {
+                            return (
+                                <li key={item.id}> 
+                                    {item.owner.login}'s last gist is <a href={item.owner.html_url}> here</a>.
+                                </li>
+                            )
+                        })
+                    }
+                </Paper >
+            )
+        }
     }
 
 });
