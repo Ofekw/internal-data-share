@@ -509,7 +509,7 @@
             Add a label to an existing Item
             </summary>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PostLeaf(Coevolution.Models.DtoItem)">
+        <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.DtoItem)">
             <summary>
             Add a new Item to the database
             </summary>
