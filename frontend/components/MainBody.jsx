@@ -4,6 +4,7 @@ import Card from './Card.jsx';
 import $ from 'jquery';
 import config from '../config.js';
 import CircularProgress from 'material-ui/CircularProgress';
+import Center from 'react-center';
 
 const MainBody = React.createClass({
     getInitialState() {
@@ -26,7 +27,6 @@ const MainBody = React.createClass({
      },
 
     componentDidMount() {
-        this.enableLoadingMode;
         this.serverRequest = $.get(config.apiHost+'/users/octocat/gists', function (result) {
             this.setState({
                 items: result,
@@ -44,12 +44,14 @@ const MainBody = React.createClass({
             width: '90%',
             margin: 'auto',
             marginTop: 10
-        };
+        }
         
         if (this.state.loading){
             return (
                 <Paper style= { paperStyle } zDepth= { 1}>
-                    <CircularProgress />
+                    <Center>
+                        <CircularProgress size={1}/>
+                    </Center>
                 </Paper >
             )
         } else {
