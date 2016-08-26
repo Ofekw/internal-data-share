@@ -29,8 +29,8 @@ namespace Coevolution.Models
                 Deleted = this.Deleted,
                 Value = this.Value,
                 Notes = DtoNote.DtoNoteListToDomainObjecs(this.Notes),
-                CreatedOn = DateTime.Parse(this.CreatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind),
-                UpdatedOn = DateTime.Parse(this.UpdatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind)
+                //CreatedOn = DateTime.Parse(this.CreatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind),
+                //UpdatedOn = DateTime.Parse(this.UpdatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind)
 
             };
 
