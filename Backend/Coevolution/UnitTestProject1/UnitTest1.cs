@@ -51,7 +51,9 @@ namespace UnitTestProject1
                             + "\"Date\":.*,"
                             + "\"Deleted\":false,"
                             + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\]\\}$";
+                            + "\"Notes\":\\[\\],"
+                            + "\"CreatedOn\":\".*\","
+                            + "\"UpdatedOn\":\".*\"\\}$";
 
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
@@ -83,7 +85,9 @@ namespace UnitTestProject1
                             + "\"Date\":.*,"
                             + "\"Deleted\":false,"
                             + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\]\\}$";
+                            + "\"Notes\":\\[\\],"
+                            + "\"CreatedOn\":\".*\","
+                            + "\"UpdatedOn\":\".*\"\\}$";
 
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
@@ -134,7 +138,9 @@ namespace UnitTestProject1
                             + "\"Date\":.*,"
                             + "\"Deleted\":false,"
                             + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\]\\}$";
+                            + "\"Notes\":\\[\\],"
+                            + "\"CreatedOn\":\".*\","
+                            + "\"UpdatedOn\":\".*\"\\}$";
 
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
@@ -161,7 +167,9 @@ namespace UnitTestProject1
                             + "\"Date\":.*,"
                             + "\"Deleted\":false,"
                             + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\]\\}";
+                            + "\"Notes\":\\[\\],"
+                            + "\"CreatedOn\":\".*\","
+                            + "\"UpdatedOn\":\".*\"\\}";
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
