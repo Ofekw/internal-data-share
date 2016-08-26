@@ -154,7 +154,7 @@ namespace UnitTestProject1
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
-
+			
             var patternTwo = "\\{\"Children\":\\[\\],\"Id\":" + createdId + ","
                             + "\"Key\":\"Object to created by TestGetAll!\","
                             + "\"Parent\":null,"

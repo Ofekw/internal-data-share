@@ -7,13 +7,13 @@ namespace Coevolution.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddCreatedUpdatedDateToNotesAndItems : IMigrationMetadata
+    public sealed partial class migration1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddCreatedUpdatedDateToNotesAndItems));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(migration1));
         
         string IMigrationMetadata.Id
         {
-            get { return "201608190152353_AddCreatedUpdatedDateToNotesAndItems"; }
+            get { return "201608260341268_migration1"; }
         }
         
         string IMigrationMetadata.Source
