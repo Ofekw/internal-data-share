@@ -1,7 +1,6 @@
 import React from 'react';
 import List from './List.jsx';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import { Router, Route, Link } from 'react-router';
 
 var ListContainer = React.createClass({
 
