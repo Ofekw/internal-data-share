@@ -57,36 +57,50 @@ namespace Coevolution.Controllers
         /// </summary>
         // PUT: api/Items/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutItem(int id, Item item)
+        public IHttpActionResult PutItem(int id, DtoItem dtoItem)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != item.Id)
+            if (id != dtoItem.Id)
             {
                 return BadRequest();
             }
-            item.Updated();
-            db.Entry(item).State = EntityState.Modified;
-            try
+
+            Item item = db.Items.Find(id);
+            if (item == null)
             {
-                db.SaveChanges();
+                return StatusCode(HttpStatusCode.NotFound);
             }
-            catch (DbUpdateConcurrencyException)
+
+            Item potentialParent = null;
+            if (dtoItem.Parent != null)
             {
-                if (!ItemExists(id))
+                potentialParent = db.Items.Find(dtoItem.Parent);
+                if (potentialParent == null)
                 {
-                    return NotFound();
+                    return BadRequest("Can't find parent with specified Id");
                 }
-                else
+                if (potentialParent is Leaf)
                 {
-                    throw;
+                    throw new System.InvalidOperationException("Parent cannot be Leaf");
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            try
+            {
+                item = dtoItem.ToDomainObject((Node)potentialParent);
+            }
+            catch (InvalidDataException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            item.Updated();
+            db.SaveChanges();
+
+            return Ok();
         }
 
         /// <summary>
