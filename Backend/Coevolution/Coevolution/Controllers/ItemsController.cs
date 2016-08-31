@@ -205,13 +205,27 @@ namespace Coevolution.Controllers
         public IHttpActionResult DeleteItem(int id)
         {
             Item item = db.Items.Find(id);
-            item.Updated();
             if (item == null)
             {
                 return NotFound();
             }
 
-            db.Items.Remove(item);
+            List<Item> nodes_to_delete = new List<Item>();
+            nodes_to_delete.Add(item);
+            while (nodes_to_delete.Count > 0) {
+                Item current_node = nodes_to_delete[0];
+                nodes_to_delete.RemoveAt(0);
+                List<Item> children = db.Items.Include("Labels").Include("Notes").Where(x => x.Parent == current_node).ToList();
+                if (children != null)
+                {
+                    for (int i = 0; i < children.Count; i++)
+                    {
+                        nodes_to_delete.Add(children[i]);
+                    }
+                }
+                current_node.Updated();
+                current_node.Deleted = true;
+            }
             db.SaveChanges();
 
             return Ok(item);
