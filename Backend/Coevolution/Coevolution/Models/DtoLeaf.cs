@@ -38,8 +38,6 @@ namespace Coevolution.Models
                 throw new InvalidDataException("Leaf must have a parent."); // TODO: Throw 4XX rather than 5XX
             }
 
-            parent.Children.Add(newLeaf);
-
             return newLeaf;
         }
     }
