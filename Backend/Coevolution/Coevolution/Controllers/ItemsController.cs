@@ -11,9 +11,11 @@ using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Coevolution.Models;
+using System.Web.Http.Cors;
 
 namespace Coevolution.Controllers
 {
+    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
     public class ItemsController : ApiController
     {
         private ModelContext db = new ModelContext();
