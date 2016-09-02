@@ -494,7 +494,7 @@
             The Id of the Item to be retrieved
             </param>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,Coevolution.Models.Item)">
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,Coevolution.Models.DtoItem)">
             <summary>
             Update an Item with a specified Id
             </summary>

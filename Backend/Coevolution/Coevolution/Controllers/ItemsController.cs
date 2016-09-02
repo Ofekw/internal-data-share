@@ -11,9 +11,11 @@ using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Coevolution.Models;
+using System.Web.Http.Cors;
 
 namespace Coevolution.Controllers
 {
+    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
     public class ItemsController : ApiController
     {
         private ModelContext db = new ModelContext();
@@ -26,7 +28,7 @@ namespace Coevolution.Controllers
         public List<DtoItemReduced> GetItems()
         {
 
-            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent.Id == null).ToList();
+            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent == null).ToList();
             if (dbItems != null)
             {
                 return dbItems.Select(item => item.ToDtoReduced()).ToList();
@@ -63,36 +65,60 @@ namespace Coevolution.Controllers
         /// </summary>
         // PUT: api/Items/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutItem(int id, Item item)
+        public IHttpActionResult PutItem(int id, DtoItem dtoItem)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != item.Id)
+            if (id != dtoItem.Id)
             {
                 return BadRequest();
             }
-            item.Updated();
-            db.Entry(item).State = EntityState.Modified;
-            try
+
+            Item item = db.Items.Find(id);
+            if (item == null)
             {
-                db.SaveChanges();
+                return StatusCode(HttpStatusCode.NotFound);
             }
-            catch (DbUpdateConcurrencyException)
+
+            Item potentialParent = null;
+            if (dtoItem.Parent != null)
             {
-                if (!ItemExists(id))
+                potentialParent = db.Items.Find(dtoItem.Parent);
+                if (potentialParent == null)
                 {
-                    return NotFound();
+                    return BadRequest("Can't find parent with specified Id");
                 }
-                else
+                if (potentialParent is Leaf)
                 {
-                    throw;
+                    throw new System.InvalidOperationException("Parent cannot be Leaf");
                 }
             }
 
-            return StatusCode(HttpStatusCode.NoContent);
+            try
+            {
+                Item new_item = dtoItem.ToDomainObject((Node)potentialParent);
+
+                item.Key = new_item.Key;
+                if (dtoItem is DtoLeaf)
+                {
+                    if (!(item is Leaf))
+                    {
+                        throw new System.InvalidOperationException("Item type must match.");
+                    }
+                    ((Leaf)item).Value = ((Leaf)new_item).Value;
+                }
+            }
+            catch (InvalidDataException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+            item.Updated();
+            db.SaveChanges();
+
+            return Ok();
         }
 
         /// <summary>
@@ -176,6 +202,11 @@ namespace Coevolution.Controllers
             try
             {
                 item = dtoItem.ToDomainObject((Node)potentialParent);
+
+                if (potentialParent != null)
+                {
+                    ((Node)potentialParent).Children.Add(item);
+                }
             }
             catch (InvalidDataException exception)
             {
@@ -197,16 +228,27 @@ namespace Coevolution.Controllers
         public IHttpActionResult DeleteItem(int id)
         {
             Item item = db.Items.Find(id);
-            item.Updated();
             if (item == null)
             {
                 return NotFound();
             }
 
-            db.Items.Remove(item);
+            List<Item> nodes_to_delete = new List<Item>();
+            nodes_to_delete.Add(item);
+            while (nodes_to_delete.Count > 0) {
+                Item current_node = nodes_to_delete.Last();
+                nodes_to_delete.RemoveAt(nodes_to_delete.Count-1);
+                List<Item> children = db.Items.Include("Labels").Include("Notes").Where(x => x.Parent.Id == current_node.Id).ToList();
+                if (children != null)
+                {
+                    nodes_to_delete.AddRange(children);
+                }
+                current_node.Updated();
+                current_node.Deleted = true;
+            }
             db.SaveChanges();
 
-            return Ok(item);
+            return Ok();
         }
 
         /// <summary>

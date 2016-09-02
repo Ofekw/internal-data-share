@@ -3,7 +3,7 @@ namespace Coevolution.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialMigration : DbMigration
+    public partial class brandnew : DbMigration
     {
         public override void Up()
         {

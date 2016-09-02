@@ -32,11 +32,6 @@ namespace Coevolution.Models
                 //UpdatedOn = DateTime.Parse(this.UpdatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind)
             };
 
-            if (parent != null)
-            {
-                parent.Children.Add(newNode);
-            }
-
             return newNode;
         }
     }
