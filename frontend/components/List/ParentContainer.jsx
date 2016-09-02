@@ -4,6 +4,7 @@ import Card from '../Card.jsx';
 import FlatButton from 'material-ui/FlatButton';
 
 
+
 var ParentContainer = React.createClass({
 
 	getInitialState: function() {
@@ -33,8 +34,8 @@ var ParentContainer = React.createClass({
 						return <span key={crumb.id}><FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/> ></span>
 					})
 				}
-				<Card editable={this.props.editMode} cardData={this.state.parent}/>
-			 	<ListNode parent={this.state.parent} handleClick={this.handleClick} editMode={this.props.editMode}/>
+				<Card editable={this.props.editable} cardData={this.state.parent}/>
+			 	<ListNode parent={this.state.parent} handleClick={this.handleClick} editable={this.props.editable}/>
 
 		 	</div>
 		)

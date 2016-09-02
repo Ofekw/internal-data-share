@@ -66,7 +66,7 @@ var ListContainer = React.createClass({
 		return (
 			<Card>
 			//TODO pass node object to card to be populated
-				<List listItems={this.state.nodes} handleClick={this.handleClick}></List>
+				<List listItems={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable}></List>
 				<Divider />
 				<div>
 					<TextField id="newListField" style={textFieldStyle} errorText={this.state.errors} hintText="Hint Text"/>

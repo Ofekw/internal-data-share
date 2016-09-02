@@ -8,25 +8,25 @@ import FlatButton from 'material-ui/FlatButton';
 var App = React.createClass({
 
 	onGlobalEdit: function(){
-		if (this.state.editMode){
-			this.setState({editMode: false});
+		if (this.state.editable){
+			this.setState({editable: false});
 		} else {
-			this.setState({editMode: true});
+			this.setState({editable: true});
 		}
 
 	},
 
 	getInitialState: function(){
 		return {
-			editMode: false
+			editable: false
 		}
 	},
 
 	render: function(){
 		return (
 			<div>
-      			<TopBar onGlobalEdit={this.onGlobalEdit} editMode={this.state.editMode}/>
-     			<MainBody editMode={this.state.editMode}/>
+      			<TopBar onGlobalEdit={this.onGlobalEdit} editable={this.state.editable}/>
+     			<MainBody editable={this.state.editable}/>
     		</div>
 		)
 	}

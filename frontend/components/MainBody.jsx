@@ -50,7 +50,7 @@ var MainBody = React.createClass({
         } else {
             return (
                 <Paper style= { paperStyle } zDepth= { 1}>
-                    <ListParentContainer editMode={this.props.editMode}/>
+                    <ListParentContainer editable={this.props.editable}/>
                 </Paper >
             )
         }

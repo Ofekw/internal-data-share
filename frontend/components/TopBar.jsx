@@ -26,7 +26,7 @@ const TopBar = React.createClass({
     }
 
     var icon;
-    if(this.props.editMode){
+    if(this.props.editable){
       icon = <Save/>;
     } else {
       icon = <Edit/>;
