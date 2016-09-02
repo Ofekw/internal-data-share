@@ -1,6 +1,20 @@
 {
 	"Id": 1,
 	"Key": "ASB Bank",
+  	"Type": "node",
+  	"Parent": null,
+  	"Deleted": false,
+	"Labels": [
+		"This is a label"	
+	],
+	"Notes": [
+		{
+			"Id": 1,
+			"Content": "This is a Note",
+			"CreatedOn": "2016-09-02T11:27:06",
+			"UpdatedOn": "2016-09-02T11:27:06"
+		}
+	],
 	"CreatedOn": "2016-09-01T23:27:06.435Z",
 	"UpdatedOn": "2016-09-01T23:27:06.435Z",
 	"LeafChildren": [
@@ -8,6 +22,10 @@
 			"Id": 7,
 			"Key": "Password",
 			"Value": "hunter2",
+		  	"Parent": 1,
+		  	"Deleted": false,
+			"Labels": [],
+			"Notes": [],
 			"CreatedOn": "2016-09-01T23:27:06.435Z",
 			"UpdatedOn": "2016-09-01T23:27:06.435Z"
 		},
