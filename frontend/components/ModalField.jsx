@@ -7,6 +7,8 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton/IconButton';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import $ from 'jquery';
+import Clipboard from 'clipboard-js';
 
 // Icons
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
@@ -15,6 +17,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import FlatButton from 'material-ui/FlatButton';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Save from 'material-ui/svg-icons/content/save';
+import Undo from 'material-ui/svg-icons/content/undo';
 
 const styles = {
   paleGrey: {
@@ -29,8 +32,12 @@ const styles = {
   }
 };
 
+const clean = 'clean';
+const dirty = 'dirty';
+const deleted = 'deleted';
 
-class CardExampleExpandable extends React.Component {
+
+class ModalField extends React.Component {
   constructor(props) {
     super(props);
 
@@ -38,22 +45,11 @@ class CardExampleExpandable extends React.Component {
     this.value = props.value;
 
     this.state = {
+      dirty: false,
       open: false,
       editable: props.editable
     };
   }
-
-  openMenu = (event) => {
-    // This prevents ghost click.
-    event.preventDefault();
-
-    console.log('Opening menu.');
-
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
-    });
-  };
 
   handleRequestClose = () => {
     this.setState({
@@ -77,10 +73,27 @@ class CardExampleExpandable extends React.Component {
 
   handleKeyChange = (event) => {
     this.key = event.target.value;
+    this.setState({dirty: dirty});
   }
 
   handleValueChange = (event) => {
     this.value = event.target.value;
+    this.setState({dirty: dirty});
+  }
+
+  toggleDeleted = (event) => {
+    if (this.state.dirty !== deleted) {
+      this.setState({dirty: deleted});
+    } else {
+      this.setState({dirty: clean});
+    }
+  }
+
+  copyToClipboard = () => {
+    Clipboard.copy(this.value).then(
+      function(){console.log("success");},
+      function(err){console.log("failure", err);}
+    );
   }
 
   render() {
@@ -93,6 +106,7 @@ class CardExampleExpandable extends React.Component {
             defaultValue={this.key}
             style={styles.keyField}
             onChange={this.handleKeyChange}
+            disabled={this.state.dirty === deleted}
           />
           <TextField
             name="value"
@@ -100,33 +114,35 @@ class CardExampleExpandable extends React.Component {
             defaultValue={this.value}
             style={styles.valueField}
             onChange={this.handleValueChange}
+            disabled={this.state.dirty === deleted}
           />
           <RaisedButton
-            icon={<Save />}
+            icon={this.state.dirty === deleted ? <Undo/> : <Delete />}
             style={styles.rightAllign}
-            onTouchTap={this.disableEditMode}
+            onTouchTap={this.toggleDeleted}
           />
         </ListItem>
       );
     } else {
+      if (this.state.dirty === dirty) {
+        this.setState({dirty: clean});
+        this.serverRequest = $.put(config.apiHost + 'api/Items/' + this.props.key, function (result) {
+          if (result.status !== 200){
+            console.error(result);
+          }
+        });
+      } else if (this.state.dirty === deleted) {
+        this.setState({dirty: clean});
+        this.serverRequest = $.delete(config.apiHost + 'api/Items/' + this.props.key, function (result) {
+          if (result.status !== 200){
+            console.error(result);
+          }
+        });
+      }
       return (
-        <ListItem primaryText={this.value} secondaryText={this.key} rightIcon={<MoreVertIcon />} onTouchTap={this.openMenu}>
-          <Popover
-            open={this.state.open}
-            anchorEl={this.state.anchorEl}
-            anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
-            targetOrigin={{horizontal: 'left', vertical: 'top'}}
-            onRequestClose={this.handleRequestClose}
-          >
-            <Menu>
-              <MenuItem primaryText="Copy to Clipboard" leftIcon={<ContentCopy />} />
-              <MenuItem primaryText="Edit" leftIcon={<Edit />} onTouchTap={this.enableEditMode}/>
-              <MenuItem primaryText="Delete" leftIcon={<Delete />}/>
-            </Menu>
-          </Popover>
-        </ListItem>
+        <ListItem primaryText={this.value} secondaryText={this.key} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard}></ListItem>
       );
     }
   }
 }
-export default CardExampleExpandable;
+export default ModalField;

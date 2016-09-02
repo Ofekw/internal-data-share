@@ -25,7 +25,7 @@ class CardExampleExpandable extends React.Component {
         if (leafChildren.hasOwnProperty(child)) {
           const childElement = leafChildren[child];
           this.children.push(
-            <ModalField key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
+            <ModalField editable={this.props.editable} key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
           );
         }
       }
@@ -43,10 +43,15 @@ class CardExampleExpandable extends React.Component {
             return child;
           })}
         </List>
-        <CardActions>
-          <FlatButton label="New" onTouchTap={this.createNew}/>
-        </CardActions>
+          <CardActions>
+          {(() => {
+            if (this.props.editable){
+              return <FlatButton label="New" onTouchTap={this.createNew}/>
+            }            
+          })()}
+          </CardActions>
       </Card>
+
     );
   }
 }

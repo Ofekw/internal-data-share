@@ -11,8 +11,6 @@ import Card from './Card.jsx'
 class App extends React.Component {
   constructor(props) {
     super(props);
-
-    this.leafChildren = [];
   }
 
   handleTouchTap() {
@@ -21,6 +19,7 @@ class App extends React.Component {
 
   componentDidMount() {
     this.enableLoadingMode;
+    this.setState({editable: false});
     this.serverRequest = $.get(config.apiHost + 'GetApiItemsById.json', function (result) {
       // console.log(result);
       // result = JSON.parse(result);
@@ -33,7 +32,7 @@ class App extends React.Component {
   render() {
     return (<div>
       <TopBar/>
-      <Card cardData={this.state ? this.state.cardData : []} />
+      <Card cardData={this.state ? this.state.cardData : []} editable={this.state ? this.state.editable : false}/>
     </div>);
   }
 }
