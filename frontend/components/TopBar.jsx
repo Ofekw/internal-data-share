@@ -33,7 +33,7 @@ const TopBar = React.createClass({
           iconElementRight={
             <div>
               <IconButton label="Search" onTouchTap={ () => this.setState({isOpened: !isOpened}) }> <Search/></IconButton>
-              <IconButton label="Edit"> <Edit/></IconButton>
+              <IconButton label="Edit" onTouchTap={this.props.onGlobalEdit}> <Edit/></IconButton>
             </div>
           }
           >

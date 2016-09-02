@@ -4,9 +4,9 @@ import Card from './Card.jsx';
 import $ from 'jquery';
 import config from '../config.js';
 import CircularProgress from 'material-ui/CircularProgress';
-import ListParentContainer from './List/ParentContainer.jsx'
+import ListParentContainer from './List/ParentContainer.jsx';
 
-const MainBody = React.createClass({
+var MainBody = React.createClass({
     getInitialState() {
         return {
             loading: false,
@@ -28,13 +28,7 @@ const MainBody = React.createClass({
 
     componentDidMount() {
         this.enableLoadingMode;
-/*        this.serverRequest = $.get(config.apiHost+'/users/octocat/gists', function (result) {
-            this.setState({
-                items: result,
-                loading: false
-            });
-        }.bind(this));
-*/    },
+    },
 
     componentWillUnmount() {
         this.serverRequest.abort();
@@ -56,12 +50,11 @@ const MainBody = React.createClass({
         } else {
             return (
                 <Paper style= { paperStyle } zDepth= { 1}>
-                    <ListParentContainer/>
+                    <ListParentContainer editMode={this.props.editMode}/>
                 </Paper >
             )
         }
     }
-
 });
 
 export default MainBody;

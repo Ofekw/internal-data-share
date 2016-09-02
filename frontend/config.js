@@ -1,5 +1,5 @@
 const config = {
-    apiHost:"https://coevolution.azurewebsites.net"
+    apiHost:"http://localhost:8080/mockApiCalls/"
 }
 
 export default config;

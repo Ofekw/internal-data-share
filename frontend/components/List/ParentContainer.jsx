@@ -1,6 +1,6 @@
 import React from 'react';
 import ListNode from './ListNode.jsx';
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import Card from '../Card.jsx';
 import FlatButton from 'material-ui/FlatButton';
 
 
@@ -32,8 +32,9 @@ var ParentContainer = React.createClass({
 					this.state.breadcrumbs.map( crumb => {
 						return <span key={crumb.id}><FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/> ></span>
 					})
-				 }
-			 	<ListNode parent={this.state.parent} handleClick={this.handleClick}/>
+				}
+				<Card editMode={this.props.editMode} />
+			 	<ListNode parent={this.state.parent} handleClick={this.handleClick} editMode={this.props.editMode}/>
 
 		 	</div>
 		)
