@@ -8,33 +8,32 @@ import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import Card from './Card.jsx'
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+var App = React.createClass({
 
-  handleTouchTap() {
-    alert('hello');
-  }
+	onGlobalEdit: function(){
+		if (this.state.editable){
+			this.setState({editable: false});
+		} else {
+			this.setState({editable: true});
+		}
 
-  componentDidMount() {
-    this.enableLoadingMode;
-    this.setState({editable: false});
-    this.serverRequest = $.get(config.apiHost + 'GetApiItemsById.json', function (result) {
-      // console.log(result);
-      // result = JSON.parse(result);
-      this.setState({
-        cardData: result
-      });
-    }.bind(this));
-  }
+	},
 
-  render() {
-    return (<div>
-      <TopBar/>
-      <Card cardData={this.state ? this.state.cardData : []} editable={this.state ? this.state.editable : false}/>
-    </div>);
-  }
-}
+	getInitialState: function(){
+		return {
+			editable: false
+		}
+	},
+
+	render: function(){
+		return (
+			<div>
+      			<TopBar onGlobalEdit={this.onGlobalEdit} editable={this.state.editable}/>
+     			<MainBody editable={this.state.editable}/>
+    		</div>
+		)
+	}
+});
+
 
 export default App;

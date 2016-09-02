@@ -2,6 +2,7 @@ import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import IconButton from 'material-ui/IconButton';
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
+import Save from 'material-ui/svg-icons/content/save';
 import Search from 'material-ui/svg-icons/action/search';
 import Collapse from 'react-collapse';
 import SearchInput from 'react-search-input';
@@ -24,6 +25,13 @@ const TopBar = React.createClass({
       borderStyle: 'groove'
     }
 
+    var icon;
+    if(this.props.editable){
+      icon = <Save/>;
+    } else {
+      icon = <Edit/>;
+    }
+
     const {isOpened} = this.state;
     return (
       <div>
@@ -33,7 +41,7 @@ const TopBar = React.createClass({
           iconElementRight={
             <div>
               <IconButton label="Search" onTouchTap={ () => this.setState({isOpened: !isOpened}) }> <Search/></IconButton>
-              <IconButton label="Edit"> <Edit/></IconButton>
+              <IconButton label="Edit" onTouchTap={this.props.onGlobalEdit}> {icon}</IconButton>
             </div>
           }
           >
