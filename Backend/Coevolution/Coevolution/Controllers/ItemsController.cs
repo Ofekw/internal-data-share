@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Coevolution.Models;
@@ -56,10 +57,10 @@ namespace Coevolution.Controllers
             return Ok(dtoItem);
         }
 
-        // PUT: api/Items/5
         /// <summary>
         /// Update an Item with a specified Id
         /// </summary>
+        // PUT: api/Items/5
         [ResponseType(typeof(void))]
         public IHttpActionResult PutItem(int id, Item item)
         {
@@ -92,6 +93,56 @@ namespace Coevolution.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
+
+        /// <summary>
+        /// Add a note to an existing Item
+        /// </summary>
+        // PUT: api/Items/5?noteContent=NewNote
+        [ResponseType(typeof(int))]
+        public IHttpActionResult PutItem(int id, String noteContent)
+        {
+            Note note = new Note();
+            note.Content = noteContent;
+
+            Item item = db.Items.Find(id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Notes.Add(note);
+            db.SaveChanges();
+            return Ok(note.Id);
+        }
+        
+        /// <summary>
+        /// Add a label to an existing Item
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutItem(int id, int labelId)
+        {
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if (item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Labels.Add(label);
+
+            db.SaveChanges();
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
 
         /// <summary>
         /// Add a new Item to the database
@@ -144,6 +195,122 @@ namespace Coevolution.Controllers
             db.SaveChanges();
 
             return Ok(item);
+        }
+
+        /// <summary>
+        /// Remove an label from specified item
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult DeleteItem(int id, int labelId)
+        {
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if (!item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            item.Labels.Remove(label);
+            db.SaveChanges();
+
+            return Ok(item);
+        }
+
+        // DELETE: api/Items/5
+        /// <summary>
+        /// Remove a note with the specified Id from the database
+        /// </summary>
+        [ResponseType(typeof(Item))]
+        public IHttpActionResult DeleteNote(int id, int noteId)
+        {
+            Item item = db.Items.Include("Notes").First(u => u.Id == id);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            Note note = db.Notes.Find(noteId);
+            if (note == null)
+            {
+                return NotFound();
+            }
+            if (!item.Notes.Contains(note))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+            item.Notes.Remove(note);
+            db.Notes.Remove(note);
+            db.SaveChanges();
+
+            return Ok(item);
+        }
+
+        // Get: api/Items/Search/Note/{query}
+        /// <summary>
+        /// Search all notes for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="query">The string being searched for</param>
+        /// 
+        [Route("Items/Search/Note/{query}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchNotes(string query)
+        {
+            query = Regex.Escape(query);
+            return Ok(db.Notes.Where(x => x.Content.Contains(query)).Select(x => x.Item.ToDto()).ToArray());
+        }
+
+        // Get: api/Items/Search/Note/{query}
+        /// <summary>
+        /// Search all notes for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="label">The id of the label being searched for</param>
+        /// 
+        [Route("Items/Search/Note/{label}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchLabel(Label label)
+        {
+            return Ok(db.Items.Where(x => x.Labels.Contains(label)).Select(x => x.ToDto()).ToArray());
+        }
+
+        // Get: api/Items/Search/Key/{query}
+        /// <summary>
+        /// Search all items keys for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="query">The string being searched for</param>
+        /// 
+        [Route("Items/Search/Key/{query}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchKeys(string query)
+        {
+            query = Regex.Escape(query);
+            return Ok(db.Items.Where(x => x.Key.Contains(query)).Select(x => x.ToDto()).ToArray());
+        }
+
+        // Get: api/Items/Search/Value/{query}
+        /// <summary>
+        /// Search all items values for query string
+        /// Returns an array of ids of the nodes containing the string
+        /// </summary>
+        /// <param name="query">The string being searched for</param>
+        /// 
+        [Route("Items/Search/Value/{query}")]
+        [ResponseType(typeof(int[]))]
+        public IHttpActionResult GetSearchValues(string query)
+        {
+            query = Regex.Escape(query);
+            return Ok(db.Items.Where(x => x.GetType() == typeof(Leaf)).Select(x => (Leaf)x).Where(x => x.Value.Contains(query)).Select(x => x.ToDto()).ToArray());
         }
 
         protected override void Dispose(bool disposing)

@@ -481,7 +481,7 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetItems(System.String)">
+        <member name="M:Coevolution.Controllers.ItemsController.GetItems">
             <summary>
             Get a list of all current Items
             </summary>
@@ -499,6 +499,16 @@
             Update an Item with a specified Id
             </summary>
         </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.String)">
+            <summary>
+            Add a note to an existing Item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.Int32)">
+            <summary>
+            Add a label to an existing Item
+            </summary>
+        </member>
         <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.DtoItem)">
             <summary>
             Add a new Item to the database
@@ -507,6 +517,68 @@
         <member name="M:Coevolution.Controllers.ItemsController.DeleteItem(System.Int32)">
             <summary>
             Remove an Item with the specified Id from the database
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.DeleteItem(System.Int32,System.Int32)">
+            <summary>
+            Remove an label from specified item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.DeleteNote(System.Int32,System.Int32)">
+            <summary>
+            Remove a note with the specified Id from the database
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchNotes(System.String)">
+            <summary>
+            Search all notes for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(Coevolution.Models.Label)">
+            <summary>
+            Search all notes for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="label">The id of the label being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchKeys(System.String)">
+            <summary>
+            Search all items keys for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchValues(System.String)">
+            <summary>
+            Search all items values for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.LabelsController.GetLabels">
+            <summary>
+            Get a list of all Labels
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItemReduced.Id">
+            <summary>
+            Id for storage in DB
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItemReduced.Key">
+            <summary>
+            Name of Item
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoItemReduced.Labels">
+            <summary>
+            List of Item labels
             </summary>
         </member>
         <member name="T:Coevolution.Models.DtoNote">
@@ -563,14 +635,14 @@
             Name of Item
             </summary>
         </member>
+        <member name="P:Coevolution.Models.DtoItem.Type">
+            <summary>
+            Whether the item is a node or a leaf
+            </summary>
+        </member>
         <member name="P:Coevolution.Models.DtoItem.Parent">
             <summary>
             Id of the parent Item
-            </summary>
-        </member>
-        <member name="P:Coevolution.Models.DtoItem.Date">
-            <summary>
-            Daet of last modification of the Item in epoch
             </summary>
         </member>
         <member name="P:Coevolution.Models.DtoItem.Deleted">
@@ -603,7 +675,7 @@
             Value of the property defined by the key
             </summary>
         </member>
-        <member name="P:Coevolution.Models.DtoNode.Children">
+        <member name="P:Coevolution.Models.DtoNode.LeafChildren">
             <summary>
             List of Ids that define the child nodes
             </summary>
