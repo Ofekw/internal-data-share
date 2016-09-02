@@ -581,6 +581,27 @@
             List of Item labels
             </summary>
         </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchKeys(System.String)">
+            <summary>
+            Search all items keys for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchValues(System.String)">
+            <summary>
+            Search all items values for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.LabelsController.GetLabels">
+            <summary>
+            Get a list of all Labels
+            </summary>
+        </member>
         <member name="T:Coevolution.Models.DtoNote">
             <summary>
             DTO for the note class
