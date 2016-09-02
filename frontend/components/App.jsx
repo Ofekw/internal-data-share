@@ -8,7 +8,12 @@ import FlatButton from 'material-ui/FlatButton';
 var App = React.createClass({
 
 	onGlobalEdit: function(){
-		this.setState({editMode: true});
+		if (this.state.editMode){
+			this.setState({editMode: false});
+		} else {
+			this.setState({editMode: true});
+		}
+
 	},
 
 	getInitialState: function(){
@@ -20,7 +25,7 @@ var App = React.createClass({
 	render: function(){
 		return (
 			<div>
-      			<TopBar onGlobalEdit={this.onGlobalEdit}/>
+      			<TopBar onGlobalEdit={this.onGlobalEdit} editMode={this.state.editMode}/>
      			<MainBody editMode={this.state.editMode}/>
     		</div>
 		)
