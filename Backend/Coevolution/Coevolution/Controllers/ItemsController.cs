@@ -59,6 +59,7 @@ namespace Coevolution.Controllers
             {
                 Node nodeItem = (Node)item;
                 nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id).ToList();
+                return Ok(nodeItem.ToDto());
             }
 
             var dtoItem = item.ToDto();
