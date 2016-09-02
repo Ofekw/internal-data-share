@@ -26,7 +26,7 @@ namespace Coevolution.Controllers
         public List<DtoItemReduced> GetItems()
         {
 
-            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent.Id == null).ToList();
+            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent == null).ToList();
             if (dbItems != null)
             {
                 return dbItems.Select(item => item.ToDtoReduced()).ToList();
