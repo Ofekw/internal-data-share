@@ -1,5 +1,5 @@
 const config = {
-    apiHost:"https://api.github.com"
+    apiHost:"http://localhost:8080/mockApiCalls/"
 }
 
 export default config;
