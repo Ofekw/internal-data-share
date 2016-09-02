@@ -1,0 +1,36 @@
+{
+	"Id": 1,
+	"Key": "ASB Bank",
+	"CreatedOn": "2016-09-01T23:27:06.435Z",
+	"UpdatedOn": "2016-09-01T23:27:06.435Z",
+	"LeafChildren": [
+		{
+			"Id": 7,
+			"Key": "Password",
+			"Value": "hunter2",
+			"CreatedOn": "2016-09-01T23:27:06.435Z",
+			"UpdatedOn": "2016-09-01T23:27:06.435Z"
+		},
+		{
+			"Id": 8,
+			"Key": "Url",
+			"Value": "http://localhost:1234",
+			"CreatedOn": "2016-09-01T23:27:06.435Z",
+			"UpdatedOn": "2016-09-01T23:27:06.435Z"
+		}
+	],
+	"NodeChildren": [
+		{
+			"Id": 4,
+			"Key": "ASB VM 1"
+		},
+		{
+			"Id": 5,
+			"Key": "ASB VM 2"
+		},
+		{
+			"Id": 6,
+			"Key": "ASB VM 2 Episode 1"
+		}
+	]
+}

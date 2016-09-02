@@ -499,7 +499,17 @@
             Update an Item with a specified Id
             </summary>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PostLeaf(Coevolution.Models.DtoItem)">
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.String)">
+            <summary>
+            Add a note to an existing Item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.Int32)">
+            <summary>
+            Add a label to an existing Item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PostItem(Coevolution.Models.DtoItem)">
             <summary>
             Add a new Item to the database
             </summary>
@@ -508,6 +518,35 @@
             <summary>
             Remove an Item with the specified Id from the database
             </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.DeleteItem(System.Int32,System.Int32)">
+            <summary>
+            Remove an label from specified item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.DeleteNote(System.Int32,System.Int32)">
+            <summary>
+            Remove a note with the specified Id from the database
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.LabelsController.GetLabels">
+            <summary>
+            Get a list of all Labels
+            </summary>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchNotes(System.String)">
+            <summary>
+            Search all notes for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="query">The string being searched for</param>
+            
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(Coevolution.Models.Label)">
+            <summary>
+            Search all notes for query string
+            Returns an array of ids of the nodes containing the string
+            </summary>
+            <param name="label">The id of the label being searched for</param>
         </member>
         <member name="T:Coevolution.Models.DtoNote">
             <summary>
