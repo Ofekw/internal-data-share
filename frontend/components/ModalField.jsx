@@ -126,14 +126,14 @@ class ModalField extends React.Component {
     } else {
       if (this.state.dirty === dirty) {
         this.setState({dirty: clean});
-        this.serverRequest = $.put(config.apiHost + 'api/Items/' + this.props.key, function (result) {
+        this.serverRequest = $.put(config.apiHost + 'Items/' + this.props.key, function (result) {
           if (result.status !== 200){
             console.error(result);
           }
         });
       } else if (this.state.dirty === deleted) {
         this.setState({dirty: clean});
-        this.serverRequest = $.delete(config.apiHost + 'api/Items/' + this.props.key, function (result) {
+        this.serverRequest = $.delete(config.apiHost + 'Items/' + this.props.key, function (result) {
           if (result.status !== 200){
             console.error(result);
           }

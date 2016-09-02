@@ -1,5 +1,4 @@
 import React from 'react';
-import $ from 'jquery';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
