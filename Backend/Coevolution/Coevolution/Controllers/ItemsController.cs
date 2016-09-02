@@ -97,7 +97,17 @@ namespace Coevolution.Controllers
 
             try
             {
-                item = dtoItem.ToDomainObject((Node)potentialParent);
+                Item new_item = dtoItem.ToDomainObject((Node)potentialParent);
+
+                item.Key = new_item.Key;
+                if (dtoItem is DtoLeaf)
+                {
+                    if (!(item is Leaf))
+                    {
+                        throw new System.InvalidOperationException("Item type must match.");
+                    }
+                    ((Leaf)item).Value = ((Leaf)new_item).Value;
+                }
             }
             catch (InvalidDataException exception)
             {
@@ -190,6 +200,11 @@ namespace Coevolution.Controllers
             try
             {
                 item = dtoItem.ToDomainObject((Node)potentialParent);
+
+                if (potentialParent != null)
+                {
+                    ((Node)potentialParent).Children.Add(item);
+                }
             }
             catch (InvalidDataException exception)
             {
