@@ -22,13 +22,19 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Get a list of all current Items
         /// </summary>
-        public List<DtoItem> GetItems()
+        [HttpGet]
+        public List<DtoItemReduced> GetItems()
         {
 
-            var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => item.ToDto()).ToList();
-
-
-            return dbItems;
+            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent.Id == null).ToList();
+            if (dbItems != null)
+            {
+                return dbItems.Select(item => item.ToDtoReduced()).ToList();
+            }
+            else
+            {
+                return new List<DtoItemReduced>();
+            }
         }
 
         // GET: api/Items/5

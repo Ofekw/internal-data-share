@@ -10,12 +10,14 @@ namespace Coevolution.Models
         /// <summary>
         /// List of Ids that define the child nodes
         /// </summary>
-        public virtual List<int> Children { get; set; }
+        public virtual List<DtoLeaf> LeafChildren { get; set; }
+        public virtual List<DtoItemReduced> NodeChildren { get; set; }
 
         public DtoNode()
             : base()
         {
-            Children = new List<int>();
+            LeafChildren = new List<DtoLeaf>();
+            NodeChildren = new List<DtoItemReduced>();
         }
 
         public override Item ToDomainObject(Node parent)
@@ -24,7 +26,6 @@ namespace Coevolution.Models
             {
                 Key = this.Key,
                 Parent = parent,
-                Date = this.Date,
                 Deleted = this.Deleted,
                 Notes = DtoNote.DtoNoteListToDomainObjecs(this.Notes),
                 //CreatedOn = DateTime.Parse(this.CreatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind),
