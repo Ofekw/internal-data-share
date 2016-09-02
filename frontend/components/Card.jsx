@@ -9,6 +9,7 @@ class CardExampleExpandable extends React.Component {
   constructor(props) {
     super(props);
     this.children = [];
+    this.title = '';
   }
 
   createNew = () => {
@@ -17,11 +18,12 @@ class CardExampleExpandable extends React.Component {
   }
 
   render() {
-    if(this.props.leafChildren) {
-      for (var child in this.props.leafChildren) {
-        if (this.props.leafChildren.hasOwnProperty(child)) {
-          const childElement = this.props.leafChildren[child];
-          console.log(this.props.leafChildren[child]);
+    if(this.props.cardData) {
+      this.title = this.props.cardData.Key;
+      const leafChildren = this.props.cardData.LeafChildren;
+      for (var child in leafChildren) {
+        if (leafChildren.hasOwnProperty(child)) {
+          const childElement = leafChildren[child];
           this.children.push(
             <NormalModeField key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
           );
@@ -32,8 +34,7 @@ class CardExampleExpandable extends React.Component {
     return (
       <Card>
         <CardHeader
-          title="ABC Bank VM_1"
-          subtitle="Subtitle?"
+          title={this.title}
           actAsExpander={false}
           showExpandableButton={false}
         />

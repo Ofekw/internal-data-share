@@ -25,7 +25,7 @@ class App extends React.Component {
       // console.log(result);
       // result = JSON.parse(result);
       this.setState({
-        leafChildren: result.LeafChildren
+        cardData: result
       });
     }.bind(this));
   }
@@ -33,7 +33,7 @@ class App extends React.Component {
   render() {
     return (<div>
       <TopBar/>
-      <Card leafChildren={this.state ? this.state.leafChildren : []} />
+      <Card cardData={this.state ? this.state.cardData : []} />
     </div>);
   }
 }
