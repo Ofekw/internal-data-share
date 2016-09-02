@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -24,9 +25,22 @@ namespace UnitTestProject1
         [TestInitialize]
         public void Setup()
         {
+            using (var db = new ModelContext())
+            {
+                db.Items.RemoveRange(db.Items);
+                db.Labels.RemoveRange(db.Labels);
+                db.Notes.RemoveRange(db.Notes);
+                db.SaveChanges();
+            }
+
             var two = typeof(ItemsController).Assembly;
             config = new HttpSelfHostConfiguration("http://localhost:55426");
-            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{id}", new { id = RouteParameter.Optional });
+            config.MapHttpAttributeRoutes();
+            config.Routes.MapHttpRoute(
+                name: "DefaultApi",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
             server = new HttpSelfHostServer(config);
             client = new HttpClient();
             server.OpenAsync().Wait();
@@ -43,19 +57,9 @@ namespace UnitTestProject1
         [TestMethod]
         public void TestPost()
         {
-            var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestPost!\"}";
+            var requestJson = "{\"Type\": \"node\",\"key\":\"Object to created by TestPost!\"}";
 
-            var pattern = "^\\{\"Children\":\\[\\],\"Id\":([0-9]*),"
-                            + "\"Key\":\"Object to created by TestPost!\","
-                            + "\"Parent\":null,"
-                            + "\"Date\":.*,"
-                            + "\"Deleted\":false,"
-                            + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\],"
-                            + "\"CreatedOn\":\".*\","
-                            + "\"UpdatedOn\":\".*\"\\}$";
-
-            HttpRequestMessage request = PostItem(jsonString);
+            HttpRequestMessage request = PostItem(requestJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -63,11 +67,19 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
-                Assert.AreEqual(response.StatusCode, HttpStatusCode.Created);
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                var matchObject = Regex.Match(result, pattern);
-
-                Assert.AreNotEqual(matchObject.Value, String.Empty);
+                MatchOnce(result, "\"Id\": *[0-9]+");
+                MatchOnce(result, "\"Key\": *\"Object to created by TestPost!\"");
+                MatchOnce(result, "\"Type\": *\"node\"");
+                MatchOnce(result, "\"Parent\": *null");
+                MatchOnce(result, "\"Deleted\": *false");
+                MatchOnce(result, "\"Labels\": *\\[\\]");
+                MatchOnce(result, "\"Notes\": *\\[\\]");
+                MatchOnce(result, "\"LeafChildren\": *\\[\\]");
+                MatchOnce(result, "\"NodeChildren\": *\\[\\]");
+                MatchOnce(result, "\"CreatedOn\": *\"[0123456789\\-T:]+\"");
+                MatchOnce(result, "\"UpdatedOn\": *\"[0123456789\\-T:]+\"");
             }
 
         }
@@ -79,15 +91,7 @@ namespace UnitTestProject1
 
             var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestGetOne!\"}";
 
-            var pattern = "^\\{\"Children\":\\[\\],\"Id\":([0-9]*),"
-                            + "\"Key\":\"Object to created by TestGetOne!\","
-                            + "\"Parent\":null,"
-                            + "\"Date\":.*,"
-                            + "\"Deleted\":false,"
-                            + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\],"
-                            + "\"CreatedOn\":\".*\","
-                            + "\"UpdatedOn\":\".*\"\\}$";
+            String firstResult;
 
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
@@ -95,15 +99,11 @@ namespace UnitTestProject1
             {
                 var task = response.Content.ReadAsStringAsync();
                 task.Wait();
-                var result = task.Result;
+                firstResult = task.Result;
 
-                Assert.AreEqual(response.StatusCode, HttpStatusCode.Created);
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                var matchObject = Regex.Match(result, pattern);
-
-                Assert.AreNotEqual(matchObject.Value, String.Empty);
-
-                createdId = int.Parse(matchObject.Groups[1].Value);
+                createdId = int.Parse(Regex.Match(firstResult, "\"Id\": *([0-9]+)").Groups[1].Value);
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
@@ -112,15 +112,11 @@ namespace UnitTestProject1
             {
                 var task = response.Content.ReadAsStringAsync();
                 task.Wait();
-                var result = task.Result;
+                var secondResult = task.Result;
 
-                Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-                var matchObject = Regex.Match(result, pattern);
-
-                Assert.AreNotEqual(matchObject.Value, String.Empty);
-
-                Assert.AreEqual(int.Parse(matchObject.Groups[1].Value), createdId);
+                Assert.AreEqual(firstResult, secondResult);
             }
 
         }
@@ -132,16 +128,6 @@ namespace UnitTestProject1
 
             var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestGetAll!\"}";
 
-            var patternOne = "^\\{\"Children\":\\[\\],\"Id\":([0-9]*),"
-                            + "\"Key\":\"Object to created by TestGetAll!\","
-                            + "\"Parent\":null,"
-                            + "\"Date\":.*,"
-                            + "\"Deleted\":false,"
-                            + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\],"
-                            + "\"CreatedOn\":\".*\","
-                            + "\"UpdatedOn\":\".*\"\\}$";
-
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -150,26 +136,12 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
-                Assert.AreEqual(response.StatusCode, HttpStatusCode.Created);
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                var matchObject = Regex.Match(result, patternOne);
-
-                Assert.AreNotEqual(matchObject.Value, String.Empty);
-
-                createdId = int.Parse(matchObject.Groups[1].Value);
+                createdId = int.Parse(Regex.Match(result, "\"Id\": *([0-9]+)").Groups[1].Value);
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
-			
-            var patternTwo = "\\{\"Children\":\\[\\],\"Id\":" + createdId + ","
-                            + "\"Key\":\"Object to created by TestGetAll!\","
-                            + "\"Parent\":null,"
-                            + "\"Date\":.*,"
-                            + "\"Deleted\":false,"
-                            + "\"Labels\":\\[\\],"
-                            + "\"Notes\":\\[\\],"
-                            + "\"CreatedOn\":\".*\","
-                            + "\"UpdatedOn\":\".*\"\\}";
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -178,11 +150,13 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
-                Assert.AreEqual(response.StatusCode, HttpStatusCode.OK);
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
-                var matchObject = Regex.Match(result, patternTwo);
+                MatchOnce(result, "^\\[");
+                MatchOnce(result, "\"Id\": *" + createdId);
+                MatchOnce(result, "\"Key\": *\"Object to created by TestGetAll!\"");
+                MatchOnce(result, "\\]$");
 
-                Assert.AreNotEqual(matchObject.Value, String.Empty);
             }
 
         }
@@ -194,6 +168,11 @@ namespace UnitTestProject1
             content.Headers.ContentType = new MediaTypeHeaderValue("text/json");
             request.Content = content;
             return request;
+        }
+
+        private void MatchOnce(String phrase, String regex)
+        {
+            Assert.AreEqual(1, Regex.Matches(phrase, regex).Count);
         }
     }
 }
