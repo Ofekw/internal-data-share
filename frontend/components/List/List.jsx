@@ -4,6 +4,9 @@ import Subheader from 'material-ui/Subheader';
 import Delete from 'material-ui/svg-icons/action/delete';
 import Undo from 'material-ui/svg-icons/content/undo';
 import RaisedButton from 'material-ui/RaisedButton';
+import $ from 'jquery';
+import config from '../../config.js';
+
 
 var ListComponent = React.createClass({
 
@@ -34,7 +37,11 @@ var ListComponent = React.createClass({
 			float: 'right',
 			marginTop: 5 
 		};
-
+		if (!this.props.editable && this.state.delete.length !== 0){
+			this.state.delete.forEach(function(e){
+				$.delete(config.apiHost+'items/' + e);
+			})
+		}
 		return (
 			<List>
 				<Subheader>Children Nodes</Subheader>

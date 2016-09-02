@@ -17,29 +17,35 @@ var ListContainer = React.createClass({
 		this.state.childNodes = ajax call get children of (this.props.parent) */
 
 	getChildrenNodes: function(){
+		var state = {
+			nodes:[]
+		}
 		if(!this.props.parent){
 			var self = this;
-			$.get(config.apiHost+'GetApiItems.json', function (result) {
+			$.get(config.apiHost+'items', function (result) {
 				self.setState({nodes : result});
+				console.log(result);
 			});
 		}else{
 			var self = this;
-			$.get(config.apiHost+'GetApiItemsById.json', function (result) {
-				//+self.props.parent.Id
+			console.log(self.props.parent.Id);
+			$.get(config.apiHost+'items/' +self.props.parent.Id, function (result) {
+				console.log(result);
 				self.setState({nodes:result.NodeChildren});
 			});
 		}
+		return state;
 	},
 
 	getInitialState: function() {
-		return {
-			nodes:[]
-		}	
+		return this.getChildrenNodes();
 	},
 
 	handleClick: function (item){
 		var self = this;
-		this.props.handleClick(item);
+		this.props.handleClick(item,function(){
+			self.getChildrenNodes();
+		});
 	},
 
 	handleTouchTap: function(){
@@ -47,17 +53,34 @@ var ListContainer = React.createClass({
 		if (text === ""){
 			this.setState({ errors: "This field is required"});
 		}
-		else{
-			//TODO Post new field
+		else {
+			var self = this;
+			var data = {
+				Key: text,
+				Type: 'node'
+			};
+			if (this.props.parent){
+				data.Parent = this.props.parent.Id;
+			}
+			$.post({
+				url: config.apiHost + 'items',
+				data: JSON.stringify(data),
+				success: function(result) {
+					self.handleClick(result);
+				},
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
 		}
 	},
 
 	render: function(){
-		this.getChildrenNodes();
+		//this.getChildrenNodes();
 
 		var textFieldStyle = {
 			marginLeft: 10,
-			width: "90%"
+			width: '90%'
 		};
 		var iconButtonStyle = {
 			float: 'right'

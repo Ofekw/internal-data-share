@@ -19,7 +19,9 @@ var ParentContainer = React.createClass({
 
 	handleClick: function(item,cb) {
 		var self = this;
-		this.setState({parent: item});
+		this.setState({parent: item},function(){
+			cb();
+		});
 		this.state.breadcrumbs.push({
 			id : item.Id,
 			name: item.Key
