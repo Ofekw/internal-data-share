@@ -51,10 +51,10 @@ namespace Coevolution.Migrations
                 }
             );
             context.SaveChanges();
-            var bankLabel = context.Labels.Find(1);
-            var passwordLabel = context.Labels.Find(3);
-            var outOfDateLabel = context.Labels.Find(4);
-            var vmLabel = context.Labels.Find(2);
+            var bankLabel = context.Labels.First(x => x.Content.Equals("Bank"));
+            var passwordLabel = context.Labels.First(x=>x.Content.Equals("Password"));
+            var outOfDateLabel = context.Labels.First(x=>x.Content.Equals("Out of Date"));
+            var vmLabel = context.Labels.First(x=>x.Content.Equals("Virtual Machine"));
 
             context.Items.AddOrUpdate(
                 n => n.Id,

@@ -494,7 +494,7 @@
             The Id of the Item to be retrieved
             </param>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,Coevolution.Models.Item)">
+        <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,Coevolution.Models.DtoItem)">
             <summary>
             Update an Item with a specified Id
             </summary>
@@ -579,27 +579,6 @@
         <member name="P:Coevolution.Models.DtoItemReduced.Labels">
             <summary>
             List of Item labels
-            </summary>
-        </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetSearchKeys(System.String)">
-            <summary>
-            Search all items keys for query string
-            Returns an array of ids of the nodes containing the string
-            </summary>
-            <param name="query">The string being searched for</param>
-            
-        </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetSearchValues(System.String)">
-            <summary>
-            Search all items values for query string
-            Returns an array of ids of the nodes containing the string
-            </summary>
-            <param name="query">The string being searched for</param>
-            
-        </member>
-        <member name="M:Coevolution.Controllers.LabelsController.GetLabels">
-            <summary>
-            Get a list of all Labels
             </summary>
         </member>
         <member name="T:Coevolution.Models.DtoNote">
