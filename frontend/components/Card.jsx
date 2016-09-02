@@ -3,7 +3,7 @@ import $ from 'jquery';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import NormalModeField from './NormalModeField.jsx';
+import ModalField from './ModalField.jsx';
 
 class CardExampleExpandable extends React.Component {
   constructor(props) {
@@ -13,7 +13,7 @@ class CardExampleExpandable extends React.Component {
   }
 
   createNew = () => {
-    this.children.push(<NormalModeField editable="true" key={Date.now()}/>);
+    this.children.push(<ModalField editable="true" key={Date.now()}/>);
     this.forceUpdate();
   }
 
@@ -25,7 +25,7 @@ class CardExampleExpandable extends React.Component {
         if (leafChildren.hasOwnProperty(child)) {
           const childElement = leafChildren[child];
           this.children.push(
-            <NormalModeField key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
+            <ModalField key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
           );
         }
       }
