@@ -17,32 +17,29 @@ var ListContainer = React.createClass({
 		this.state.childNodes = ajax call get children of (this.props.parent) */
 
 	getChildrenNodes: function(){
-		var state = {
-			nodes : []
-		};
 		if(!this.props.parent){
 			var self = this;
-			$.get(config.apiHost+'/api/items', function (result) {
+			$.get(config.apiHost+'GetApiItems.json', function (result) {
 				self.setState({nodes : result});
 			});
 		}else{
 			var self = this;
-			$.get(config.apiHost+'/api/items/'+self.props.parent.Id, function (result) {
-				self.setState({nodes:result.Children});
+			$.get(config.apiHost+'GetApiItemsById.json', function (result) {
+				//+self.props.parent.Id
+				self.setState({nodes:result.NodeChildren});
 			});
 		}
-		return state;
 	},
 
 	getInitialState: function() {
-		return this.getChildrenNodes();
+		return {
+			nodes:[]
+		}	
 	},
 
 	handleClick: function (item){
 		var self = this;
-		this.props.handleClick(item,function(){
-			self.getChildrenNodes();
-		});
+		this.props.handleClick(item);
 	},
 
 	handleTouchTap: function(){
@@ -56,6 +53,8 @@ var ListContainer = React.createClass({
 	},
 
 	render: function(){
+		this.getChildrenNodes();
+
 		var textFieldStyle = {
 			marginLeft: 10,
 			width: "90%"

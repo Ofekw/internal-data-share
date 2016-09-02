@@ -18,15 +18,12 @@ var ParentContainer = React.createClass({
 
 	handleClick: function(item,cb) {
 		var self = this;
-		this.setState({parent: item},function(){
-			cb();
-		});
+		this.setState({parent: item});
 		this.state.breadcrumbs.push({
 			id : item.Id,
 			name: item.Key
 		})
 	},
-
 
 	render: function(){
 		return (
@@ -51,7 +48,7 @@ var ParentContainer = React.createClass({
 			}
 		}
 		
-		var parent = (this.state.breadcrumbs.length ==1) ? null : this.state.breadcrumbs[this.state.breadcrumbs.length];
+		var parent = (this.state.breadcrumbs.length ==1) ? null : this.state.breadcrumbs[this.state.breadcrumbs.length -1];
 		this.setState({parent: parent})
 	}
 });
