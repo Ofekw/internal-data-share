@@ -25,7 +25,6 @@ namespace Coevolution.Models
             {
                 Key = this.Key,
                 Parent = parent,
-                Date = this.Date,
                 Deleted = this.Deleted,
                 Value = this.Value,
                 Notes = DtoNote.DtoNoteListToDomainObjecs(this.Notes),

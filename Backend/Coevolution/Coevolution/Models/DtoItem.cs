@@ -23,13 +23,13 @@ namespace Coevolution.Models
         /// </summary>
         public string Key { get; set; }
         /// <summary>
+        /// Whether the item is a node or a leaf
+        /// </summary>
+        public string Type { get; set; }
+        /// <summary>
         /// Id of the parent Item
         /// </summary>
         public virtual int? Parent { get; set; }
-        /// <summary>
-        /// Daet of last modification of the Item in epoch
-        /// </summary>
-        public long Date { get; set; }
         /// <summary>
         /// Flag to represent "deleted" old/stale data
         /// </summary>

@@ -22,17 +22,17 @@ namespace Coevolution.Controllers
         /// Get a list of all current Items
         /// </summary>
         [HttpGet]
-        public List<DtoItem> GetItems(String parentId)
+        public List<DtoItemReduced> GetItems()
         {
 
-            var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).Where(x => x.Parent.Id.ToString().Equals(parentId.ToString())).ToList();
+            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent.Id == null).ToList();
             if (dbItems != null)
             {
-                return dbItems.Select(item => item.ToDto()).ToList();
+                return dbItems.Select(item => item.ToDtoReduced()).ToList();
             }
             else
             {
-                return new List<DtoItem>();
+                return new List<DtoItemReduced>();
             }
         }
 

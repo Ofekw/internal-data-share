@@ -24,8 +24,8 @@ namespace Coevolution.Models
             {
                 Id = this.Id,
                 Key = this.Key,
+                Type = "leaf",
                 Parent = this.Parent.Id,
-                Date = this.Date,
                 Deleted = this.Deleted,
                 Labels = this.Labels.Select(label => label.Content).ToList(),
                 Notes = DtoNote.NoteListToDtos(this.Notes),
