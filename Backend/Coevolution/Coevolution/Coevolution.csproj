@@ -172,12 +172,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201608260346003_migration2.cs" />
-    <Compile Include="Migrations\201608260346003_migration2.Designer.cs">
-      <DependentUpon>201608260346003_migration2.cs</DependentUpon>
+    <Compile Include="Migrations\201609012349359_InitialMigration.cs" />
+    <Compile Include="Migrations\201609012349359_InitialMigration.Designer.cs">
+      <DependentUpon>201609012349359_InitialMigration.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\DtoNote.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\DtoItemReduced.cs" />
+    <Compile Include="Models\DtoNote.cs" />
     <Compile Include="Models\JsonCreationConverter.cs" />
     <Compile Include="Models\DtoItem.cs" />
     <Compile Include="Models\DtoLeaf.cs" />
@@ -251,8 +252,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608260346003_migration2.resx">
-      <DependentUpon>201608260346003_migration2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201609012349359_InitialMigration.resx">
+      <DependentUpon>201609012349359_InitialMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
