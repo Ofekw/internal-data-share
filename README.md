@@ -8,6 +8,8 @@ Data sharing solution for Fiserv
 
 The backend is self contained and currently hosted on an azure server. There are not install requirements. Once the frontend is built, It will automatically interface with the backend server.
 
+If you wish to run the backend standalone, the internal-data-share repo can be cloned (master branch), the solution opened in visual studio, then the project launched. HTTP requests can then be sent to the documented API's.
+
 ### Frontend
 
 #### Build for Deployment
