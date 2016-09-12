@@ -6,7 +6,7 @@ Data sharing solution for Fiserv
 
 ### Backend
 
-TODO!
+The backend is self contained and currently hosted on an azure server. There are not install requirements. Once the frontend is built, It will automatically interface with the backend server.
 
 ### Frontend
 
