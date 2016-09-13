@@ -9,6 +9,7 @@ class CardExampleExpandable extends React.Component {
     super(props);
     this.children = [];
     this.title = '';
+    this.id = -1;
   }
 
   createNew = () => {
@@ -17,9 +18,16 @@ class CardExampleExpandable extends React.Component {
   }
 
   render() {
+    if(this.props.hide){
+      return <div></div>
+    }
     if(this.props.cardData) {
+      if(this.props.cardData.Id !== this.id){
+        this.children = [];
+      }
       this.title = this.props.cardData.Key;
       const leafChildren = this.props.cardData.LeafChildren;
+      //debugger;
       for (var child in leafChildren) {
         if (leafChildren.hasOwnProperty(child)) {
           const childElement = leafChildren[child];
