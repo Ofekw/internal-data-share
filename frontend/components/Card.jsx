@@ -14,6 +14,7 @@ class CardExampleExpandable extends React.Component {
 
   createNew = () => {
     this.children.push(<ModalField editable="true" key={Date.now()}/>);
+    this.id = this.props.cardData.Id;
     this.forceUpdate();
   }
 
@@ -27,9 +28,8 @@ class CardExampleExpandable extends React.Component {
       }
       this.title = this.props.cardData.Key;
       const leafChildren = this.props.cardData.LeafChildren;
-      //debugger;
       for (var child in leafChildren) {
-        if (leafChildren.hasOwnProperty(child)) {
+        if (leafChildren.hasOwnProperty(child) && this.props.cardData.Id !== this.id) {
           const childElement = leafChildren[child];
           this.children.push(
             <ModalField editable={this.props.editable} key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
@@ -47,6 +47,7 @@ class CardExampleExpandable extends React.Component {
         />
         <List ref="theList">
           {this.children.map(function(child, index) {
+            console.log(child);
             return child;
           })}
         </List>

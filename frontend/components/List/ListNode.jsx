@@ -1,6 +1,8 @@
 import React from 'react';
 import List from './List.jsx';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import $ from 'jquery';
+import config from '../../config.js';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
