@@ -5,11 +5,12 @@ import FlatButton from 'material-ui/FlatButton';
 import $ from 'jquery';
 import config from '../../config.js';
 
-
-
+// Component that renders the List view and Card view
 var ParentContainer = React.createClass({
 
+	// Makes requests to the database to populate card and list views.
 	getChildrenNodes: function(item,crumbs){
+		// Gets the initial list of Banks
 		if(!item){
 			var self = this;
 			$.get(config.apiHost+'items', function (result) {
@@ -19,7 +20,8 @@ var ParentContainer = React.createClass({
 					self.setState({nodes : result, parent:null});
 				}
 			});
-		}else{
+		// Gets data for a specfic Bank/VM
+		} else {
 			var self = this;
 			$.get(config.apiHost+'items/' +item.Id, function (result) {
 				if(crumbs){
@@ -32,6 +34,7 @@ var ParentContainer = React.createClass({
 		}
 	},
 
+	// Set initial states
 	getInitialState: function() {
 		this.getChildrenNodes();
 		return {
@@ -44,6 +47,7 @@ var ParentContainer = React.createClass({
 		}
 	},
 
+	// Gets data about an item and updates the breadcrumb
 	handleClick: function(item) {
 		this.getChildrenNodes(item);
 		this.state.breadcrumbs.push({
@@ -54,6 +58,7 @@ var ParentContainer = React.createClass({
 	},
 
 	render: function(){
+		//Checks if the card needs to be hidden or not.
 		var cardHide = false;
 		if(!this.state.parent){
 			cardHide = true;
@@ -76,9 +81,12 @@ var ParentContainer = React.createClass({
 		)
 	},
 
+	// Handles click for breadcrumbs
 	breadcrumbClick: function(crumb){ 
+		// Remove items from breadcrumbs list 
 		var index = this.state.breadcrumbs.indexOf(crumb);
 		var newCrumbs = this.state.breadcrumbs.slice(0,index+1);
+		// Gets information about the breadcrumb clicked
 		var parent = (index === 0) ? null : this.state.breadcrumbs[index];
 		this.getChildrenNodes(parent,newCrumbs);
 	}

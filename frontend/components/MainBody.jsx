@@ -6,7 +6,9 @@ import config from '../config.js';
 import CircularProgress from 'material-ui/CircularProgress';
 import ListParentContainer from './List/ParentContainer.jsx';
 
+// Component that sets up a loading page when waiting for initial ajax call?
 var MainBody = React.createClass({
+    // Sets inital state
     getInitialState() {
         return {
             loading: false,
@@ -26,6 +28,7 @@ var MainBody = React.createClass({
         });
      },
 
+    // Ajax call in here
     componentDidMount() {
         this.enableLoadingMode;
     },

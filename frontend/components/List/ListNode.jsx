@@ -8,23 +8,28 @@ import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
 import AddIcon from 'material-ui/svg-icons/content/add-box';
 
+// Component that renders List Items view and ability to add items to the List
 var ListContainer = React.createClass({
 
-
+	// Set up initial state
 	getInitialState: function() {
 		return {};
 	},
 
+	// Tells parent container that a list item has been clicked
 	handleClick: function (item){
 		this.props.handleClick(item);
 	},
 
+	// Handles the new addition of an list item
 	handleTouchTap: function(){
+		// Gets the name of the list item
 		var text = $('#newListField').val();
+		// Show error if no name is provided
 		if (text === ""){
 			this.setState({ errors: "This field is required"});
-		}
-		else {
+		// Collect the data and posts it to the database
+		} else { 
 			var self = this;
 			var data = {
 				Key: text,

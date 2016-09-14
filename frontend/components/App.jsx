@@ -8,8 +8,10 @@ import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import Card from './Card.jsx'
 
+// Component that renders the top bar and main body
 var App = React.createClass({
 
+	// Tells the body that the edit button has been pressed
 	onGlobalEdit: function(){
 		if (this.state.editable){
 			this.setState({editable: false});
@@ -19,6 +21,7 @@ var App = React.createClass({
 
 	},
 
+	// Set initial state
 	getInitialState: function(){
 		return {
 			editable: false

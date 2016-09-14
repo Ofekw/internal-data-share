@@ -47,7 +47,6 @@ class CardExampleExpandable extends React.Component {
         />
         <List ref="theList">
           {this.children.map(function(child, index) {
-            console.log(child);
             return child;
           })}
         </List>
