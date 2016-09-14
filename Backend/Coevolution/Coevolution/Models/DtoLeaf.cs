@@ -6,6 +6,7 @@ using System.Web;
 
 namespace Coevolution.Models
 {
+    //DTO for leaf items
     public class DtoLeaf : DtoItem
     {
         /// <summary>
@@ -19,6 +20,7 @@ namespace Coevolution.Models
 
         }
 
+        //Dto to domain object
         public override Item ToDomainObject(Node parent)
         {
             var newLeaf = new Leaf()

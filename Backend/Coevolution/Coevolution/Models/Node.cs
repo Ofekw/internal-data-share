@@ -5,6 +5,7 @@ using System.Web;
 
 namespace Coevolution.Models
 {
+    //Node object, an item with child items
     public class Node : Item
     {
         public virtual List<Item> Children { get; set; }
@@ -14,6 +15,7 @@ namespace Coevolution.Models
             Children = new List<Item>();
         }
 
+        //Object to DTO
         public override DtoItem ToDto()
         {
             return new DtoNode()

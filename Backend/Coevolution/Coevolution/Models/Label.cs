@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Coevolution.Models
 {
+    //Label object, used as tags to organise items
     public class Label
     {
         [Key]

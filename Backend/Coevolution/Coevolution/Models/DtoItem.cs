@@ -57,10 +57,12 @@ namespace Coevolution.Models
             Notes = new List<DtoNote>();
         }
 
+        //Convert DTO to domain object
         public virtual Item ToDomainObject(Node parent){
             throw new NotImplementedException("ToDomainObject should only be called on subclasses.");
         }
 
+        //Converter for items depending on node or leaf type
         private class DtoItemJsonConverter : JsonCreationConverter<DtoItem>
         {
             protected override DtoItem Create(Type objectType, JObject jObject)
