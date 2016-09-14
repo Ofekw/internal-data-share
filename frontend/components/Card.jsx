@@ -52,9 +52,9 @@ class CardExampleExpandable extends React.Component {
         </List>
           <CardActions>
           {(() => {
-            if (this.props.editable){
+            if (this.props.editable) {
               return <FlatButton label="New" onTouchTap={this.createNew}/>
-            }            
+            }
           })()}
           </CardActions>
       </Card>
