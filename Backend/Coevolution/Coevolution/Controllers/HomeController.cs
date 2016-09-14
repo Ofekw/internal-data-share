@@ -11,12 +11,10 @@ namespace Coevolution.Controllers
     {
         public ActionResult Index()
         {
+            //Set the home page to be the compiled react page
             ViewBag.Title = "Home Page";
-
-            //return View();
             string path = Server.MapPath("~");
             path = Path.GetFullPath(Path.Combine(path, @"..\..\..\Frontend\"));
-
             return File(path + "index.html", "text/html");
         }
     }

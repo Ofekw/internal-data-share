@@ -5,6 +5,7 @@ using System.Web;
 
 namespace Coevolution.Models
 {
+    //Leaf object, an item that does not have any children and has a value
     public class Leaf : Item
     {
         public string Value { get; set; }
@@ -14,6 +15,7 @@ namespace Coevolution.Models
 
         }
 
+        //Object to DTO
         public override DtoItem ToDto()
         {
             if (this.Parent == null)
@@ -24,8 +26,8 @@ namespace Coevolution.Models
             {
                 Id = this.Id,
                 Key = this.Key,
+                Type = "leaf",
                 Parent = this.Parent.Id,
-                Date = this.Date,
                 Deleted = this.Deleted,
                 Labels = this.Labels.Select(label => label.Content).ToList(),
                 Notes = DtoNote.NoteListToDtos(this.Notes),

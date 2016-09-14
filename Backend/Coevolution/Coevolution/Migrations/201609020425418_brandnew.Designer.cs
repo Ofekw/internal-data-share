@@ -7,13 +7,13 @@ namespace Coevolution.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class migration2 : IMigrationMetadata
+    public sealed partial class brandnew : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(migration2));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(brandnew));
         
         string IMigrationMetadata.Id
         {
-            get { return "201608260346003_migration2"; }
+            get { return "201609020425418_brandnew"; }
         }
         
         string IMigrationMetadata.Source

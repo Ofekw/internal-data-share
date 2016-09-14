@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import $ from 'jquery';
 import Clipboard from 'clipboard-js';
+import config from '../config.js';
 
 // Icons
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
@@ -36,7 +37,7 @@ const clean = 'clean';
 const dirty = 'dirty';
 const deleted = 'deleted';
 
-
+// Key value text field that can be toggled between view and edit modes.
 class ModalField extends React.Component {
   constructor(props) {
     super(props);
@@ -73,31 +74,39 @@ class ModalField extends React.Component {
 
   handleKeyChange = (event) => {
     this.key = event.target.value;
+
+    // Set state to dirty so we know to save this change.
     this.setState({dirty: dirty});
   }
 
   handleValueChange = (event) => {
     this.value = event.target.value;
+
+    // Set state to dirty so we know to save this change.
     this.setState({dirty: dirty});
   }
 
   toggleDeleted = (event) => {
     if (this.state.dirty !== deleted) {
+      // Set state to deleted so we know to save this change.
       this.setState({dirty: deleted});
     } else {
+      // Undelete this node
       this.setState({dirty: clean});
     }
   }
 
   copyToClipboard = () => {
+    // Copies the value of this key-value to the clipboard, will fail on unsupported browsers.
     Clipboard.copy(this.value).then(
-      function(){console.log("success");},
-      function(err){console.log("failure", err);}
+      function() {console.log("success");},
+      function(err) {console.log("failure", err);}
     );
   }
 
   render() {
-    if (this.state.editable) {
+    if (this.props.editable) {
+      // Render editable field
       return (
         <ListItem>
           <TextField
@@ -124,16 +133,19 @@ class ModalField extends React.Component {
         </ListItem>
       );
     } else {
+      // Render viewable field
       if (this.state.dirty === dirty) {
+        // Update on server if changes have been made.
         this.setState({dirty: clean});
-        this.serverRequest = $.put(config.apiHost + 'Items/' + this.props.key, function (result) {
+        this.serverRequest = $.put(config.apiHost + 'Items/' + this.key, function (result) {
           if (result.status !== 200){
             console.error(result);
           }
         });
       } else if (this.state.dirty === deleted) {
+        // Send delete request if deleted.
         this.setState({dirty: clean});
-        this.serverRequest = $.delete(config.apiHost + 'Items/' + this.props.key, function (result) {
+        this.serverRequest = $.delete(config.apiHost + 'Items/' + this.key, function (result) {
           if (result.status !== 200){
             console.error(result);
           }

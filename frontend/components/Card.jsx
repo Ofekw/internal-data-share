@@ -4,6 +4,7 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import ModalField from './ModalField.jsx';
 
+// Card for displaying information for an environemnt.
 class CardExampleExpandable extends React.Component {
   constructor(props) {
     super(props);
@@ -12,6 +13,7 @@ class CardExampleExpandable extends React.Component {
     this.id = -1;
   }
 
+  // Add a new child.
   createNew = () => {
     this.children.push(<ModalField editable="true" key={Date.now()}/>);
     this.id = this.props.cardData.Id;
@@ -29,6 +31,7 @@ class CardExampleExpandable extends React.Component {
       this.title = this.props.cardData.Key;
       const leafChildren = this.props.cardData.LeafChildren;
       for (var child in leafChildren) {
+        // Add all the children.
         if (leafChildren.hasOwnProperty(child) && this.props.cardData.Id !== this.id) {
           const childElement = leafChildren[child];
           this.children.push(
@@ -46,15 +49,17 @@ class CardExampleExpandable extends React.Component {
           showExpandableButton={false}
         />
         <List ref="theList">
+          // Add all the children.
           {this.children.map(function(child, index) {
             return child;
           })}
         </List>
           <CardActions>
+          // Immediately invoked function to add "New" button if in editable mode.
           {(() => {
-            if (this.props.editable){
+            if (this.props.editable) {
               return <FlatButton label="New" onTouchTap={this.createNew}/>
-            }            
+            }
           })()}
           </CardActions>
       </Card>

@@ -6,13 +6,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Coevolution.Models
 {
+    //Item object, superclass for Nodes and Leafs
     public class Item
     {
         [Key]
         public int Id { get; set; }
         public string Key { get; set; }
         public virtual Item Parent { get; set; }
-        public long Date { get; set; }
         public bool Deleted { get; set; }
 
         public List<Label> Labels { get; set; }
@@ -40,8 +40,20 @@ namespace Coevolution.Models
             return this;
         }
 
-        public virtual DtoItem ToDto(){
+        public virtual DtoItem ToDto()
+        {
             throw new NotImplementedException("ToDto should only be called on subclasses.");
+        }
+
+        //Object to reduced DTO
+        public DtoItemReduced ToDtoReduced()
+        {
+            return new DtoItemReduced()
+            {
+                Id = this.Id,
+                Key = this.Key,
+                Labels = this.Labels.Select(label => label.Content).ToList(),
+            };
         }
     }
 }

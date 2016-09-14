@@ -11,24 +11,33 @@ using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Coevolution.Models;
+using System.Web.Http.Cors;
 
 namespace Coevolution.Controllers
 {
+    //Enable Cross Origin Resource Sharing for local development
+    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
     public class ItemsController : ApiController
     {
         private ModelContext db = new ModelContext();
 
         // GET: api/Items
         /// <summary>
-        /// Get a list of all current Items
+        /// Get a list of all top level Items
         /// </summary>
-        public List<DtoItem> GetItems()
+        [HttpGet]
+        public List<DtoItemReduced> GetItems()
         {
 
-            var dbItems = db.Items.Include("Labels").Include("Notes").Where(x => x.Deleted == false).ToList().Select(item => item.ToDto()).ToList();
-
-
-            return dbItems;
+            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent == null).ToList();
+            if (dbItems != null)
+            {
+                return dbItems.Select(item => item.ToDtoReduced()).ToList();
+            }
+            else
+            {
+                return new List<DtoItemReduced>();
+            }
         }
 
         // GET: api/Items/5
@@ -47,110 +56,47 @@ namespace Coevolution.Controllers
                 return NotFound();
             }
 
+            //Return Node DTO if item is a node
+            //This includes that nodes children
+            if(item is Node)
+            {
+                Node nodeItem = (Node)item;
+                nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id).ToList();
+                return Ok(nodeItem.ToDto());
+            }
+
             var dtoItem = item.ToDto();
 
             return Ok(dtoItem);
         }
 
+        // PUT: api/Items/5
         /// <summary>
         /// Update an Item with a specified Id
         /// </summary>
-        // PUT: api/Items/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutItem(int id, Item item)
+        public IHttpActionResult PutItem(int id, DtoItem dtoItem)
         {
+            //Check dto received is valid
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != item.Id)
+            //Check id matches
+            if (id != dtoItem.Id)
             {
                 return BadRequest();
             }
-            item.Updated();
-            db.Entry(item).State = EntityState.Modified;
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        /// <summary>
-        /// Add a note to an existing Item
-        /// </summary>
-        // PUT: api/Items/5?noteContent=NewNote
-        [ResponseType(typeof(int))]
-        public IHttpActionResult PutItem(int id, String noteContent)
-        {
-            Note note = new Note();
-            note.Content = noteContent;
-
+            //Get the itemfrom the db
             Item item = db.Items.Find(id);
             if (item == null)
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
-            item.Notes.Add(note);
-            db.SaveChanges();
-            return Ok(note.Id);
-        }
-        
-        /// <summary>
-        /// Add a label to an existing Item
-        /// </summary>
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutItem(int id, int labelId)
-        {
-            Item item = db.Items.Include("Labels").First(u => u.Id == id);
-            if (item == null)
-            {
-                return StatusCode(HttpStatusCode.NotFound);
-            }
 
-            Label label = db.Labels.Find(labelId);
-            if (label == null)
-            {
-                return StatusCode(HttpStatusCode.NotFound);
-            }
-
-            if (item.Labels.Contains(label))
-            {
-                return StatusCode(HttpStatusCode.NotFound);
-            }
-            item.Labels.Add(label);
-
-            db.SaveChanges();
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-
-        /// <summary>
-        /// Add a new Item to the database
-        /// </summary>
-        // POST: api/Items
-        [ResponseType(typeof(DtoItem))]
-        public IHttpActionResult PostItem(DtoItem dtoItem)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            //Get the item's parent
             Item potentialParent = null;
             if (dtoItem.Parent != null)
             {
@@ -165,11 +111,126 @@ namespace Coevolution.Controllers
                 }
             }
 
-            Item item;
+            //Convert parent to domain object
+            //Update the item's key to match the parent, and value if the item is a leaf
+            try
+            {
+                Item new_item = dtoItem.ToDomainObject((Node)potentialParent);
 
+                item.Key = new_item.Key;
+                if (dtoItem is DtoLeaf)
+                {
+                    if (!(item is Leaf))
+                    {
+                        throw new System.InvalidOperationException("Item type must match.");
+                    }
+                    ((Leaf)item).Value = ((Leaf)new_item).Value;
+                }
+            }
+            catch (InvalidDataException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+
+            item.Updated();
+            db.SaveChanges();
+            return Ok();
+        }
+
+        // PUT: api/Items/5?noteContent=NewNote
+        /// <summary>
+        /// Add a note to an existing Item
+        /// </summary>
+        [ResponseType(typeof(int))]
+        public IHttpActionResult PutItem(int id, String noteContent)
+        {
+            //Create note from string
+            Note note = new Note();
+            note.Content = noteContent;
+
+            //Find specified item
+            Item item = db.Items.Find(id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            //Add note to item
+            item.Notes.Add(note);
+            db.SaveChanges();
+            return Ok(note.Id);
+        }
+        
+        /// <summary>
+        /// Add a label to an existing Item
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutItem(int id, int labelId)
+        {
+            //Find the item with the given id
+            Item item = db.Items.Include("Labels").First(u => u.Id == id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            //Find the label with the given id
+            Label label = db.Labels.Find(labelId);
+            if (label == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            //Check if already labelled
+            if (item.Labels.Contains(label))
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            //Add the label to the item
+            item.Labels.Add(label);
+            db.SaveChanges();
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+        // POST: api/Items
+        /// <summary>
+        /// Add a new Item to the database
+        /// </summary>
+        [ResponseType(typeof(DtoItem))]
+        public IHttpActionResult PostItem(DtoItem dtoItem)
+        {
+            //Validate supplied DTO
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            //Get parent item
+            Item potentialParent = null;
+            if (dtoItem.Parent != null)
+            {
+                potentialParent = db.Items.Find(dtoItem.Parent);
+                if (potentialParent == null)
+                {
+                    return BadRequest("Can't find parent with specified Id");
+                }
+                if (potentialParent is Leaf)
+                {
+                    throw new System.InvalidOperationException("Parent cannot be Leaf");
+                }
+            }
+
+            //Create item and assign it to its parent as a child
+            Item item;
             try
             {
                 item = dtoItem.ToDomainObject((Node)potentialParent);
+
+                if (potentialParent != null)
+                {
+                    ((Node)potentialParent).Children.Add(item);
+                }
             }
             catch (InvalidDataException exception)
             {
@@ -190,17 +251,30 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(Item))]
         public IHttpActionResult DeleteItem(int id)
         {
+            //Find item with id
             Item item = db.Items.Find(id);
-            item.Updated();
             if (item == null)
             {
                 return NotFound();
             }
 
-            db.Items.Remove(item);
-            db.SaveChanges();
+            //Delete item specified, including children, recursively
+            List<Item> nodes_to_delete = new List<Item>();
+            nodes_to_delete.Add(item);
+            while (nodes_to_delete.Count > 0) {
+                Item current_node = nodes_to_delete.Last();
+                nodes_to_delete.RemoveAt(nodes_to_delete.Count-1);
+                List<Item> children = db.Items.Include("Labels").Include("Notes").Where(x => x.Parent.Id == current_node.Id).ToList();
+                if (children != null)
+                {
+                    nodes_to_delete.AddRange(children);
+                }
+                current_node.Updated();
+                current_node.Deleted = true;
+            }
 
-            return Ok(item);
+            db.SaveChanges();
+            return Ok();
         }
 
         /// <summary>
@@ -209,26 +283,28 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(void))]
         public IHttpActionResult DeleteItem(int id, int labelId)
         {
+            //Find item with id
             Item item = db.Items.Include("Labels").First(u => u.Id == id);
             if (item == null)
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
 
+            //Find label with id
             Label label = db.Labels.Find(labelId);
             if (label == null)
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
 
+            //Remove label from item
             if (!item.Labels.Contains(label))
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
-
             item.Labels.Remove(label);
-            db.SaveChanges();
 
+            db.SaveChanges();
             return Ok(item);
         }
 
@@ -239,24 +315,29 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(Item))]
         public IHttpActionResult DeleteNote(int id, int noteId)
         {
+            //Find item with id
             Item item = db.Items.Include("Notes").First(u => u.Id == id);
             if (item == null)
             {
                 return NotFound();
             }
+
+            //Find note id
             Note note = db.Notes.Find(noteId);
             if (note == null)
             {
                 return NotFound();
             }
+
+            //Remove note from item and delete note
             if (!item.Notes.Contains(note))
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
             item.Notes.Remove(note);
             db.Notes.Remove(note);
-            db.SaveChanges();
 
+            db.SaveChanges();
             return Ok(item);
         }
 
