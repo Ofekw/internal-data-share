@@ -17,5 +17,12 @@ namespace Coevolution.Controllers
             path = Path.GetFullPath("D:/home/site/repository/frontend/");      //(Path.Combine(path, @"..\..\..\Frontend\"));
             return File(path + "index.html", "text/html");
         }
+
+        public ActionResult IndexJs()
+        {
+            string path = Server.MapPath("~");
+            path = Path.GetFullPath("D:/home/site/repository/frontend/");
+            return File(path + "index.js", "text/js");
+        }
     }
 }

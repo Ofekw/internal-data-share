@@ -483,7 +483,7 @@
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.GetItems">
             <summary>
-            Get a list of all current Items
+            Get a list of all top level Items
             </summary>
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.GetItem(System.Int32)">
@@ -677,7 +677,12 @@
         </member>
         <member name="P:Coevolution.Models.DtoNode.LeafChildren">
             <summary>
-            List of Ids that define the child nodes
+            List of Ids that define the child leaf items
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNode.NodeChildren">
+            <summary>
+            List of Ids that define the child node items
             </summary>
         </member>
     </members>
