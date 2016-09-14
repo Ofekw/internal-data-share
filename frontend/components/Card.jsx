@@ -49,14 +49,14 @@ class CardExampleExpandable extends React.Component {
           showExpandableButton={false}
         />
         <List ref="theList">
-          // Add all the children.
           {this.children.map(function(child, index) {
+            // Add all the children.
             return child;
           })}
         </List>
           <CardActions>
-          // Immediately invoked function to add "New" button if in editable mode.
           {(() => {
+            // Immediately invoked function to add "New" button if in editable mode.
             if (this.props.editable) {
               return <FlatButton label="New" onTouchTap={this.createNew}/>
             }
@@ -67,4 +67,5 @@ class CardExampleExpandable extends React.Component {
     );
   }
 }
+
 export default CardExampleExpandable;
