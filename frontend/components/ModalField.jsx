@@ -74,26 +74,33 @@ class ModalField extends React.Component {
 
   handleKeyChange = (event) => {
     this.key = event.target.value;
+
+    // Set state to dirty so we know to save this change.
     this.setState({dirty: dirty});
   }
 
   handleValueChange = (event) => {
     this.value = event.target.value;
+
+    // Set state to dirty so we know to save this change.
     this.setState({dirty: dirty});
   }
 
   toggleDeleted = (event) => {
     if (this.state.dirty !== deleted) {
+      // Set state to deleted so we know to save this change.
       this.setState({dirty: deleted});
     } else {
+      // Undelete this node
       this.setState({dirty: clean});
     }
   }
 
   copyToClipboard = () => {
+    // Copies the value of this key-value to the clipboard, will fail on unsupported browsers.
     Clipboard.copy(this.value).then(
-      function(){console.log("success");},
-      function(err){console.log("failure", err);}
+      function() {console.log("success");},
+      function(err) {console.log("failure", err);}
     );
   }
 
