@@ -5,6 +5,7 @@ using System.Web;
 
 namespace Coevolution.Models
 {
+    //Reduced DTO for item information
     public class DtoItemReduced
     {
         /// <summary>

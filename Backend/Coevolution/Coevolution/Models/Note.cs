@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Coevolution.Models
 {
+    //Note object, used for supplying additional information about an item
     public class Note
     {
         [Key]

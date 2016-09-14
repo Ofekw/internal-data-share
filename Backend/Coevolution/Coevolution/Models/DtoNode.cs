@@ -5,12 +5,17 @@ using System.Web;
 
 namespace Coevolution.Models
 {
+    //DTO for node items
     public class DtoNode : DtoItem
     {
         /// <summary>
-        /// List of Ids that define the child nodes
+        /// List of Ids that define the child leaf items
         /// </summary>
         public virtual List<DtoLeaf> LeafChildren { get; set; }
+
+        /// <summary>
+        /// List of Ids that define the child node items
+        /// </summary>
         public virtual List<DtoItemReduced> NodeChildren { get; set; }
 
         public DtoNode()
@@ -20,6 +25,7 @@ namespace Coevolution.Models
             NodeChildren = new List<DtoItemReduced>();
         }
 
+        //DTO to domain object
         public override Item ToDomainObject(Node parent)
         {
             var newNode = new Node()

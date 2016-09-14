@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Coevolution.Models
 {
+    //Item object, superclass for Nodes and Leafs
     public class Item
     {
         [Key]
@@ -44,6 +45,7 @@ namespace Coevolution.Models
             throw new NotImplementedException("ToDto should only be called on subclasses.");
         }
 
+        //Object to reduced DTO
         public DtoItemReduced ToDtoReduced()
         {
             return new DtoItemReduced()
