@@ -6,6 +6,7 @@ using System.Web;
 
 namespace Coevolution.Models
 {
+    //DTO for leaf items
     public class DtoLeaf : DtoItem
     {
         /// <summary>
@@ -19,13 +20,13 @@ namespace Coevolution.Models
 
         }
 
+        //Dto to domain object
         public override Item ToDomainObject(Node parent)
         {
             var newLeaf = new Leaf()
             {
                 Key = this.Key,
                 Parent = parent,
-                Date = this.Date,
                 Deleted = this.Deleted,
                 Value = this.Value,
                 Notes = DtoNote.DtoNoteListToDomainObjecs(this.Notes),
@@ -38,8 +39,6 @@ namespace Coevolution.Models
             {
                 throw new InvalidDataException("Leaf must have a parent."); // TODO: Throw 4XX rather than 5XX
             }
-
-            parent.Children.Add(newLeaf);
 
             return newLeaf;
         }

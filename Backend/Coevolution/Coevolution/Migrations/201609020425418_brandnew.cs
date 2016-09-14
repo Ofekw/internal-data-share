@@ -3,7 +3,7 @@ namespace Coevolution.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class migration2 : DbMigration
+    public partial class brandnew : DbMigration
     {
         public override void Up()
         {
@@ -13,7 +13,6 @@ namespace Coevolution.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Key = c.String(),
-                        Date = c.Long(nullable: false),
                         Deleted = c.Boolean(nullable: false),
                         CreatedOn = c.DateTime(nullable: false),
                         UpdatedOn = c.DateTime(nullable: false),

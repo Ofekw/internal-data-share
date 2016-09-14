@@ -31,10 +31,9 @@ namespace Coevolution.Models
         public string UpdatedOn { get; set; }
 
         public DtoNote()
-        {
-            
-        }
+        {}
 
+        //DTO to domain object
         public virtual Note ToDomainObject()
         {
             var newNote = new Note()
@@ -47,6 +46,7 @@ namespace Coevolution.Models
             return newNote;
         }
 
+        //List of DTOs to domain objects
         public static List<Note> DtoNoteListToDomainObjecs(List<DtoNote> noteDtos)
         {
             List<Note> notes = new List<Note>();
@@ -57,6 +57,7 @@ namespace Coevolution.Models
             return notes;
         }
 
+        //List of notes to DTOs
         public static List<DtoNote> NoteListToDtos(List<Note> notes)
         {
             List<DtoNote> noteDtos = new List<DtoNote>();
