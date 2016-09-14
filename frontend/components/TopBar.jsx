@@ -42,7 +42,7 @@ const TopBar = React.createClass({
       <div>
         <AppBar
           showMenuIconButton={false}
-          title={<span>Title</span>}
+          title={<span>Coevolution Prototype</span>}
           iconElementRight={
             <div>
               <IconButton label="Search" onTouchTap={ () => this.setState({isOpened: !isOpened}) }> <Search/></IconButton>
