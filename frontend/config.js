@@ -1,5 +1,5 @@
 const config = {
-    apiHost:"https://api.github.com"
+    apiHost:"http://coevolution.azurewebsites.net/api/"
 }
 
 export default config;
