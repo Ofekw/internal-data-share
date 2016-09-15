@@ -15,7 +15,7 @@ class CardExampleExpandable extends React.Component {
 
   // Add a new child.
   createNew = () => {
-    this.children.push(<ModalField editable="true" key={Date.now()}/>);
+    this.children.push(<ModalField editable="true" key={Date.now()} parentId={this.props.cardData.Id}/>);
     this.id = this.props.cardData.Id;
     this.forceUpdate();
   }
@@ -35,7 +35,7 @@ class CardExampleExpandable extends React.Component {
         if (leafChildren.hasOwnProperty(child) && this.props.cardData.Id !== this.id) {
           const childElement = leafChildren[child];
           this.children.push(
-            <ModalField editable={this.props.editable} key={childElement.Id} identifier={childElement.Key} value={childElement.Value} />
+            <ModalField editable={this.props.editable} key={childElement.Id} childId={childElement.Id} identifier={childElement.Key} value={childElement.Value} parentId={this.props.cardData.Id} />
           );
         }
       }
@@ -49,14 +49,14 @@ class CardExampleExpandable extends React.Component {
           showExpandableButton={false}
         />
         <List ref="theList">
-          // Add all the children.
           {this.children.map(function(child, index) {
+            // Add all the children.
             return child;
           })}
         </List>
           <CardActions>
-          // Immediately invoked function to add "New" button if in editable mode.
           {(() => {
+            // Immediately invoked function to add "New" button if in editable mode.
             if (this.props.editable) {
               return <FlatButton label="New" onTouchTap={this.createNew}/>
             }
@@ -67,4 +67,5 @@ class CardExampleExpandable extends React.Component {
     );
   }
 }
+
 export default CardExampleExpandable;
