@@ -26,7 +26,7 @@ var ListContainer = React.createClass({
 		// Gets the name of the list item
 		var text = $('#newListField').val();
 		// Show error if no name is provided
-		if (text === ""){
+		if (text === ""){	
 			this.setState({ errors: "This field is required"});
 		// Collect the data and posts it to the database
 		} else { 
