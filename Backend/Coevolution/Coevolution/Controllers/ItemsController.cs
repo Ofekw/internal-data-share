@@ -67,6 +67,9 @@ namespace Coevolution.Controllers
             if(item is Node)
             {
                 Node nodeItem = (Node)item;
+
+                var tempList = nodeItem.Children;
+
                 nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
