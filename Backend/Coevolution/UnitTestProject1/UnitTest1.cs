@@ -277,6 +277,103 @@ namespace UnitTestProject1
 
         }
 
+        [TestMethod]
+        public void TestDelete()
+        {
+            int parentId;
+            int childId;
+
+            var parentJson = "{\"Type\": \"node\",\"key\":\"Parent to created by TestDelete!\"}";
+
+            String firstResult;
+
+            // Posting the main item
+            HttpRequestMessage request = PostItem(parentJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                firstResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                parentId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            var childJson = "{\"Type\": \"node\",\"key\":\"Child to created by TestDelete!\",\"Parent\":" + parentId + "}";
+
+            // Posting the child item
+            request = PostItem(childJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var secondResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                MatchOnce(secondResult, "\"Parent\":\\s*" + parentId);
+
+                childId = int.Parse(Regex.Match(secondResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            // Getting the main item should tell us it is there
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            // Delete the main item
+            request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost:55426/api/items/" + parentId);
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            // Getting the main item should tell us it isn't there
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            // Getting the child item should tell us it isn't there
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + childId);
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            // Getting the main item should tell us it is there if we ask for deleted items
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId + "?showDeleted=true");
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            // Getting the child item should tell us it is there if we ask for deleted items
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + childId + "?showDeleted=true");
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+
+            // Getting everything should tell us the main item isn't there
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var thirdResult = task.Result;
+                Regex regParent = new Regex("\"Id\":\\s*" + parentId);
+                Assert.IsFalse(regParent.Match(thirdResult).Success);
+
+                Regex regChild = new Regex("\"Id\":\\s*" + childId);
+                Assert.IsFalse(regChild.Match(thirdResult).Success);
+
+            }
+
+            // Getting everything should tell us the main item is there if we ask for deleted items
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items?showDeleted=true");
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var fourthResult = task.Result;
+                Regex reg = new Regex("\"Id\":\\s*" + parentId);
+                Assert.IsTrue(reg.Match(fourthResult).Success);
+
+            }
+        }
+
         private HttpRequestMessage PostItem(String jsonString)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/items");
