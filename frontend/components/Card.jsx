@@ -36,7 +36,7 @@ class CardExampleExpandable extends React.Component {
 
       for (var child in leafChildren) {
         // Add all the children.
-        if (leafChildren.hasOwnProperty(child)) {// && this.props.cardData.Id !== this.id) {
+        if (leafChildren.hasOwnProperty(child)) {
           const childElement = leafChildren[child];
           this.children.push(
             <ModalField new={childElement.new} editable={this.props.editable} key={childElement.Id} childId={childElement.Id} identifier={childElement.Key} value={childElement.Value} parentId={this.props.cardData.Id} />
