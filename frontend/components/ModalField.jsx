@@ -84,7 +84,6 @@ class ModalField extends React.Component {
     this.key = event.target.value;
 
     // Set state to dirty so we know to save this change.
-    this.setState({ dirty: dirty });
     if (this.state.dirty !== neww) {
       this.setState({dirty: dirty});
     }
