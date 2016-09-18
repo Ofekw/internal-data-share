@@ -4,29 +4,48 @@ import IconButton from 'material-ui/IconButton';
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
 import Save from 'material-ui/svg-icons/content/save';
 import Search from 'material-ui/svg-icons/action/search';
-import Collapse from 'react-collapse';
-import SearchInput from 'react-search-input';
-
+import TextField from 'material-ui/TextField';
+import $ from 'jquery';
 
 // Component that renders the Top Bar and contains the Edit Mode and Search
 const TopBar = React.createClass({
 
   // Set up initial state
   getInitialState() {
-    return {isOpened: false};
+    return {
+      isOpened: false,
+      hidden: true,
+    };
   },
 
+  // Handles the new addition of an list item
+	handleTouchTap: function(){
+    if (this.state.hidden === true){
+      this.setState({hidden:false});
+    }
+    else {
+      this.setState({hidden:true});
+    }
+		
+	},
+
   render() {
-    var divStyle = {
-      width: '50%',
-      margin: 'auto'
-    };
+    var searchDiv = {
+      WebkitTransition: 'width 0.4s ease-in-out',
+      transition: 'width 0.4s ease-in-out',
+      MozTransition: 'width 0.4s ease-in-out',
+      OTransition: 'width 0.4s ease-in-out',
+      height: '100%',
+      width: 0,
+      position: 'absolute',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      border: 'none'
+    }
     var searchBox = {
-      marginTop: 10,
-      height: 35,
       fontSize: 25,
-      width: '100%',
-      borderStyle: 'groove'
+      height: '60%',
+      border: 'none'
     }
     //Global Icon variable 
     var icon;
@@ -36,24 +55,31 @@ const TopBar = React.createClass({
     } else {
       icon = <Edit/>;
     }
+    if (this.state.hidden === true){
+      searchDiv.width = 0;
+    }
+    else {
+      searchDiv.width = 220;
+    }
 
     const {isOpened} = this.state;
     return (
       <div>
         <AppBar
           showMenuIconButton={false}
-          title={<span>Coevolution Prototype</span>}
+          title={
+              <div style={searchDiv}>
+                <input id="searchField" style={searchBox}/>
+              </div>
+            }
           iconElementRight={
             <div>
-              <IconButton label="Search" onTouchTap={ () => this.setState({isOpened: !isOpened}) }> <Search/></IconButton>
+              <IconButton label="Search" onTouchTap={ this.handleTouchTap }> <Search/></IconButton>
               <IconButton label="Edit" onTouchTap={this.props.onGlobalEdit}> {icon}</IconButton>
             </div>
           }
           >
         </AppBar>
-        <Collapse isOpened={isOpened} fixedHeight={50}>
-          <div style={divStyle}><SearchInput style={searchBox} onChange={this.searchUpdated} /></div>
-        </Collapse>
       </div>)
   }
 });
