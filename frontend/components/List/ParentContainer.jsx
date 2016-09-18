@@ -48,13 +48,17 @@ var ParentContainer = React.createClass({
 	},
 
 	// Gets data about an item and updates the breadcrumb
-	handleClick: function(item) {
+	handleClick: function(item,breadcrumbFlag) {
 		this.getChildrenNodes(item);
+		// If breadcrumbs flag is not set, update breadcrumbs
+		if(!breadcrumbFlag){
+			return;
+		}
 		this.state.breadcrumbs.push({
 			Id : item.Id,
 			name: item.Key,
 			key: item.Id + "bc"
-		})
+		});
 	},
 
 	render: function(){

@@ -17,8 +17,8 @@ var ListContainer = React.createClass({
 	},
 
 	// Tells parent container that a list item has been clicked
-	handleClick: function (item){
-		this.props.handleClick(item);
+	handleClick: function (item,breadcrumbFlag){
+		this.props.handleClick(item,breadcrumbFlag);
 	},
 
 	// Event for changing text field
@@ -68,7 +68,7 @@ var ListContainer = React.createClass({
 
 		return (
 			<Card>
-				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable}></List>
+				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.props.parent}></List>
 				<Divider />
 				<div>
 					<TextField value={this.state.inputText} onChange={this.textChange} id="newListField" style={textFieldStyle} errorText={this.state.errors} hintText="Hint Text"/>
