@@ -70,14 +70,21 @@ var ListContainer = React.createClass({
 			width: '150px'
 		};
 
-		return (
-			<Card>
-				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable}></List>
-				<Divider />
+
+		var addItem;
+		if (this.props.editable) {
+			addItem = 
 				<div style={divStyle}>
 					<TextField id="newListField" style={itemStyle} errorText={this.state.errors} hintText="Hint Text"/>
 					<FlatButton label="Add Node" style={buttonStyle} primary={true} onTouchTap={this.addNewNode} />
 				</div>
+		}
+
+		return (
+			<Card>
+				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable}></List>
+				<Divider />
+				{addItem}
 			</Card>
 		)
 	}
