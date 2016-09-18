@@ -25,11 +25,14 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Get a list of all top level Items
         /// </summary>
+        /// <param name="showDeleted">
+        /// Whether or not deleted items/children should be shown
+        /// </param>
         [HttpGet]
-        public List<DtoItemReduced> GetItems()
+        public List<DtoItemReduced> GetItems(bool showDeleted = false)
         {
-
-            var dbItems = db.Items.Include("Labels").Where(x => !x.Deleted && x.Parent == null).ToList();
+            
+            var dbItems = db.Items.Include("Labels").Where(x => (!x.Deleted || showDeleted) && x.Parent == null).ToList();
             if (dbItems != null)
             {
                 return dbItems.Select(item => item.ToDtoReduced()).ToList();
@@ -47,21 +50,24 @@ namespace Coevolution.Controllers
         /// <param name="id">
         /// The Id of the Item to be retrieved
         /// </param>
+        /// <param name="showDeleted">
+        /// Whether or not deleted items/children should be shown
+        /// </param>
         [ResponseType(typeof(DtoItem))]
-        public IHttpActionResult GetItem(int id)
+        public IHttpActionResult GetItem(int id, bool showDeleted = false)
         {
-            Item item = db.Items.Include("Labels").Include("Notes").Where(x => x.Id == id).First();
-            if (item == null)
-            {
+            var items = db.Items.Include("Labels").Include("Notes").Where(x => x.Id == id && (!x.Deleted || showDeleted));
+            if (items.Count() <= 0) {
                 return NotFound();
             }
+            Item item = items.First();
 
             //Return Node DTO if item is a node
             //This includes that nodes children
             if(item is Node)
             {
                 Node nodeItem = (Node)item;
-                nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id).ToList();
+                nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
 
