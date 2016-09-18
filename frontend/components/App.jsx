@@ -3,7 +3,7 @@ import config from '../config.js';
 import $ from 'jquery';
 import RaisedButton from 'material-ui/RaisedButton';
 import TopBar from './TopBar.jsx';
-import MainBody from './MainBody.jsx';
+import ParentContainer from './List/ParentContainer.jsx';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
 import Card from './Card.jsx'
@@ -32,7 +32,7 @@ var App = React.createClass({
 		return (
 			<div>
       			<TopBar onGlobalEdit={this.onGlobalEdit} editable={this.state.editable}/>
-     			<MainBody editable={this.state.editable}/>
+     			<ParentContainer editable={this.state.editable}/>
     		</div>
 		)
 	}
