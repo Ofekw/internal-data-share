@@ -36,6 +36,11 @@ var ListComponent = React.createClass({
 		return {delete: []}
 	},
 
+	componentDidMount: function(){
+		this.setState({delete:[]});
+	},
+
+
 	render: function(){
 		var buttonStyle = {
 			float: 'right',
@@ -47,18 +52,19 @@ var ListComponent = React.createClass({
 		if (!this.props.editable && this.state.delete.length !== 0){
 			var functions = [];
 
-			for(var i = 0; i<this.state.delete.length; i++){
-				var value = this.state.delete.pop();
+			this.state.delete.forEach(function(e){
+				var element = e;
 				functions.push(function(cb){
+					debugger;
 					$.ajax({
-						url: config.apiHost + "Items/" + value,
+						url: config.apiHost + "Items/" + element,
 						type: "DELETE",
 						success: function(){
 							cb();
 						}
 					});
 				});
-			}
+			});
 
 			// Does all the async calls
 			async.parallel(functions,function(){
@@ -66,8 +72,8 @@ var ListComponent = React.createClass({
 				var parent = self.props.parent;
 				self.onClick(parent,false);
 			});
-
 		}
+
 		return (
 			<List>
 				<Subheader>Children Nodes</Subheader>

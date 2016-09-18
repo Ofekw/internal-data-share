@@ -47,7 +47,7 @@ var ListContainer = React.createClass({
 				url: config.apiHost + 'items',
 				data: JSON.stringify(data),
 				success: function(result) {
-					self.handleClick(result);
+					self.handleClick(result,true);
 					self.setState({inputText:""});
 				},
 				headers: {

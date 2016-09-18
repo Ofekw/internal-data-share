@@ -2,22 +2,25 @@ import React from 'react';
 import ListNode from './ListNode.jsx';
 import Card from '../Card.jsx';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
 import $ from 'jquery';
 import config from '../../config.js';
+import CircularProgress from 'material-ui/CircularProgress';
 
 // Component that renders the List view and Card view
 var ParentContainer = React.createClass({
 
 	// Makes requests to the database to populate card and list views.
 	getChildrenNodes: function(item,crumbs){
+		this.setState({loading:true});
 		// Gets the initial list of Banks
 		if(!item){
 			var self = this;
 			$.get(config.apiHost+'items', function (result) {
 				if(crumbs){
-					self.setState({nodes : result, parent:null , breadcrumbs:crumbs});
+					self.setState({nodes : result, parent:null , breadcrumbs:crumbs, loading:false});
 				} else {
-					self.setState({nodes : result, parent:null});
+					self.setState({nodes : result, parent:null, loading:false});
 				}
 			});
 		// Gets data for a specfic Bank/VM
@@ -25,25 +28,33 @@ var ParentContainer = React.createClass({
 			var self = this;
 			$.get(config.apiHost+'items/' +item.Id, function (result) {
 				if(crumbs){
-					self.setState({nodes:result.NodeChildren, parent:result, breadcrumbs:crumbs});
+					self.setState({nodes:result.NodeChildren, parent:result, breadcrumbs:crumbs, loading:false});
 				} else {
-					self.setState({nodes:result.NodeChildren, parent:result});
+					self.setState({nodes:result.NodeChildren, parent:result, loading:false});
 				}
 				
 			});
 		}
 	},
 
+	componentDidMount() {
+       this.getChildrenNodes();
+    },
+
+/*    componentWillUnmount() {
+        this.serverRequest.abort();
+    },*/
+
 	// Set initial states
 	getInitialState: function() {
-		this.getChildrenNodes();
 		return {
 			nodes: [],
 			breadcrumbs : [{
 				Id: "",
 				name: "Home",
 				key: "bc"
-			}]
+			}],
+			loading: true
 		}
 	},
 
@@ -62,27 +73,46 @@ var ParentContainer = React.createClass({
 	},
 
 	render: function(){
-		//Checks if the card needs to be hidden or not.
-		var cardHide = false;
-		if(!this.state.parent){
-			cardHide = true;
+        var paperStyle = {
+            width: '90%',
+            margin: 'auto',
+            marginTop: 10,
+        };
+		var center = {
+			display: 'flex',
+			justifyContent: 'center'
 		}
+		
+		if (this.state.loading){
+			return (
+				<Paper style= { paperStyle } zDepth= { 1}>
+					<div style={center}>
+                		<CircularProgress size={2}/>
+					</div>
+            	</Paper >
+			)
+		} else {
+			//Checks if the card needs to be hidden or not.
+			var cardHide = false;
+			if(!this.state.parent){
+				cardHide = true;
+			}
 
-		return (
-			<div>
-				{
-					this.state.breadcrumbs.map( crumb => {
-						return <span key={crumb.key}>
-							<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/> 
-							>
-						</span>
-					})
-				}
-				<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
-			 	<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
-
-		 	</div>
-		)
+			return (
+				<Paper style= { paperStyle } zDepth= { 1}>
+                	{
+						this.state.breadcrumbs.map( crumb => {
+							return <span key={crumb.key}>
+								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/> 
+								>
+							</span>
+						})
+					}
+					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
+					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
+            	</Paper >
+			)
+		}
 	},
 
 	// Handles click for breadcrumbs
