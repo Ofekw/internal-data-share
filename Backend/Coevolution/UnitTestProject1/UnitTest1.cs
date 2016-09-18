@@ -85,6 +85,78 @@ namespace UnitTestProject1
         }
 
         [TestMethod]
+        public void TestPostChild()
+        {
+            int parentId;
+            int childId;
+
+            var parentJson = "{\"Type\": \"node\",\"key\":\"Parent to created by TestPostChild!\"}";
+
+            String firstResult;
+
+            // Create parent
+            HttpRequestMessage request = PostItem(parentJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                firstResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                parentId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            // Create child
+            var childJson = "{\"Type\": \"node\",\"key\":\"Child to created by TestPostChild!\",\"Parent\":" + parentId + "}";
+            request = PostItem(childJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var secondResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                MatchOnce(secondResult, "\"Parent\":\\s*" + parentId);
+
+                childId = int.Parse(Regex.Match(secondResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            // Check parent has child
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var thirdResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                Regex nodeChildrenRegex = new Regex("\"NodeChildren\":\\s*\\[(\\{[^\\}]*\\})\\]");
+                var child = nodeChildrenRegex.Match(thirdResult).Groups[1].Value;
+                MatchOnce(child, "\"Id\":\\s*" + childId);
+            }
+
+            // Check child doesn't show in top level.
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var fourthResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                Regex regChild = new Regex("\"Id\":\\s*" + childId);
+                Assert.IsFalse(regChild.Match(fourthResult).Success);
+
+            }
+        }
+
+        [TestMethod]
         public void TestGetOne()
         {
             int createdId;
