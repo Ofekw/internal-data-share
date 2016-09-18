@@ -69,19 +69,91 @@ namespace UnitTestProject1
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                MatchOnce(result, "\"Id\": *[0-9]+");
-                MatchOnce(result, "\"Key\": *\"Object to created by TestPost!\"");
-                MatchOnce(result, "\"Type\": *\"node\"");
-                MatchOnce(result, "\"Parent\": *null");
-                MatchOnce(result, "\"Deleted\": *false");
-                MatchOnce(result, "\"Labels\": *\\[\\]");
-                MatchOnce(result, "\"Notes\": *\\[\\]");
-                MatchOnce(result, "\"LeafChildren\": *\\[\\]");
-                MatchOnce(result, "\"NodeChildren\": *\\[\\]");
-                MatchOnce(result, "\"CreatedOn\": *\"[0123456789\\-T:]+\"");
-                MatchOnce(result, "\"UpdatedOn\": *\"[0123456789\\-T:]+\"");
+                MatchOnce(result, "\"Id\":\\s*[0-9]+");
+                MatchOnce(result, "\"Key\":\\s*\"Object to created by TestPost!\"");
+                MatchOnce(result, "\"Type\":\\s*\"node\"");
+                MatchOnce(result, "\"Parent\":\\s*null");
+                MatchOnce(result, "\"Deleted\":\\s*false");
+                MatchOnce(result, "\"Labels\":\\s*\\[\\]");
+                MatchOnce(result, "\"Notes\":\\s*\\[\\]");
+                MatchOnce(result, "\"LeafChildren\":\\s*\\[\\]");
+                MatchOnce(result, "\"NodeChildren\":\\s*\\[\\]");
+                MatchOnce(result, "\"CreatedOn\":\\s*\"[0123456789\\-T:]+\"");
+                MatchOnce(result, "\"UpdatedOn\":\\s*\"[0123456789\\-T:]+\"");
             }
 
+        }
+
+        [TestMethod]
+        public void TestPostChild()
+        {
+            int parentId;
+            int childId;
+
+            var parentJson = "{\"Type\": \"node\",\"key\":\"Parent to created by TestPostChild!\"}";
+
+            String firstResult;
+
+            // Create parent
+            HttpRequestMessage request = PostItem(parentJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                firstResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                parentId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            // Create child
+            var childJson = "{\"Type\": \"node\",\"key\":\"Child to created by TestPostChild!\",\"Parent\":" + parentId + "}";
+            request = PostItem(childJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var secondResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                MatchOnce(secondResult, "\"Parent\":\\s*" + parentId);
+
+                childId = int.Parse(Regex.Match(secondResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            // Check parent has child
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var thirdResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                Regex nodeChildrenRegex = new Regex("\"NodeChildren\":\\s*\\[(\\{[^\\}]*\\})\\]");
+                var child = nodeChildrenRegex.Match(thirdResult).Groups[1].Value;
+                MatchOnce(child, "\"Id\":\\s*" + childId);
+            }
+
+            // Check child doesn't show in top level.
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var fourthResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                Regex regChild = new Regex("\"Id\":\\s*" + childId);
+                Assert.IsFalse(regChild.Match(fourthResult).Success);
+
+            }
         }
 
         [TestMethod]
@@ -103,7 +175,7 @@ namespace UnitTestProject1
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                createdId = int.Parse(Regex.Match(firstResult, "\"Id\": *([0-9]+)").Groups[1].Value);
+                createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
@@ -138,7 +210,7 @@ namespace UnitTestProject1
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                createdId = int.Parse(Regex.Match(result, "\"Id\": *([0-9]+)").Groups[1].Value);
+                createdId = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
@@ -153,21 +225,187 @@ namespace UnitTestProject1
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
                 MatchOnce(result, "^\\[");
-                MatchOnce(result, "\"Id\": *" + createdId);
-                MatchOnce(result, "\"Key\": *\"Object to created by TestGetAll!\"");
+                MatchOnce(result, "\"Id\":\\s*" + createdId);
+                MatchOnce(result, "\"Key\":\\s*\"Object to created by TestGetAll!\"");
                 MatchOnce(result, "\\]$");
 
             }
 
         }
 
+        [TestMethod]
+        public void TestPut()
+        {
+            int createdId;
+
+            var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestPut!\"}";
+
+            String firstResult;
+
+            HttpRequestMessage request = PostItem(jsonString);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                firstResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+
+            Regex reg = new Regex("Object to created by TestPut!");
+            var newJson = reg.Replace(firstResult, "Object to edited by TestPut!");
+
+            request = PutItem(createdId, newJson);
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var secondResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                Regex reg2 = new Regex("Object to edited by TestPut!");
+                Assert.IsTrue(reg2.Match(secondResult).Success);
+            }
+
+        }
+
+        [TestMethod]
+        public void TestDelete()
+        {
+            int parentId;
+            int childId;
+
+            var parentJson = "{\"Type\": \"node\",\"key\":\"Parent to created by TestDelete!\"}";
+
+            String firstResult;
+
+            // Posting the main item
+            HttpRequestMessage request = PostItem(parentJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                firstResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                parentId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            var childJson = "{\"Type\": \"node\",\"key\":\"Child to created by TestDelete!\",\"Parent\":" + parentId + "}";
+
+            // Posting the child item
+            request = PostItem(childJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var secondResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                MatchOnce(secondResult, "\"Parent\":\\s*" + parentId);
+
+                childId = int.Parse(Regex.Match(secondResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            // Getting the main item should tell us it is there
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            // Delete the main item
+            request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost:55426/api/items/" + parentId);
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            // Getting the main item should tell us it isn't there
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            // Getting the child item should tell us it isn't there
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + childId);
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            // Getting the main item should tell us it is there if we ask for deleted items
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId + "?showDeleted=true");
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            // Getting the child item should tell us it is there if we ask for deleted items
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + childId + "?showDeleted=true");
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+
+            // Getting everything should tell us the main item isn't there
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var thirdResult = task.Result;
+                Regex regParent = new Regex("\"Id\":\\s*" + parentId);
+                Assert.IsFalse(regParent.Match(thirdResult).Success);
+
+                Regex regChild = new Regex("\"Id\":\\s*" + childId);
+                Assert.IsFalse(regChild.Match(thirdResult).Success);
+
+            }
+
+            // Getting everything should tell us the main item is there if we ask for deleted items
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items?showDeleted=true");
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var fourthResult = task.Result;
+                Regex reg = new Regex("\"Id\":\\s*" + parentId);
+                Assert.IsTrue(reg.Match(fourthResult).Success);
+
+            }
+        }
+
         private HttpRequestMessage PostItem(String jsonString)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/items");
+            PopulateBody(request, jsonString);
+            return request;
+        }
+
+        private HttpRequestMessage PutItem(int id, String jsonString)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:55426/api/items/" + id);
+            PopulateBody(request, jsonString);
+            return request;
+        }
+
+        private HttpStatusCode GetRequestStatus(HttpRequestMessage request)
+        {
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+
+                return response.StatusCode;
+            }
+        }
+
+        private void PopulateBody(HttpRequestMessage request, String jsonString)
+        {
             var content = new StringContent(jsonString);
             content.Headers.ContentType = new MediaTypeHeaderValue("text/json");
             request.Content = content;
-            return request;
+            return;
         }
 
         private void MatchOnce(String phrase, String regex)
