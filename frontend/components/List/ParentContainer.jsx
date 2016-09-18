@@ -59,13 +59,17 @@ var ParentContainer = React.createClass({
 	},
 
 	// Gets data about an item and updates the breadcrumb
-	handleClick: function(item) {
+	handleClick: function(item,breadcrumbFlag) {
 		this.getChildrenNodes(item);
+		// If breadcrumbs flag is not set, update breadcrumbs
+		if(!breadcrumbFlag){
+			return;
+		}
 		this.state.breadcrumbs.push({
 			Id : item.Id,
 			name: item.Key,
 			key: item.Id + "bc"
-		})
+		});
 	},
 
 	render: function(){
@@ -78,7 +82,7 @@ var ParentContainer = React.createClass({
 			display: 'flex',
 			justifyContent: 'center'
 		}
-
+		
 		if (this.state.loading){
 			return (
 				<Paper style= { paperStyle } zDepth= { 1}>
@@ -87,8 +91,7 @@ var ParentContainer = React.createClass({
 					</div>
             	</Paper >
 			)
-		}
-		else {
+		} else {
 			//Checks if the card needs to be hidden or not.
 			var cardHide = false;
 			if(!this.state.parent){
@@ -106,7 +109,7 @@ var ParentContainer = React.createClass({
 						})
 					}
 					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
-					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable}/>
+					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
             	</Paper >
 			)
 		}

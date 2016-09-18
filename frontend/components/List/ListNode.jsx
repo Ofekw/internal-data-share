@@ -13,12 +13,17 @@ var ListContainer = React.createClass({
 
 	// Set up initial state
 	getInitialState: function() {
-		return {};
+		return { inputText:"" };
 	},
 
 	// Tells parent container that a list item has been clicked
-	handleClick: function (item){
-		this.props.handleClick(item);
+	handleClick: function (item,breadcrumbFlag){
+		this.props.handleClick(item,breadcrumbFlag);
+	},
+
+	// Event for changing text field
+	textChange: function(event){
+		this.setState({inputText:event.target.value})
 	},
 
 	// Handles the new addition of an list item
@@ -26,7 +31,7 @@ var ListContainer = React.createClass({
 		// Gets the name of the list item
 		var text = $('#newListField').val();
 		// Show error if no name is provided
-		if (text === ""){
+		if (text === ""){	
 			this.setState({ errors: "This field is required"});
 		// Collect the data and posts it to the database
 		} else { 
@@ -42,7 +47,8 @@ var ListContainer = React.createClass({
 				url: config.apiHost + 'items',
 				data: JSON.stringify(data),
 				success: function(result) {
-					self.handleClick(result);
+					self.handleClick(result,true);
+					self.setState({inputText:""});
 				},
 				headers: {
 					'Content-Type': 'application/json'
@@ -62,10 +68,10 @@ var ListContainer = React.createClass({
 
 		return (
 			<Card>
-				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable}></List>
+				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.props.parent}></List>
 				<Divider />
 				<div>
-					<TextField id="newListField" style={textFieldStyle} errorText={this.state.errors} hintText="Hint Text"/>
+					<TextField value={this.state.inputText} onChange={this.textChange} id="newListField" style={textFieldStyle} errorText={this.state.errors} hintText="Hint Text"/>
 					<IconButton label="Add" style={iconButtonStyle} onTouchTap={this.handleTouchTap}> <AddIcon/></IconButton>
 				</div>
 			</Card>
