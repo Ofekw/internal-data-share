@@ -233,6 +233,50 @@ namespace UnitTestProject1
 
         }
 
+        [TestMethod]
+        public void TestPut()
+        {
+            int createdId;
+
+            var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestPut!\"}";
+
+            String firstResult;
+
+            HttpRequestMessage request = PostItem(jsonString);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                firstResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+
+            Regex reg = new Regex("Object to created by TestPut!");
+            var newJson = reg.Replace(firstResult, "Object to edited by TestPut!");
+
+            request = PutItem(createdId, newJson);
+            Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var secondResult = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                Regex reg2 = new Regex("Object to edited by TestPut!");
+                Assert.IsTrue(reg2.Match(secondResult).Success);
+            }
+
+        }
+
         private HttpRequestMessage PostItem(String jsonString)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/items");
