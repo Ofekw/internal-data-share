@@ -50,7 +50,6 @@ class CardExampleExpandable extends React.Component {
 		var buttonStyle = {
 			display: 'inline-block',
 			position: 'relative',
-			float: 'right'
 		};
 
     return (

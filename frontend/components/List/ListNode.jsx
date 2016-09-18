@@ -90,10 +90,7 @@ var ListContainer = React.createClass({
 			<Card>
 				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.props.parent}></List>
 				<Divider />
-				<div>
-					<TextField value={this.state.inputText} onChange={this.textChange} id="newListField" style={textFieldStyle} errorText={this.state.errors} hintText="Hint Text"/>
-					<IconButton label="Add" style={iconButtonStyle} onTouchTap={this.handleTouchTap}> <AddIcon/></IconButton>
-				</div>
+				{addItem}
 			</Card>
 		)
 	}
