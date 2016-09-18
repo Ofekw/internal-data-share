@@ -47,18 +47,18 @@ var ListComponent = React.createClass({
 		if (!this.props.editable && this.state.delete.length !== 0){
 			var functions = [];
 
-			// Sets up all the async calls for delete
-			this.state.delete.forEach(function(e){
+			for(var i = 0; i<this.state.delete.length; i++){
+				var value = this.state.delete.pop();
 				functions.push(function(cb){
 					$.ajax({
-						url: config.apiHost + "Items/" + e,
+						url: config.apiHost + "Items/" + value,
 						type: "DELETE",
 						success: function(){
 							cb();
 						}
 					});
 				});
-			});
+			}
 
 			// Does all the async calls
 			async.parallel(functions,function(){
@@ -66,6 +66,7 @@ var ListComponent = React.createClass({
 				var parent = self.props.parent;
 				self.onClick(parent,false);
 			});
+
 		}
 		return (
 			<List>
