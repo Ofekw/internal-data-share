@@ -69,17 +69,17 @@ namespace UnitTestProject1
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                MatchOnce(result, "\"Id\": *[0-9]+");
-                MatchOnce(result, "\"Key\": *\"Object to created by TestPost!\"");
-                MatchOnce(result, "\"Type\": *\"node\"");
-                MatchOnce(result, "\"Parent\": *null");
-                MatchOnce(result, "\"Deleted\": *false");
-                MatchOnce(result, "\"Labels\": *\\[\\]");
-                MatchOnce(result, "\"Notes\": *\\[\\]");
-                MatchOnce(result, "\"LeafChildren\": *\\[\\]");
-                MatchOnce(result, "\"NodeChildren\": *\\[\\]");
-                MatchOnce(result, "\"CreatedOn\": *\"[0123456789\\-T:]+\"");
-                MatchOnce(result, "\"UpdatedOn\": *\"[0123456789\\-T:]+\"");
+                MatchOnce(result, "\"Id\":\\s*[0-9]+");
+                MatchOnce(result, "\"Key\":\\s*\"Object to created by TestPost!\"");
+                MatchOnce(result, "\"Type\":\\s*\"node\"");
+                MatchOnce(result, "\"Parent\":\\s*null");
+                MatchOnce(result, "\"Deleted\":\\s*false");
+                MatchOnce(result, "\"Labels\":\\s*\\[\\]");
+                MatchOnce(result, "\"Notes\":\\s*\\[\\]");
+                MatchOnce(result, "\"LeafChildren\":\\s*\\[\\]");
+                MatchOnce(result, "\"NodeChildren\":\\s*\\[\\]");
+                MatchOnce(result, "\"CreatedOn\":\\s*\"[0123456789\\-T:]+\"");
+                MatchOnce(result, "\"UpdatedOn\":\\s*\"[0123456789\\-T:]+\"");
             }
 
         }
@@ -103,7 +103,7 @@ namespace UnitTestProject1
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                createdId = int.Parse(Regex.Match(firstResult, "\"Id\": *([0-9]+)").Groups[1].Value);
+                createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
@@ -138,7 +138,7 @@ namespace UnitTestProject1
 
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
-                createdId = int.Parse(Regex.Match(result, "\"Id\": *([0-9]+)").Groups[1].Value);
+                createdId = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
             request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
@@ -153,8 +153,8 @@ namespace UnitTestProject1
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
                 MatchOnce(result, "^\\[");
-                MatchOnce(result, "\"Id\": *" + createdId);
-                MatchOnce(result, "\"Key\": *\"Object to created by TestGetAll!\"");
+                MatchOnce(result, "\"Id\":\\s*" + createdId);
+                MatchOnce(result, "\"Key\":\\s*\"Object to created by TestGetAll!\"");
                 MatchOnce(result, "\\]$");
 
             }
@@ -164,10 +164,35 @@ namespace UnitTestProject1
         private HttpRequestMessage PostItem(String jsonString)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/items");
+            PopulateBody(request, jsonString);
+            return request;
+        }
+
+        private HttpRequestMessage PutItem(int id, String jsonString)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:55426/api/items/" + id);
+            PopulateBody(request, jsonString);
+            return request;
+        }
+
+        private HttpStatusCode GetRequestStatus(HttpRequestMessage request)
+        {
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+
+                return response.StatusCode;
+            }
+        }
+
+        private void PopulateBody(HttpRequestMessage request, String jsonString)
+        {
             var content = new StringContent(jsonString);
             content.Headers.ContentType = new MediaTypeHeaderValue("text/json");
             request.Content = content;
-            return request;
+            return;
         }
 
         private void MatchOnce(String phrase, String regex)
