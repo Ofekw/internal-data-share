@@ -6,6 +6,7 @@ import config from '../../config.js';
 import TextField from 'material-ui/TextField';
 import Divider from 'material-ui/Divider';
 import IconButton from 'material-ui/IconButton';
+import FlatButton from 'material-ui/FlatButton';
 import AddIcon from 'material-ui/svg-icons/content/add-box';
 
 // Component that renders List Items view and ability to add items to the List
@@ -27,7 +28,7 @@ var ListContainer = React.createClass({
 	},
 
 	// Handles the new addition of an list item
-	handleTouchTap: function(){
+	addNewNode: function () {
 		// Gets the name of the list item
 		var text = $('#newListField').val();
 		// Show error if no name is provided
@@ -40,7 +41,7 @@ var ListContainer = React.createClass({
 				Key: text,
 				Type: 'node'
 			};
-			if (this.props.parent){
+			if (this.props.parent) {
 				data.Parent = this.props.parent.Id;
 			}
 			$.post({
@@ -57,23 +58,39 @@ var ListContainer = React.createClass({
 		}
 	},
 
-	render: function(){
-		var textFieldStyle = {
+	render: function () {
+		var divStyle = {
+			display: 'flex',
+		};
+
+		var itemStyle = {
 			marginLeft: 10,
-			width: '90%'
+			width: '100%',
+			display: 'inline-block',
+			position: 'relative'
 		};
-		var iconButtonStyle = {
-			float: 'right'
+
+		var buttonStyle = {
+			display: 'inline-block',
+			position: 'relative',
+			width: '150px'
 		};
+
+
+		var addItem;
+		if (this.props.editable) {
+			addItem = 
+				<div style={divStyle}>
+					<TextField id="newListField" style={itemStyle} errorText={this.state.errors} hintText="Hint Text"/>
+					<FlatButton label="Add Node" style={buttonStyle} primary={true} onTouchTap={this.addNewNode} />
+				</div>
+		}
 
 		return (
 			<Card>
 				<List listItems={this.props.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.props.parent}></List>
 				<Divider />
-				<div>
-					<TextField value={this.state.inputText} onChange={this.textChange} id="newListField" style={textFieldStyle} errorText={this.state.errors} hintText="Hint Text"/>
-					<IconButton label="Add" style={iconButtonStyle} onTouchTap={this.handleTouchTap}> <AddIcon/></IconButton>
-				</div>
+				{addItem}
 			</Card>
 		)
 	}
