@@ -6,7 +6,6 @@ import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton/IconButton';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import $ from 'jquery';
 import Clipboard from 'clipboard-js';
 import config from '../config.js';
@@ -25,11 +24,15 @@ const styles = {
     'background-color': '#ddd',
   },
   keyField: {
-    width: '100px',
+    width: '20%',
     marginRight: '10px',
+    display: 'inline-block',
+    position: 'relative'
   },
   rightAllign: {
     float: 'right',
+    display: 'inline-block',
+    position: 'relative',
   }
 };
 
@@ -76,31 +79,31 @@ class ModalField extends React.Component {
     this.key = event.target.value;
 
     // Set state to dirty so we know to save this change.
-    this.setState({dirty: dirty});
+    this.setState({ dirty: dirty });
   }
 
   handleValueChange = (event) => {
     this.value = event.target.value;
 
     // Set state to dirty so we know to save this change.
-    this.setState({dirty: dirty});
+    this.setState({ dirty: dirty });
   }
 
   toggleDeleted = (event) => {
     if (this.state.dirty !== deleted) {
       // Set state to deleted so we know to save this change.
-      this.setState({dirty: deleted});
+      this.setState({ dirty: deleted });
     } else {
       // Undelete this node
-      this.setState({dirty: clean});
+      this.setState({ dirty: clean });
     }
   }
 
   copyToClipboard = () => {
     // Copies the value of this key-value to the clipboard, will fail on unsupported browsers.
     Clipboard.copy(this.value).then(
-      function() {console.log("success");},
-      function(err) {console.log("failure", err);}
+      function () { console.log("success"); },
+      function (err) { console.log("failure", err); }
     );
   }
 
@@ -109,34 +112,36 @@ class ModalField extends React.Component {
       // Render editable field
       return (
         <ListItem>
-          <TextField
-            name="key"
-            floatingLabelText="Key"
-            defaultValue={this.key}
-            style={styles.keyField}
-            onChange={this.handleKeyChange}
-            disabled={this.state.dirty === deleted}
-          />
-          <TextField
-            name="value"
-            floatingLabelText="Value"
-            defaultValue={this.value}
-            style={styles.valueField}
-            onChange={this.handleValueChange}
-            disabled={this.state.dirty === deleted}
-          />
-          <RaisedButton
-            icon={this.state.dirty === deleted ? <Undo/> : <Delete />}
-            style={styles.rightAllign}
-            onTouchTap={this.toggleDeleted}
-          />
+          <div>
+            <TextField
+              name="key"
+              floatingLabelText="Key"
+              defaultValue={this.key}
+              style={styles.keyField}
+              onChange={this.handleKeyChange}
+              disabled={this.state.dirty === deleted}
+              />
+            <TextField
+              name="value"
+              floatingLabelText="Value"
+              style={styles.keyField}
+              defaultValue={this.value}
+              onChange={this.handleValueChange}
+              disabled={this.state.dirty === deleted}
+              />
+            <FlatButton
+              icon={this.state.dirty === deleted ? <Undo/> : <Delete />}
+              style={styles.rightAllign}
+              onTouchTap={this.toggleDeleted}
+              />
+          </div>
         </ListItem>
       );
     } else {
       // Render viewable field
       if (this.state.dirty === dirty) {
         // Update on server if changes have been made.
-        this.setState({dirty: clean});
+        this.setState({ dirty: clean });
         this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.childId, {
           method: 'PUT',
           data: {
