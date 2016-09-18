@@ -40,12 +40,18 @@ const TopBar = React.createClass({
       position: 'absolute',
       overflow: 'hidden',
       whiteSpace: 'nowrap',
-      border: 'none'
+      border: 'none',
+      right: 55,
+      paddingTop: 3
     }
+
     var searchBox = {
-      fontSize: 25,
+      fontSize: 20,
       height: '60%',
-      border: 'none'
+      border: 'none',
+      width: '100%',
+      background: 'rgba(255,255,255,0.6)',
+      marginLeft: 5
     }
     //Global Icon variable 
     var icon;
@@ -59,7 +65,7 @@ const TopBar = React.createClass({
       searchDiv.width = 0;
     }
     else {
-      searchDiv.width = 220;
+      searchDiv.width = '82%';
     }
 
     const {isOpened} = this.state;
@@ -67,15 +73,13 @@ const TopBar = React.createClass({
       <div>
         <AppBar
           showMenuIconButton={false}
-          title={
-              <div style={searchDiv}>
-                <input id="searchField" style={searchBox}/>
-              </div>
-            }
           iconElementRight={
             <div>
-              <IconButton label="Search" onTouchTap={ this.handleTouchTap }> <Search/></IconButton>
-              <IconButton label="Edit" onTouchTap={this.props.onGlobalEdit}> {icon}</IconButton>
+              <div style={searchDiv}>
+                <input id='searchField' style={searchBox}/>
+              </div>
+              <IconButton label='Search' onTouchTap={ this.handleTouchTap }> <Search/></IconButton>
+              <IconButton label='Edit' ref='editButton' onTouchTap={this.props.onGlobalEdit}> {icon}</IconButton>
             </div>
           }
           >
