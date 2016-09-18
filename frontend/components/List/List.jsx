@@ -40,7 +40,6 @@ var ListComponent = React.createClass({
 		this.setState({delete:[]});
 	},
 
-
 	render: function(){
 		var buttonStyle = {
 			float: 'right',
@@ -55,7 +54,6 @@ var ListComponent = React.createClass({
 			this.state.delete.forEach(function(e){
 				var element = e;
 				functions.push(function(cb){
-					debugger;
 					$.ajax({
 						url: config.apiHost + "Items/" + element,
 						type: "DELETE",

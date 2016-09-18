@@ -41,9 +41,9 @@ var ParentContainer = React.createClass({
        this.getChildrenNodes();
     },
 
-/*    componentWillUnmount() {
+    componentWillUnmount() {
         this.serverRequest.abort();
-    },*/
+    },
 
 	// Set initial states
 	getInitialState: function() {
