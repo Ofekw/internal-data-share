@@ -144,7 +144,7 @@ class ModalField extends React.Component {
             "Key": this.key,
             "Type": "leaf"
           },
-          success: function (result) {
+          complete: function (result) {
             if (result.status !== 200){
               console.error(result);
             }
@@ -153,9 +153,12 @@ class ModalField extends React.Component {
       } else if (this.state.dirty === deleted) {
         // Send delete request if deleted.
         this.setState({dirty: clean});
-        this.serverRequest = $.delete(config.apiHost + 'Items/' + this.props.childId, function (result) {
-          if (result.status !== 200){
-            console.error(result);
+        this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.childId, {
+          method: 'DELETE',
+          complete: function (result) {
+            if (result.status !== 200){
+              console.error(result);
+            }
           }
         });
       }
