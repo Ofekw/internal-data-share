@@ -39,6 +39,7 @@ const styles = {
 const clean = 'clean';
 const dirty = 'dirty';
 const deleted = 'deleted';
+const neww = 'new';
 
 // Key value text field that can be toggled between view and edit modes.
 class ModalField extends React.Component {
@@ -48,8 +49,12 @@ class ModalField extends React.Component {
     this.key = props.identifier;
     this.value = props.value;
 
+    var dirty = this.props.new ? neww : dirty;
+
+    console.log(dirty);
+
     this.state = {
-      dirty: false,
+      dirty: dirty,
       open: false,
       editable: props.editable
     };
@@ -79,14 +84,18 @@ class ModalField extends React.Component {
     this.key = event.target.value;
 
     // Set state to dirty so we know to save this change.
-    this.setState({ dirty: dirty });
+    if (this.state.dirty !== neww) {
+      this.setState({dirty: dirty});
+    }
   }
 
   handleValueChange = (event) => {
     this.value = event.target.value;
 
     // Set state to dirty so we know to save this change.
-    this.setState({ dirty: dirty });
+    if (this.state.dirty !== neww) {
+      this.setState({dirty: dirty});
+    }
   }
 
   toggleDeleted = (event) => {
@@ -95,7 +104,9 @@ class ModalField extends React.Component {
       this.setState({ dirty: deleted });
     } else {
       // Undelete this node
-      this.setState({ dirty: clean });
+      if (this.state.dirty !== neww) {
+        this.setState({dirty: clean});
+      }
     }
   }
 
@@ -144,23 +155,51 @@ class ModalField extends React.Component {
         this.setState({ dirty: clean });
         this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.childId, {
           method: 'PUT',
-          data: {
+          data: JSON.stringify({
             "Id": parseInt(this.props.childId),
             "Key": this.key,
+            "Value": this.value,
+            "Parent": this.props.parentId,
             "Type": "leaf"
+          }),
+          headers: {
+            'Content-Type': 'application/json'
           },
-          success: function (result) {
-            if (result.status !== 200) {
+          complete: function (result) {
+            if (result.status !== 200){
               console.error(result);
             }
           },
         });
       } else if (this.state.dirty === deleted) {
         // Send delete request if deleted.
-        this.setState({ dirty: clean });
-        this.serverRequest = $.delete(config.apiHost + 'Items/' + this.props.childId, function (result) {
-          if (result.status !== 200) {
-            console.error(result);
+        this.setState({dirty: clean});
+        this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.childId, {
+          method: 'DELETE',
+          complete: function (result) {
+            if (result.status !== 200){
+              console.error(result);
+            }
+          }
+        });
+      } else if (this.state.dirty === neww) {
+        // Send delete request if deleted.
+        this.setState({dirty: clean});
+        this.serverRequest = $.ajax(config.apiHost + 'Items/', {
+          method: 'POST',
+          data: JSON.stringify({
+            "Key": this.key,
+            "Value": this.value,
+            "Parent": this.props.parentId,
+            "Type": "leaf"
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          complete: function (result) {
+            if (result.status !== 200){
+              console.error(result);
+            }
           }
         });
       }

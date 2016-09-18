@@ -31,9 +31,9 @@ var App = React.createClass({
 	render: function(){
 		return (
 			<div>
-      			<TopBar onGlobalEdit={this.onGlobalEdit} editable={this.state.editable}/>
-     			<ParentContainer editable={this.state.editable}/>
-    		</div>
+				<TopBar onGlobalEdit={this.onGlobalEdit} editable={this.state.editable}/>
+				<ParentContainer editable={this.state.editable}/>
+			</div>
 		)
 	}
 });
