@@ -6,16 +6,17 @@ import Undo from 'material-ui/svg-icons/content/undo';
 import RaisedButton from 'material-ui/RaisedButton';
 import $ from 'jquery';
 import config from '../../config.js';
+import async from '../../node_modules/async/dist/async.min.js';
 
 // Component that renders the List Items view.
 var ListComponent = React.createClass({
 
 	// Tells the parent component that a list item has been clicked
-	onClick: function (item){
+	onClick: function (item,breadcrumbFlag){
 		if (this.props.editable){
 			return
 		}
-		this.props.handleClick(item);
+		this.props.handleClick(item,breadcrumbFlag);
 	},
 
 	// Marks items that are going to be deleted
@@ -35,18 +36,42 @@ var ListComponent = React.createClass({
 		return {delete: []}
 	},
 
+	componentDidMount: function(){
+		this.setState({delete:[]});
+	},
+
 	render: function(){
 		var buttonStyle = {
 			float: 'right',
 			marginTop: 5 
 		};
+		var self = this;
 
 		// Deletes items that are marked as deleted.
 		if (!this.props.editable && this.state.delete.length !== 0){
+			var functions = [];
+
 			this.state.delete.forEach(function(e){
-				$.delete(config.apiHost+'items/' + e);
-			})
+				var element = e;
+				functions.push(function(cb){
+					$.ajax({
+						url: config.apiHost + "Items/" + element,
+						type: "DELETE",
+						success: function(){
+							cb();
+						}
+					});
+				});
+			});
+
+			// Does all the async calls
+			async.parallel(functions,function(){
+				// Once all async calls are done, gets the object from the database again
+				var parent = self.props.parent;
+				self.onClick(parent,false);
+			});
 		}
+
 		return (
 			<List>
 				<Subheader>Children Nodes</Subheader>

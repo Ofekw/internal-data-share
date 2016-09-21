@@ -67,6 +67,9 @@ namespace Coevolution.Controllers
             if(item is Node)
             {
                 Node nodeItem = (Node)item;
+
+                var tempList = nodeItem.Children;
+
                 nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
@@ -354,26 +357,36 @@ namespace Coevolution.Controllers
         /// </summary>
         /// <param name="query">The string being searched for</param>
         /// 
-        [Route("Items/Search/Note/{query}")]
-        [ResponseType(typeof(int[]))]
+        [Route("api/Items/Search/Note/{query}")]
         public IHttpActionResult GetSearchNotes(string query)
         {
             query = Regex.Escape(query);
-            return Ok(db.Notes.Where(x => x.Content.Contains(query)).Select(x => x.Item.ToDto()).ToArray());
+            var notes = db.Notes.Where(x => x.Content.Contains(query)).ToArray();
+            var dtos = new List<DtoNote>();
+            foreach (var note in notes)
+            {
+                dtos.Add(note.ToDto());
+            }
+            return Ok(dtos);
         }
 
-        // Get: api/Items/Search/Note/{query}
+        // Get: api/Items/Search/Note/{label}
         /// <summary>
-        /// Search all notes for query string
+        /// Search all items for label
         /// Returns an array of ids of the nodes containing the string
         /// </summary>
         /// <param name="label">The id of the label being searched for</param>
         /// 
-        [Route("Items/Search/Note/{label}")]
-        [ResponseType(typeof(int[]))]
+        [Route("api/Items/Search/Label/{label}")]
         public IHttpActionResult GetSearchLabel(Label label)
         {
-            return Ok(db.Items.Where(x => x.Labels.Contains(label)).Select(x => x.ToDto()).ToArray());
+            var items = db.Items.Include(m => m.Labels).Where(x => x.Labels.Contains(label)).ToArray();
+            var dtos = new List<DtoItem>();
+            foreach (var item in items)
+            {
+                dtos.Add(item.ToDto());
+            }
+            return Ok(dtos);
         }
 
         // Get: api/Items/Search/Key/{query}
@@ -383,12 +396,17 @@ namespace Coevolution.Controllers
         /// </summary>
         /// <param name="query">The string being searched for</param>
         /// 
-        [Route("Items/Search/Key/{query}")]
-        [ResponseType(typeof(int[]))]
+        [Route("api/Items/Search/Key/{query}")]
         public IHttpActionResult GetSearchKeys(string query)
         {
             query = Regex.Escape(query);
-            return Ok(db.Items.Where(x => x.Key.Contains(query)).Select(x => x.ToDto()).ToArray());
+            var items = db.Items.Where(x => x.Key.Contains(query)).ToArray();
+            var dtos = new List<DtoItem>();
+            foreach(var item in items)
+            {
+                dtos.Add(item.ToDto());
+            }
+            return Ok(dtos);
         }
 
         // Get: api/Items/Search/Value/{query}
@@ -398,12 +416,27 @@ namespace Coevolution.Controllers
         /// </summary>
         /// <param name="query">The string being searched for</param>
         /// 
-        [Route("Items/Search/Value/{query}")]
-        [ResponseType(typeof(int[]))]
+        [Route("api/Items/Search/Value/{query}")]
         public IHttpActionResult GetSearchValues(string query)
         {
             query = Regex.Escape(query);
-            return Ok(db.Items.Where(x => x.GetType() == typeof(Leaf)).Select(x => (Leaf)x).Where(x => x.Value.Contains(query)).Select(x => x.ToDto()).ToArray());
+            var items = db.Items.Where(x => x.Parent != null).ToList();
+
+                //.Where(x => x.Value.Contains(query)).ToArray();
+            var dtos = new List<DtoItem>();
+            foreach (var item in items)
+            {
+                if (item is Leaf)
+                {
+                    var leaf = (Leaf)item;
+                    if (leaf.Value.Contains(query))
+                    {
+                        dtos.Add(leaf.ToDto());
+                    }
+                }
+                
+            }
+            return Ok(dtos);
         }
 
         protected override void Dispose(bool disposing)

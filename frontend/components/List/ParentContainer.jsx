@@ -32,7 +32,7 @@ var ParentContainer = React.createClass({
 				} else {
 					self.setState({nodes:result.NodeChildren, parent:result, loading:false});
 				}
-				
+
 			});
 		}
 	},
@@ -59,21 +59,25 @@ var ParentContainer = React.createClass({
 	},
 
 	// Gets data about an item and updates the breadcrumb
-	handleClick: function(item) {
+	handleClick: function(item,breadcrumbFlag) {
 		this.getChildrenNodes(item);
+		// If breadcrumbs flag is not set, update breadcrumbs
+		if(!breadcrumbFlag){
+			return;
+		}
 		this.state.breadcrumbs.push({
 			Id : item.Id,
 			name: item.Key,
 			key: item.Id + "bc"
-		})
+		});
 	},
 
 	render: function(){
-        var paperStyle = {
-            width: '90%',
-            margin: 'auto',
-            marginTop: 10,
-        };
+		var paperStyle = {
+			width: '90%',
+			margin: 'auto',
+			marginTop: 10,
+		};
 		var center = {
 			display: 'flex',
 			justifyContent: 'center'
@@ -83,12 +87,11 @@ var ParentContainer = React.createClass({
 			return (
 				<Paper style= { paperStyle } zDepth= { 1}>
 					<div style={center}>
-                		<CircularProgress size={2}/>
+						<CircularProgress size={2}/>
 					</div>
-            	</Paper >
+				</Paper>
 			)
-		}
-		else {
+		} else {
 			//Checks if the card needs to be hidden or not.
 			var cardHide = false;
 			if(!this.state.parent){
@@ -97,24 +100,24 @@ var ParentContainer = React.createClass({
 
 			return (
 				<Paper style= { paperStyle } zDepth= { 1}>
-                	{
+					{
 						this.state.breadcrumbs.map( crumb => {
 							return <span key={crumb.key}>
-								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/> 
+								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
 								>
 							</span>
 						})
 					}
 					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
-					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable}/>
-            	</Paper >
+					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
+				</Paper >
 			)
 		}
 	},
 
 	// Handles click for breadcrumbs
-	breadcrumbClick: function(crumb){ 
-		// Remove items from breadcrumbs list 
+	breadcrumbClick: function(crumb){
+		// Remove items from breadcrumbs list
 		var index = this.state.breadcrumbs.indexOf(crumb);
 		var newCrumbs = this.state.breadcrumbs.slice(0,index+1);
 		// Gets information about the breadcrumb clicked
