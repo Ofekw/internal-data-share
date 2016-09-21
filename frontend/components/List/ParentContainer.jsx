@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper';
 import $ from 'jquery';
 import config from '../../config.js';
 import CircularProgress from 'material-ui/CircularProgress';
+import SearchList from './SearchList.jsx';
 
 // Component that renders the List view and Card view
 var ParentContainer = React.createClass({
@@ -18,9 +19,9 @@ var ParentContainer = React.createClass({
 			var self = this;
 			$.get(config.apiHost+'items', function (result) {
 				if(crumbs){
-					self.setState({nodes : result, parent:null , breadcrumbs:crumbs, loading:false});
+					self.setState({nodes : result, parent:null , breadcrumbs:crumbs, loading:false,search: false});
 				} else {
-					self.setState({nodes : result, parent:null, loading:false});
+					self.setState({nodes : result, parent:null, loading:false,search: false});
 				}
 			});
 		// Gets data for a specfic Bank/VM
@@ -28,9 +29,9 @@ var ParentContainer = React.createClass({
 			var self = this;
 			$.get(config.apiHost+'items/' +item.Id, function (result) {
 				if(crumbs){
-					self.setState({nodes:result.NodeChildren, parent:result, breadcrumbs:crumbs, loading:false});
+					self.setState({nodes:result.NodeChildren, parent:result, breadcrumbs:crumbs, loading:false,search: false});
 				} else {
-					self.setState({nodes:result.NodeChildren, parent:result, loading:false});
+					self.setState({nodes:result.NodeChildren, parent:result, loading:false,search: false});
 				}
 
 			});
@@ -40,6 +41,17 @@ var ParentContainer = React.createClass({
 	componentDidMount() {
        this.getChildrenNodes();
     },
+	
+	componentWillReceiveProps(next) {
+		if(next.searchResult){
+			var newCrumbs = this.state.breadcrumbs.slice(0,1);
+			newCrumbs.push({
+				name: "Search Results",
+				key: "Search Results"
+			});
+			this.setState({breadcrumbs:newCrumbs,search:true});
+		}
+	},
 
     componentWillUnmount() {
         this.serverRequest.abort();
@@ -60,8 +72,10 @@ var ParentContainer = React.createClass({
 
 	// Gets data about an item and updates the breadcrumb
 	handleClick: function(item,breadcrumbFlag) {
+		this.props.enableEditButton();
 		this.getChildrenNodes(item);
-		// If breadcrumbs flag is not set, update breadcrumbs
+
+		// If breadcrumbs flag is set, update breadcrumbs
 		if(!breadcrumbFlag){
 			return;
 		}
@@ -83,6 +97,7 @@ var ParentContainer = React.createClass({
 			justifyContent: 'center'
 		}
 
+		// Loading animation is shown
 		if (this.state.loading){
 			return (
 				<Paper style= { paperStyle } zDepth= { 1}>
@@ -91,28 +106,46 @@ var ParentContainer = React.createClass({
 					</div>
 				</Paper>
 			)
-		} else {
-			//Checks if the card needs to be hidden or not.
-			var cardHide = false;
-			if(!this.state.parent){
-				cardHide = true;
-			}
+		}
 
+		// Search results is shown
+		if(this.state.search){
 			return (
-				<Paper style= { paperStyle } zDepth= { 1}>
-					{
-						this.state.breadcrumbs.map( crumb => {
-							return <span key={crumb.key}>
-								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
-								>
-							</span>
-						})
-					}
-					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
-					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
-				</Paper >
+			<Paper style= { paperStyle } zDepth= { 1}>
+				{
+					this.state.breadcrumbs.map( crumb => {
+						return <span key={crumb.key}>
+							<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
+							>
+						</span>
+					})
+				}
+				<SearchList searchResult={this.props.searchResult} handleClick={this.handleClick} />
+			</Paper >
 			)
 		}
+
+		//Checks if the card needs to be hidden or not.
+		var cardHide = false;
+		if(!this.state.parent){
+			cardHide = true;
+		}
+
+		return (
+			<Paper style= { paperStyle } zDepth= { 1}>
+				{
+					this.state.breadcrumbs.map( crumb => {
+						return <span key={crumb.key}>
+							<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
+							>
+						</span>
+					})
+				}
+				<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
+				<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
+			</Paper >
+		)
+		
 	},
 
 	// Handles click for breadcrumbs

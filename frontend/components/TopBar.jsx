@@ -6,6 +6,7 @@ import Save from 'material-ui/svg-icons/content/save';
 import Search from 'material-ui/svg-icons/action/search';
 import TextField from 'material-ui/TextField';
 import $ from 'jquery';
+import config from '../config.js';
 
 // Component that renders the Top Bar and contains the Edit Mode and Search
 const TopBar = React.createClass({
@@ -14,20 +15,30 @@ const TopBar = React.createClass({
   getInitialState() {
     return {
       isOpened: false,
-      hidden: true,
+      hidden: true
     };
   },
 
-  // Handles the new addition of an list item
-	handleTouchTap: function(){
+	toggleSearchBar: function(){
     if (this.state.hidden === true){
       this.setState({hidden:false});
+      this.refs.searchField.focus();
     }
     else {
       this.setState({hidden:true});
+      this.refs.searchField.value = "";
     }
-		
 	},
+
+  handleKeyPress: function(event){
+    if (event.key === 'Enter') {
+      var self = this;
+      this.props.disableEditButton();
+      $.get(config.apiHost+'Items/Search/Key/'+this.refs.searchField.value, function (result) {
+        self.props.searchInput(result);
+      });
+    }
+  },
 
   render() {
     var searchDiv = {
@@ -67,8 +78,8 @@ const TopBar = React.createClass({
     else {
       searchDiv.width = '82%';
     }
-
     const {isOpened} = this.state;
+
     return (
       <div>
         <AppBar
@@ -76,15 +87,15 @@ const TopBar = React.createClass({
           iconElementRight={
             <div>
               <div style={searchDiv}>
-                <input id='searchField' style={searchBox}/>
+                <input ref='searchField' style={searchBox} onKeyPress={this.handleKeyPress}/>
               </div>
-              <IconButton label='Search' onTouchTap={ this.handleTouchTap }> <Search/></IconButton>
-              <IconButton label='Edit' ref='editButton' onTouchTap={this.props.onGlobalEdit}> {icon}</IconButton>
+              <IconButton label='Search' onTouchTap={ this.toggleSearchBar }> <Search/></IconButton>
+              <IconButton label='Edit' ref='editButton' onTouchTap={this.props.onGlobalEdit} disabled={!this.props.editButton}>{icon}</IconButton>
             </div>
           }
           >
         </AppBar>
-      </div>)
+      </div>) 
   }
 });
 
