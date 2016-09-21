@@ -19,6 +19,14 @@ const TopBar = React.createClass({
     };
   },
 
+// Resets search bar 
+/*  componentWillReceiveProps(next) {
+    if(next.editButton){
+      this.setState({hidden:true});
+      this.refs.searchField.value = "";
+    }
+  },*/
+
 	toggleSearchBar: function(){
     if (this.state.hidden === true){
       this.setState({hidden:false});
