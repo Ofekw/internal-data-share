@@ -2,6 +2,8 @@ import React from 'react';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+import TextField from 'material-ui/TextField';
 import ModalField from './ModalField.jsx';
 
 // Card for displaying information for an environemnt.
@@ -9,18 +11,49 @@ class CardExampleExpandable extends React.Component {
   constructor(props) {
     super(props);
     this.children = [];
+    this.labels = [];
     this.title = '';
     this.id = -1;
   }
 
+  state = {
+    open: false,
+  };
+
+  handleOpen = () => {
+    this.setState({open: true});
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+
+  handleLabelSave = () => {
+    this.setState({open: false});
+    this.createNewLabel();
+  };
+
   // Add a new child.
-  createNew = () => {
+  createNewField = () => {
     this.props.cardData.LeafChildren.push({
       'Key': '',
       'Value': '',
       'new': true
     });
     this.forceUpdate();
+  };
+
+  // Add a new child.
+  createNewLabel = () => {
+    if (this.nextLabel !== '') {
+      this.props.cardData.Labels.push(this.nextLabel);
+      this.nextLabel = '';
+    }
+    this.forceUpdate();
+  };
+
+  handleLabelChange = (event) => {
+    this.nextLabel = event.target.value;
   }
 
   render() {
@@ -56,6 +89,20 @@ class CardExampleExpandable extends React.Component {
 			position: 'relative',
 		};
 
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.handleLabelSave}
+      />,
+    ];
+
     return (
       <Card>
         <CardHeader
@@ -74,7 +121,20 @@ class CardExampleExpandable extends React.Component {
             // Immediately invoked function to add "New" button if in editable mode.
             if (this.props.editable) {
               return <div>
-                <FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.createNew}/>
+                <FlatButton style={buttonStyle} label="Add Key Pair" secondary={true}  onTouchTap={this.createNewField}/>
+                <FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.handleOpen}/>
+                <Dialog
+                  title="Dialog With Actions"
+                  actions={actions}
+                  modal={false}
+                  open={this.state.open}
+                  onRequestClose={this.handleClose}
+                >
+                  <TextField
+                    floatingLabelText="Label Text"
+                    onChange={this.handleLabelChange}
+                  />
+                </Dialog>
               </div>
             }
           })() }
