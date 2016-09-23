@@ -51,6 +51,8 @@ namespace Coevolution.Models
         /// </summary>
         public string UpdatedOn { get; set; }
 
+        public List<KeyValuePair<int, string>> Path { get; set; }
+
         public DtoItem()
         {
             Labels = new List<DtoLabel>();

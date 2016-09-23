@@ -33,7 +33,8 @@ namespace Coevolution.Models
                 Notes = DtoNote.NoteListToDtos(this.Notes),
                 Value = this.Value,
                 CreatedOn = this.CreatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
-                UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture)
+                UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
+                Path = this.Path();
             };
         }
     }

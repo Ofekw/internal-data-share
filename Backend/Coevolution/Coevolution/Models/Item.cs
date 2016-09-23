@@ -55,5 +55,20 @@ namespace Coevolution.Models
                 Labels = this.Labels.Select(label => label.ToDto()).ToList(),
             };
         }
+
+        public List<KeyValuePair<int, string>> Path()
+        {
+            if (this.Parent == null)
+            {
+                var baseList = new List<KeyValuePair<int, string>>();
+                baseList.Add(new KeyValuePair<int, string>(this.Id, this.Key));
+                return baseList;
+            } else
+            {
+                var parentPath = Parent.Path();
+                parentPath.Add(new KeyValuePair<int, string>(this.Id, this.Key));
+                return parentPath;
+            }
+        }
     }
 }
