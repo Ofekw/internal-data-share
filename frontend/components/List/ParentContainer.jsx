@@ -13,6 +13,7 @@ var ParentContainer = React.createClass({
 
 	// Makes requests to the database to populate card and list views.
 	getChildrenNodes: function(item,crumbs){
+		this.props.enableEditButton();
 		this.setState({loading:true});
 		// Gets the initial list of Banks
 		if(!item){
@@ -72,7 +73,6 @@ var ParentContainer = React.createClass({
 
 	// Gets data about an item and updates the breadcrumb
 	handleClick: function(item,breadcrumbFlag) {
-		this.props.enableEditButton();
 		this.getChildrenNodes(item);
 
 		// If breadcrumbs flag is set, update breadcrumbs
@@ -84,6 +84,25 @@ var ParentContainer = React.createClass({
 			name: item.Key,
 			key: item.Id + "bc"
 		});
+	},
+
+		// Gets data about an item and updates the breadcrumb
+	searchResultClick: function(searchResult,breadcrumbFlag) {
+		var crumbs = [{
+				Id: "",
+				name: "Home",
+				key: "bc"
+			}];
+		searchResult.Path.forEach(function(element) {
+			crumbs.push({
+				Id : element.Key,
+				name: element.Value,
+				key: element.Key + "bc"
+			})
+		}, this);
+		crumbs.pop();
+
+		this.getChildrenNodes(searchResult, crumbs);
 	},
 
 	render: function(){
@@ -120,7 +139,7 @@ var ParentContainer = React.createClass({
 						</span>
 					})
 				}
-				<SearchList searchResult={this.props.searchResult} handleClick={this.handleClick} />
+				<SearchList searchResult={this.props.searchResult} searchResultClick={this.searchResultClick}/>
 			</Paper >
 			)
 		}

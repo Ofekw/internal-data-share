@@ -25,7 +25,7 @@ var App = React.createClass({
 	},
 
 	enableEditButton(){
-		this.setState({editButton: true});
+		this.setState({editButton: true, searchResult: ""});
 	},
 
 	disableEditButton(){

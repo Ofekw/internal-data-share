@@ -7,12 +7,7 @@ var SearchList = React.createClass({
         if (this.props.editable){
             return
         }
-        if(item.Type === "leaf"){
-            result = {
-                Id: item.Parent
-            }
-        }
-        this.props.handleClick(result,false);
+        this.props.searchResultClick(result,true);
 	},
     
     render(){
@@ -20,8 +15,8 @@ var SearchList = React.createClass({
             <List>
             {
                 this.props.searchResult.map(result => {
-                    if (result.Type === "leaf"){
-                        return <ListItem 
+                    if (result.IsLeaf){
+                        return <ListItem
                             primaryText={result.Key}
                             key={result.Id}
                             secondaryText={result.Value}
