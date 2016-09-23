@@ -20,6 +20,8 @@ import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Save from 'material-ui/svg-icons/content/save';
 import Undo from 'material-ui/svg-icons/content/undo';
 
+import Snackbar from 'material-ui/Snackbar';
+
 const styles = {
   paleGrey: {
     'background-color': '#ddd',
@@ -56,7 +58,8 @@ class ModalField extends React.Component {
     this.state = {
       dirty: dirty,
       open: false,
-      editable: props.editable
+      copy: false,
+      editable: props.editable,
     };
   }
 
@@ -83,30 +86,30 @@ class ModalField extends React.Component {
   handleKeyChange = (event) => {
     this.key = event.target.value;
 
-    this.setState({keyValue:this.key});
+    this.setState({ keyValue: this.key });
     // Set state to dirty so we know to save this change.
     if (this.state.dirty !== neww) {
-      this.setState({dirty: dirty});
+      this.setState({ dirty: dirty });
     }
   }
 
   handleValueChange = (event) => {
     this.value = event.target.value;
 
-    this.setState({valueValue: this.value})
+    this.setState({ valueValue: this.value })
     // Set state to dirty so we know to save this change.
     if (this.state.dirty !== neww) {
-      this.setState({dirty: dirty});
+      this.setState({ dirty: dirty });
     }
   }
 
   toggleDeleted = (event) => {
-    if(this.state.dirty === neww){
-      this.setState({dirty:newDeleted});
+    if (this.state.dirty === neww) {
+      this.setState({ dirty: newDeleted });
       return;
     }
-    if(this.state.dirty === newDeleted){
-      this.setState({dirty: neww})
+    if (this.state.dirty === newDeleted) {
+      this.setState({ dirty: neww })
       return;
     }
     if (this.state.dirty !== deleted) {
@@ -115,16 +118,30 @@ class ModalField extends React.Component {
     } else {
       // Undelete this node
       if (this.state.dirty !== neww) {
-        this.setState({dirty: clean});
+        this.setState({ dirty: clean });
       }
     }
   }
 
   copyToClipboard = () => {
+    var self = this;
     // Copies the value of this key-value to the clipboard, will fail on unsupported browsers.
+    var value = this.value.split(':')[1];
     Clipboard.copy(this.value).then(
-      function () { console.log("success"); },
-      function (err) { console.log("failure", err); }
+      function () {
+        self.setState({
+          open: true,
+          copy: true
+        });
+        console.log("success");
+      },
+      function (err) {
+        self.setState({
+          open: true,
+          copy: false
+        });
+        console.log("failure", err);
+      }
     );
   }
 
@@ -132,13 +149,13 @@ class ModalField extends React.Component {
     // Does error checking
     var key = this.state.keyValue;
     var value = this.state.valueValue;
-    if(!key){
-      this.setState({keyError:"Input a key"});
+    if (!key) {
+      this.setState({ keyError: "Input a key" });
     }
-    if(!value){
-      this.setState({valueError:"Input a value"});
+    if (!value) {
+      this.setState({ valueError: "Input a value" });
     }
-    if(!key || !value){
+    if (!key || !value) {
       return;
     }
 
@@ -146,7 +163,7 @@ class ModalField extends React.Component {
       keyValue: '',
       valueValue: ''
     });
-    this.props.createNew(key,value);
+    this.props.createNew(key, value);
   }
 
   render() {
@@ -157,7 +174,7 @@ class ModalField extends React.Component {
 
     if (this.props.editable) {
       // For adding a new item
-      if (this.props.add){
+      if (this.props.add) {
         return (
           <ListItem>
             <div>
@@ -180,9 +197,9 @@ class ModalField extends React.Component {
                 value={this.state.valueValue}
                 />
               <FlatButton
-                style={styles.rightAllign} 
-                label="Add Key Pair" 
-                secondary={true}  
+                style={styles.rightAllign}
+                label="Add Key Pair"
+                secondary={true}
                 onTouchTap={this.createNew}/>
             </div>
           </ListItem>
@@ -222,7 +239,7 @@ class ModalField extends React.Component {
       var self = this;
       if (this.state.dirty === dirty) {
         // Update on server if changes have been made. 
-        functions.push(function(cb){
+        functions.push(function (cb) {
           self.serverRequest = $.ajax(config.apiHost + 'Items/' + self.props.childId, {
             method: 'PUT',
             data: JSON.stringify({
@@ -236,33 +253,33 @@ class ModalField extends React.Component {
               'Content-Type': 'application/json'
             },
             complete: function (result) {
-              if (result.status !== 200){
+              if (result.status !== 200) {
                 console.error(result);
               }
               cb();
             },
           });
         });
-        this.setState({ dirty: clean });  
+        this.setState({ dirty: clean });
       } else if (this.state.dirty === deleted) {
         // Send delete request if deleted.
-        this.setState({dirty: clean});
-        functions.push(function(cb){
+        this.setState({ dirty: clean });
+        functions.push(function (cb) {
           self.serverRequest = $.ajax(config.apiHost + 'Items/' + self.props.childId, {
             method: 'DELETE',
             complete: function (result) {
-              if (result.status !== 200){
+              if (result.status !== 200) {
                 console.error(result);
               }
               cb();
             }
           });
         });
-        
+
       } else if (this.state.dirty === neww) {
         // Send delete request if deleted.
-        this.setState({dirty: clean});
-        functions.push(function(cb){
+        this.setState({ dirty: clean });
+        functions.push(function (cb) {
           self.serverRequest = $.ajax(config.apiHost + 'Items/', {
             method: 'POST',
             data: JSON.stringify({
@@ -276,26 +293,34 @@ class ModalField extends React.Component {
             },
             complete: function (result) {
               var status = result.status + '';
-              if (status.substring(0,1) !== '2'){
+              if (status.substring(0, 1) !== '2') {
                 console.error(result);
               }
               cb();
             }
           });
         });
-        
-      } 
-      if(functions.length > 0){
-        async.parallel(functions,function(){
+
+      }
+      if (functions.length > 0) {
+        async.parallel(functions, function () {
           self.props.update();
         });
       }
-      var hide = {display:'block'}
-      if(this.state.dirty === newDeleted) {
-        hide = {display:'none'}
+      var hide = { display: 'block' }
+      if (this.state.dirty === newDeleted) {
+        hide = { display: 'none' }
       }
       return (
-        <ListItem primaryText={this.value} secondaryText={this.key} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard} style={hide}></ListItem>
+        <div>
+          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide}></ListItem>
+          <Snackbar
+            open={this.state.open}
+            message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}
+            autoHideDuration={4000}
+            onRequestClose={this.handleRequestClose}
+            />
+        </div>
       );
     }
   }
