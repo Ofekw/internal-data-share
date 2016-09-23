@@ -14,6 +14,7 @@ class CardExampleExpandable extends React.Component {
     super(props);
     this.children = [];
     this.title = '';
+    this.editable = false;
     if (props.cardData != null) {
       this.state = {
         nodeComment: props.cardData.Note == null ? "" : props.cardData.Note,
@@ -22,18 +23,25 @@ class CardExampleExpandable extends React.Component {
     }
   }
 
+  update = () => {
+    this.props.handleClick(this.props.cardData,false);
+  }
+
   noteChange(event) {
     this.props.cardData.Note = event.target.value;
     this.setState({ nodeComment: event.target.value, notesDirty: true })
   }
 
-
   // Add a new child.
-  createNew = () => {
+  createNew = (key,value) => {
+    this.editable = false;
+    this.props.cardData.LeafChildren.pop();
+    var uid = new Date().getTime();
     this.props.cardData.LeafChildren.push({
-      'Key': '',
-      'Value': '',
-      'new': true
+      'Key': key,
+      'Value': value,
+      'newId' : key + uid,
+      'new' : true
     });
     this.forceUpdate();
   }
@@ -62,6 +70,20 @@ class CardExampleExpandable extends React.Component {
       return <div></div>
     }
 
+    if(this.props.cardData) {
+      if(this.editable){
+        this.props.cardData.LeafChildren.pop();
+      }
+      // Edit mode
+      if(this.props.editable){
+        this.editable = true;
+        this.props.cardData.LeafChildren.push({
+          'Key': '',
+          'Value': '',
+          'add': true
+        });
+      }
+
     if (this.state.notesDirty && !this.props.editable) {
         this.addNewNotes();
     }
@@ -77,7 +99,16 @@ class CardExampleExpandable extends React.Component {
         if (leafChildren.hasOwnProperty(child)) {
           const childElement = leafChildren[child];
           this.children.push(
-            <ModalField new={childElement.new} editable={this.props.editable} key={childElement.Id} childId={childElement.Id} identifier={childElement.Key} value={childElement.Value} parentId={this.props.cardData.Id} />
+            <ModalField new={childElement.new} 
+            add = {childElement.add}
+            editable={this.props.editable} 
+            key={childElement.Id || childElement.newId || childElement.add} 
+            childId={childElement.Id} 
+            identifier={childElement.Key} 
+            value={childElement.Value} 
+            parentId={this.props.cardData.Id} 
+            createNew = {this.createNew}
+            update={this.update}/>
           );
         }
       }

@@ -36,10 +36,9 @@ namespace Coevolution.Models
         //DTO to domain object
         public virtual Note ToDomainObject()
         {
-            var newNote = new Note()
+            var newNote = new Note(this.Content)
             {
                 Id = this.Id,
-                Content = this.Content,
                 CreatedOn = DateTime.Parse(this.CreatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind),
                 UpdatedOn = DateTime.Parse(this.UpdatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind)
             };

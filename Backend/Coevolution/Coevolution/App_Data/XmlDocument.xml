@@ -481,17 +481,23 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetItems">
+        <member name="M:Coevolution.Controllers.ItemsController.GetItems(System.Boolean)">
             <summary>
             Get a list of all top level Items
             </summary>
+            <param name="showDeleted">
+            Whether or not deleted items/children should be shown
+            </param>
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetItem(System.Int32)">
+        <member name="M:Coevolution.Controllers.ItemsController.GetItem(System.Int32,System.Boolean)">
             <summary>
             Gets a single Item from its Id
             </summary>
             <param name="id">
             The Id of the Item to be retrieved
+            </param>
+            <param name="showDeleted">
+            Whether or not deleted items/children should be shown
             </param>
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,Coevolution.Models.DtoItem)">
@@ -502,6 +508,11 @@
         <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.String)">
             <summary>
             Add a note to an existing Item
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PutNoteItem(System.Int32,System.String)">
+            <summary>
+            Update comment of an existing Node
             </summary>
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.Int32)">
@@ -539,7 +550,7 @@
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(Coevolution.Models.Label)">
             <summary>
-            Search all notes for query string
+            Search all items for label
             Returns an array of ids of the nodes containing the string
             </summary>
             <param name="label">The id of the label being searched for</param>
