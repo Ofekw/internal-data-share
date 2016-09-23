@@ -13,40 +13,20 @@ class CardExampleExpandable extends React.Component {
   constructor(props) {
     super(props);
     this.children = [];
-    this.notes = [];
     this.title = '';
-    //TODO: remove this
-    this.id = -1;
-
-    this.state = {
-      nodeComment: ""
-    }
-
-  }
-  componentDidMount() {
-    this.getNotes();
-  }
-
-  getNotes() {
-    var self = this;
-    if (this.props.cardData != null) {
-      this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.cardData.Id, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        complete: function (result) {
-          if (result.status !== 200) {
-            console.error(result);
-          } else {
-            var response = JSON.parse(result.responseText)
-            self.notes = response.Notes;
-            self.forceUpdate();
-          }
-        },
-      });
+    if (props.cardData != null) {
+      this.state = {
+        nodeComment: props.cardData.Note == null ? "" : props.cardData.Note,
+        notesDirty: false
+      }
     }
   }
+
+  noteChange(event) {
+    this.props.cardData.Note = event.target.value;
+    this.setState({ nodeComment: event.target.value, notesDirty: true })
+  }
+
 
   // Add a new child.
   createNew = () => {
@@ -58,37 +38,32 @@ class CardExampleExpandable extends React.Component {
     this.forceUpdate();
   }
 
-  // Add a new comment
+  // Add a new comment 
   addNewNotes() {
     var self = this;
     var comment = $('#nodeComment').val();
-    this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.cardData.Id + '?noteContent=' + comment, {
+    this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.cardData.Id + '/Note', {
       method: 'PUT',
+      data: JSON.stringify(this.state.nodeComment),
       headers: {
         'Content-Type': 'application/json'
       },
-      complete: function (result) {
-        if (result.status !== 200) {
-          debugger;
-          console.error(result);
-        } else {
-          debugger;
-          var response = JSON.parse(result.responseText)
-          self.notes.push({ Id: response, Content: comment });
-          self.setState({ nodeComment: "" })
-          //self.forceUpdate();
-        }
+      success: function (result) {
+        debugger;
+      },
+      failure: function (result) {
+        console.log(result)
       },
     });
-  }
-
-  noteChange(event) {
-    this.setState({nodeComment:event.target.value})
   }
 
   render() {
     if (this.props.hide) {
       return <div></div>
+    }
+
+    if (this.state.notesDirty && !this.props.editable) {
+        this.addNewNotes();
     }
 
     if (this.props.cardData) {
@@ -125,6 +100,18 @@ class CardExampleExpandable extends React.Component {
       width: '150px'
     };
 
+    var addKeyPairsButton =
+      <div>
+        <FlatButton label="Add Label" secondary={true}  onTouchTap={this.createNew}/>
+        <br/>
+      </div >
+
+    var textArea =
+      <div style={divStyle}>
+        <TextField id="nodeComment" disabled={!this.props.editable} ref="nodeComment" style={itemStyle} hintText="Comment" multiLine={true} value={this.state.nodeComment} onChange={this.noteChange.bind(this) }/>
+      </div>
+
+
     return (
       <Card>
         <CardHeader
@@ -139,39 +126,14 @@ class CardExampleExpandable extends React.Component {
               return child;
             }) }
           </List>
-          <List>
-            <Subheader>Notes</Subheader>
-            {
-              this.notes.map(note => {
-                // Toggles background colour if an item is going to be deleted
-                // var icon = <Delete />;
-                var style = {};
-                // if (this.state.delete.indexOf(item.Id) > -1){
-                // 	icon = <Undo />
-                // 	style = {backgroundColor: '#ddd'}
-                // }
-                console.log(note);
-                return <ListItem primaryText={note.Content} key={note.Id} disabled={true} style={style}/>
-              })
-            }
-          </List>
         </div>
         <CardActions>
           {(() => {
             // Immediately invoked function to add "New" button if in editable mode.
             if (this.props.editable) {
-              return <div>
-                <div style={divStyle}>
-                  <FlatButton label="Add Label" secondary={true}  onTouchTap={this.createNew}/>
-                  <br/>
-                  <div>
-                  </div>
-                </div>
-                <div style={divStyle}>
-                  <TextField id="nodeComment" ref="nodeComment" style={itemStyle} hintText="Comment" multiLine={true} value={this.state.nodeComment} onChange={this.noteChange.bind(this)}/>
-                  <FlatButton label="Add Comment" style={buttonStyle} primary={true} onTouchTap={this.addNewNotes.bind(this) } />
-                </div>
-              </div>
+              return <div> {addKeyPairsButton} {textArea} </div>
+            }else{
+             return <div> {textArea} </div>
             }
           })() }
         </CardActions>
