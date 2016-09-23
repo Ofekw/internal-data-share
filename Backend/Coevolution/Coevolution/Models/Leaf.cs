@@ -34,7 +34,7 @@ namespace Coevolution.Models
                 Value = this.Value,
                 CreatedOn = this.CreatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
                 UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
-                Path = this.Path();
+                Path = this.Path(),
             };
         }
     }
