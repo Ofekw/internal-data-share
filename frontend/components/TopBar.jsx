@@ -14,8 +14,7 @@ const TopBar = React.createClass({
   // Set up initial state
   getInitialState() {
     return {
-      isOpened: false,
-      hidden: true
+      isOpened: false
     };
   },
 
@@ -27,40 +26,35 @@ const TopBar = React.createClass({
     }
   },*/
 
-	toggleSearchBar: function(){
-    if (this.state.hidden === true){
-      this.setState({hidden:false});
-      this.refs.searchField.focus();
-    }
-    else {
-      this.setState({hidden:true});
-      this.refs.searchField.value = "";
-    }
-	},
 
   handleKeyPress: function(event){
     if (event.key === 'Enter') {
-      var self = this;
-      this.props.disableEditButton();
-      $.get(config.apiHost+'Items/Search/Key/'+this.refs.searchField.value, function (result) {
-        self.props.searchInput(result);
-      });
+      this.handleSearchRequest(event);
     }
+  },
+
+  handleSearchRequest: function(event){
+    var self = this;
+    this.props.disableEditButton();
+    $.get(config.apiHost+'Items/Search/Key/'+this.refs.searchField.value, function (result) {
+      self.props.searchInput(result);
+    });
   },
 
   render() {
     var searchDiv = {
-      WebkitTransition: 'width 0.4s ease-in-out',
-      transition: 'width 0.4s ease-in-out',
-      MozTransition: 'width 0.4s ease-in-out',
-      OTransition: 'width 0.4s ease-in-out',
-      height: '100%',
-      width: 0,
       position: 'absolute',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
+      height: '100%',
+      /* Firefox */
+      width: '-moz-calc(100% - 80px)',
+      /* WebKit */
+      width: '-webkit-calc(100% - 80px)',
+      /* Opera */
+      width: '-o-calc(100% - 80px)',
+      /* Standard */
+      width: 'calc(100% - 80px)',
       border: 'none',
-      right: 55,
+      left: 0,
       paddingTop: 3
     }
 
@@ -70,7 +64,8 @@ const TopBar = React.createClass({
       border: 'none',
       width: '100%',
       background: 'rgba(255,255,255,0.6)',
-      marginLeft: 5
+      marginLeft: 15,
+      paddingLeft: 10,
     }
     //Global Icon variable 
     var icon;
@@ -80,14 +75,7 @@ const TopBar = React.createClass({
     } else {
       icon = <Edit/>;
     }
-    if (this.state.hidden === true){
-      searchDiv.width = 0;
-    }
-    else {
-      searchDiv.width = '82%';
-    }
     const {isOpened} = this.state;
-
     return (
       <div>
         <AppBar
@@ -97,8 +85,8 @@ const TopBar = React.createClass({
               <div style={searchDiv}>
                 <input ref='searchField' style={searchBox} onKeyPress={this.handleKeyPress}/>
               </div>
-              <IconButton label='Search' onTouchTap={ this.toggleSearchBar }> <Search/></IconButton>
-              <IconButton label='Edit' ref='editButton' onTouchTap={this.props.onGlobalEdit} disabled={!this.props.editButton}>{icon}</IconButton>
+              <IconButton label='Search' onTouchTap={ this.handleSearchRequest}> <Search/></IconButton>
+              <IconButton label='Edit' onTouchTap={this.props.onGlobalEdit} disabled={!this.props.editButton}>{icon}</IconButton>
             </div>
           }
           >
