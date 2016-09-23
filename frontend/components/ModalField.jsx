@@ -51,7 +51,7 @@ class ModalField extends React.Component {
     this.key = props.identifier;
     this.value = props.value;
 
-    var dirty = this.props.new ? neww : undefined;
+    var dirty = this.props.new ? neww : dirty;
 
     this.state = {
       dirty: dirty,
@@ -180,9 +180,9 @@ class ModalField extends React.Component {
                 value={this.state.valueValue}
                 />
               <FlatButton
-                style={styles.rightAllign} 
-                label="Add Key Pair" 
-                secondary={true}  
+                style={styles.rightAllign}
+                label="Add Key Pair"
+                secondary={true}
                 onTouchTap={this.createNew}/>
             </div>
           </ListItem>
@@ -221,7 +221,7 @@ class ModalField extends React.Component {
       var functions = [];
       var self = this;
       if (this.state.dirty === dirty) {
-        // Update on server if changes have been made. 
+        // Update on server if changes have been made.
         functions.push(function(cb){
           self.serverRequest = $.ajax(config.apiHost + 'Items/' + self.props.childId, {
             method: 'PUT',
@@ -243,7 +243,7 @@ class ModalField extends React.Component {
             },
           });
         });
-        this.setState({ dirty: clean });  
+        this.setState({ dirty: clean });
       } else if (this.state.dirty === deleted) {
         // Send delete request if deleted.
         this.setState({dirty: clean});
@@ -258,7 +258,7 @@ class ModalField extends React.Component {
             }
           });
         });
-        
+
       } else if (this.state.dirty === neww) {
         // Send delete request if deleted.
         this.setState({dirty: clean});
@@ -283,8 +283,8 @@ class ModalField extends React.Component {
             }
           });
         });
-        
-      } 
+
+      }
       if(functions.length > 0){
         async.parallel(functions,function(){
           self.props.update();
