@@ -25,7 +25,7 @@ namespace Coevolution.Models
                 Type = "node",
                 Parent = this.Parent == null ? (int?)null : this.Parent.Id,
                 Deleted = this.Deleted,
-                Labels = this.Labels.Select(label => label.Content).ToList(),
+                Labels = this.Labels.Select(label => label.ToDto()).ToList(),
                 Notes = DtoNote.NoteListToDtos(this.Notes),
                 LeafChildren = this.Children.Where(n => n is Leaf).Select(n => (DtoLeaf) n.ToDto()).ToList(),
                 NodeChildren = this.Children.Where(n => n is Node).Select(n => n.ToDtoReduced()).ToList(),
