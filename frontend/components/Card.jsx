@@ -9,12 +9,10 @@ import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
 import Chip from 'material-ui/Chip';
 import ModalField from './ModalField.jsx';
+import ModalChip from './ModalChip.jsx';
 import labelManager from '../labelManager.js'
 
 const styles = {
-  chip: {
-    margin: 4,
-  },
   wrapper: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -110,12 +108,14 @@ class CardExampleExpandable extends React.Component {
       for (var label in labels) {
         const labelElement = labels[label];
         this.labels.push(
-          <Chip
+          <ModalChip
+            editable={this.props.editable}
             key={labelElement.Id}
-            style={styles.chip}
-          >
-            {labelElement.Content}
-          </Chip>
+            identifier={labelElement.Id}
+            value={labelElement.Content}
+            parentId={this.props.cardData.Id}
+            new={false}
+          />
         )
       }
     }
