@@ -20,10 +20,6 @@ class ModalChip extends React.Component {
 
     this.value = props.value;
 
-    if (this.props.new) {
-      console.log('constructor called on new chip');
-    }
-
     var dirty = this.props.new ? neww : clean;
 
     this.state = {
