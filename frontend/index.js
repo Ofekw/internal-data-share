@@ -44833,7 +44833,7 @@
 				addItem = _react2.default.createElement(
 					'div',
 					{ style: divStyle },
-					_react2.default.createElement(_TextField2.default, { id: 'newListField', style: itemStyle, errorText: this.state.errors, hintText: 'Hint Text' }),
+					_react2.default.createElement(_TextField2.default, { id: 'newListField', style: itemStyle, errorText: this.state.errors, hintText: 'Node Name' }),
 					_react2.default.createElement(_FlatButton2.default, { label: 'Add Node', style: buttonStyle, primary: true, onTouchTap: this.addNewNode })
 				);
 			}
@@ -49096,7 +49096,7 @@
 	        primary: true,
 	        onTouchTap: this.handleLabelDialogClose
 	      }), _react2.default.createElement(_FlatButton2.default, {
-	        label: 'Create',
+	        label: 'Add',
 	        primary: true,
 	        keyboardFocused: true,
 	        onTouchTap: this.handleLabelDialogSave
@@ -49127,7 +49127,7 @@
 	                _react2.default.createElement(
 	                  _Dialog2.default,
 	                  {
-	                    title: 'Dialog With Actions',
+	                    title: 'Label to add',
 	                    actions: actions,
 	                    modal: false,
 	                    open: _this2.state.open,

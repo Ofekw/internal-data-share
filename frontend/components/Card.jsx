@@ -217,7 +217,7 @@ class CardExampleExpandable extends React.Component {
         onTouchTap={this.handleLabelDialogClose}
         />,
       <FlatButton
-        label="Create"
+        label="Add"
         primary={true}
         keyboardFocused={true}
         onTouchTap={this.handleLabelDialogSave}
@@ -243,7 +243,7 @@ class CardExampleExpandable extends React.Component {
                 <span>
                   <FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.handleLabelDialogOpen}/>
                   <Dialog
-                    title="Dialog With Actions"
+                    title="Label to add"
                     actions={actions}
                     modal={false}
                     open={this.state.open}

@@ -32,10 +32,10 @@ var ListContainer = React.createClass({
 		// Gets the name of the list item
 		var text = $('#newListField').val();
 		// Show error if no name is provided
-		if (text === ""){	
+		if (text === ""){
 			this.setState({ errors: "This field is required"});
 		// Collect the data and posts it to the database
-		} else { 
+		} else {
 			var self = this;
 			var data = {
 				Key: text,
@@ -79,9 +79,9 @@ var ListContainer = React.createClass({
 
 		var addItem;
 		if (this.props.editable) {
-			addItem = 
+			addItem =
 				<div style={divStyle}>
-					<TextField id="newListField" style={itemStyle} errorText={this.state.errors} hintText="Hint Text"/>
+					<TextField id="newListField" style={itemStyle} errorText={this.state.errors} hintText="Node Name"/>
 					<FlatButton label="Add Node" style={buttonStyle} primary={true} onTouchTap={this.addNewNode} />
 				</div>
 		}
