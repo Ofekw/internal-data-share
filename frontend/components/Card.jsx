@@ -116,34 +116,34 @@ class CardExampleExpandable extends React.Component {
             value={labelElement.Content}
             parentId={this.props.cardData.Id}
             new={labelElement.new}
-          />
+            />
         )
       }
     }
 
     var itemStyle = {
-			width: '100%',
-			display: 'inline-block',
-			position: 'relative'
-		};
+      width: '100%',
+      display: 'inline-block',
+      position: 'relative'
+    };
 
-		var buttonStyle = {
-			display: 'inline-block',
-			position: 'relative',
-		};
+    var buttonStyle = {
+      display: 'inline-block',
+      position: 'relative',
+    };
 
     const actions = [
       <FlatButton
         label="Cancel"
         primary={true}
         onTouchTap={this.handleLabelDialogClose}
-      />,
+        />,
       <FlatButton
-        label="Submit"
+        label="Create"
         primary={true}
         keyboardFocused={true}
         onTouchTap={this.handleLabelDialogSave}
-      />,
+        />,
     ];
 
     return (
@@ -158,6 +158,12 @@ class CardExampleExpandable extends React.Component {
             // Add the labels
             return label;
           })}
+          {(() => {
+            // Immediately invoked function to add "New" button if in editable mode.
+            if (this.props.editable) {
+              return (<FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.handleLabelDialogOpen}/>);
+            }
+          })() }
         </div>
         <List ref="theList">
           {this.children.map(function (child, index) {
@@ -171,21 +177,20 @@ class CardExampleExpandable extends React.Component {
             if (this.props.editable) {
               return <div>
                 <FlatButton style={buttonStyle} label="Add Key Pair" secondary={true}  onTouchTap={this.createNewField}/>
-                <FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.handleLabelDialogOpen}/>
                 <Dialog
                   title="Dialog With Actions"
                   actions={actions}
                   modal={false}
                   open={this.state.open}
                   onRequestClose={this.handleLabelDialogClose}
-                >
-                <div>
-                  <SelectField value={this.state.selectValue} onChange={this.handleLabelChange}>
-                    {this.state.labels && this.state.labels.map(function (label) {
-                      return (<MenuItem key={label.Id} value={label.Id} primaryText={label.Content} />);
-                    })}
-                  </SelectField>
-                </div>
+                  >
+                  <div>
+                    <SelectField value={this.state.selectValue} onChange={this.handleLabelChange}>
+                      {this.state.labels && this.state.labels.map(function (label) {
+                        return (<MenuItem key={label.Id} value={label.Id} primaryText={label.Content} />);
+                      })}
+                    </SelectField>
+                  </div>
                 </Dialog>
               </div>
             }
