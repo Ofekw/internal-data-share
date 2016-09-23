@@ -108,7 +108,7 @@ var ParentContainer = React.createClass({
 							</span>
 						})
 					}
-					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
+					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide} handleClick={this.handleClick}/>
 					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
 				</Paper >
 			)
