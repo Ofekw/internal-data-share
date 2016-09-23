@@ -87,7 +87,7 @@ namespace Coevolution.Migrations
                     Labels = new List<Label>() { bankLabel },
                     Parent = null,
                     Key = "BNZ",
-                    Notes = new List<Note>() {new Note() {Content = "CreatedBySeedMethod", CreatedOn = DateTime.Now, UpdatedOn = DateTime.Now} },
+                    Notes = new List<Note>() {new Note("CreatedBySeedMethod")},
                     UpdatedOn = DateTime.Now,
                     CreatedOn = DateTime.Now
                 }
@@ -99,18 +99,13 @@ namespace Coevolution.Migrations
                 {
                     Id = 4,
                     Deleted = false,
-                    Labels = new List<Label>() {passwordLabel},
+                    Labels = new List<Label>() { passwordLabel },
                     Parent = context.Items.Find(1),
                     Key = "Email",
                     Notes =
                         new List<Note>()
                         {
-                            new Note()
-                            {
-                                Content = "CreatedBySeedMethod",
-                                CreatedOn = DateTime.Now,
-                                UpdatedOn = DateTime.Now
-                            }
+                            new Note("CreatedBySeedMethod")
                         },
                     Value = "example@testEmail.com",
                     UpdatedOn = DateTime.Now,
@@ -120,18 +115,13 @@ namespace Coevolution.Migrations
                 {
                     Id = 5,
                     Deleted = false,
-                    Labels = new List<Label>() {outOfDateLabel},
+                    Labels = new List<Label>() { outOfDateLabel },
                     Parent = context.Items.Find(1),
                     Key = "Password",
                     Notes =
                         new List<Note>()
                         {
-                            new Note()
-                            {
-                                Content = "CreatedBySeedMethod",
-                                CreatedOn = DateTime.Now,
-                                UpdatedOn = DateTime.Now
-                            }
+                            new Note("CreatedBySeedMethod")
                         },
                     Value = "ExamplePassword",
                     UpdatedOn = DateTime.Now,
@@ -149,7 +139,7 @@ namespace Coevolution.Migrations
                       Notes =
                         new List<Note>()
                         {
-                            new Note() {Content = "CreatedBySeedMethod", CreatedOn = DateTime.Now, UpdatedOn = DateTime.Now}
+                            new Note("CreatedBySeedMethod")
                         },
                       UpdatedOn = DateTime.Now,
                       CreatedOn = DateTime.Now
@@ -167,12 +157,7 @@ namespace Coevolution.Migrations
                     Notes =
                         new List<Note>()
                         {
-                            new Note()
-                            {
-                                Content = "CreatedBySeedMethod",
-                                CreatedOn = DateTime.Now,
-                                UpdatedOn = DateTime.Now
-                            }
+                            new Note("CreatedBySeedMethod")
                         },
                     Value = "Admin",
                     UpdatedOn = DateTime.Now,
@@ -188,12 +173,7 @@ namespace Coevolution.Migrations
                     Notes =
                         new List<Note>()
                         {
-                            new Note()
-                            {
-                                Content = "CreatedBySeedMethod",
-                                CreatedOn = DateTime.Now,
-                                UpdatedOn = DateTime.Now
-                            }
+                            new Note("CreatedBySeedMethod")
                         },
                     Value = "ExamplePassword",
                     UpdatedOn = DateTime.Now,

@@ -186,6 +186,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DtoItemReduced.cs" />
+    <Compile Include="Models\DtoLabel.cs" />
     <Compile Include="Models\DtoNote.cs" />
     <Compile Include="Models\DtoSearchItem.cs" />
     <Compile Include="Models\JsonCreationConverter.cs" />

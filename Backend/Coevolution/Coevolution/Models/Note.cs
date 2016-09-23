@@ -18,6 +18,18 @@ namespace Coevolution.Models
 
         public DateTime UpdatedOn { get; set; }
 
+        public Note()
+        {
+
+        }
+
+        public Note(string content)
+        {
+            this.Content = content;
+            CreatedOn = DateTime.Now;
+            UpdatedOn = DateTime.Now;
+        }
+
         public DtoNote ToDto()
         {
             return new DtoNote()

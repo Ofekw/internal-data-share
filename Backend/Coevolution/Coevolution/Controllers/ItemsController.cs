@@ -154,8 +154,7 @@ namespace Coevolution.Controllers
         public IHttpActionResult PutItem(int id, String noteContent)
         {
             //Create note from string
-            Note note = new Note();
-            note.Content = noteContent;
+            Note note = new Note(noteContent);
 
             //Find specified item
             Item item = db.Items.Find(id);
