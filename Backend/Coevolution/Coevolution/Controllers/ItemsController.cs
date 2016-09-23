@@ -93,9 +93,13 @@ namespace Coevolution.Controllers
             }
 
             //Check id matches
+            if (dtoItem == null)
+            {
+                return BadRequest("Must supply item in body of request.");
+            }
             if (id != dtoItem.Id)
             {
-                return BadRequest();
+                return BadRequest("Must specify if when putting an item.");
             }
 
             //Get the itemfrom the db
@@ -240,6 +244,16 @@ namespace Coevolution.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (dtoItem == null)
+            {
+                return BadRequest("Must supply item in body of request.");
+            }
+
+            if (dtoItem.Key == null)
+            {
+                return BadRequest("Must supply key when creating item.");
             }
 
             //Get parent item
