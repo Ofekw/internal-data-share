@@ -168,7 +168,33 @@ namespace Coevolution.Controllers
             db.SaveChanges();
             return Ok(note.Id);
         }
-        
+
+
+        // PUT: api/Items/5/Note
+        /// <summary>
+        /// Update comment of an existing Node
+        /// </summary>
+        [Route("api/Items/{id}/Note")]
+        public IHttpActionResult PutNoteItem(int id, [FromBody] string noteContent)
+        {
+            //Find specified item
+            Item item = db.Items.Find(id);
+            if (item == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            if(item is Leaf)
+            {
+                return StatusCode(HttpStatusCode.BadRequest);
+            }
+
+            Node node = (Node)item;
+            node.Note = noteContent;
+            db.SaveChanges();
+            return Ok();
+        }
+
         /// <summary>
         /// Add a label to an existing Item
         /// </summary>
