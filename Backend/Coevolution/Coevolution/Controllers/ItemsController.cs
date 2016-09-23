@@ -83,7 +83,7 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Update an Item with a specified Id
         /// </summary>
-        [ResponseType(typeof(void))]
+        [ResponseType(typeof(DtoItem))]
         public IHttpActionResult PutItem(int id, DtoItem dtoItem)
         {
             //Check dto received is valid
@@ -143,14 +143,14 @@ namespace Coevolution.Controllers
 
             item.Updated();
             db.SaveChanges();
-            return Ok();
+            return Ok(item.ToDto());
         }
 
         // PUT: api/Items/5?noteContent=NewNote
         /// <summary>
         /// Add a note to an existing Item
         /// </summary>
-        [ResponseType(typeof(int))]
+        [ResponseType(typeof(DtoItem))]
         public IHttpActionResult PutItem(int id, String noteContent)
         {
             //Create note from string
@@ -166,13 +166,13 @@ namespace Coevolution.Controllers
             //Add note to item
             item.Notes.Add(note);
             db.SaveChanges();
-            return Ok(note.Id);
+            return Ok(item.ToDto());
         }
         
         /// <summary>
         /// Add a label to an existing Item
         /// </summary>
-        [ResponseType(typeof(void))]
+        [ResponseType(typeof(DtoItem))]
         public IHttpActionResult PutItem(int id, int labelId)
         {
             //Find the item with the given id
@@ -198,7 +198,7 @@ namespace Coevolution.Controllers
             //Add the label to the item
             item.Labels.Add(label);
             db.SaveChanges();
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(item.ToDto());
         }
 
         // POST: api/Items
