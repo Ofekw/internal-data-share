@@ -13,5 +13,14 @@ namespace Coevolution.Models
         public int Id { get; set; }
         public List<Item> Items { get; set; }
         public String Content { get; set; }
+
+        public DtoLabel ToDto()
+        {
+            return new DtoLabel()
+            {
+                Id = this.Id,
+                Content = this.Content
+            };
+        }
     }
 }

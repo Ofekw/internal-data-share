@@ -314,7 +314,7 @@ namespace Coevolution.Controllers
             item.Labels.Remove(label);
 
             db.SaveChanges();
-            return Ok(item);
+            return Ok();
         }
 
         // DELETE: api/Items/5
@@ -347,7 +347,7 @@ namespace Coevolution.Controllers
             db.Notes.Remove(note);
 
             db.SaveChanges();
-            return Ok(item);
+            return Ok();
         }
 
         // Get: api/Items/Search/Note/{query}
@@ -381,10 +381,10 @@ namespace Coevolution.Controllers
         public IHttpActionResult GetSearchLabel(Label label)
         {
             var items = db.Items.Include(m => m.Labels).Where(x => x.Labels.Contains(label)).ToArray();
-            var dtos = new List<DtoItem>();
+            var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
             {
-                dtos.Add(item.ToDto());
+                dtos.Add(new DtoSearchItem(item));
             }
             return Ok(dtos);
         }
@@ -401,10 +401,10 @@ namespace Coevolution.Controllers
         {
             query = Regex.Escape(query);
             var items = db.Items.Where(x => x.Key.Contains(query)).ToArray();
-            var dtos = new List<DtoItem>();
+            var dtos = new List<DtoSearchItem>();
             foreach(var item in items)
             {
-                dtos.Add(item.ToDto());
+                dtos.Add(new DtoSearchItem(item));
             }
             return Ok(dtos);
         }
@@ -423,7 +423,7 @@ namespace Coevolution.Controllers
             var items = db.Items.Where(x => x.Parent != null).ToList();
 
                 //.Where(x => x.Value.Contains(query)).ToArray();
-            var dtos = new List<DtoItem>();
+            var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
             {
                 if (item is Leaf)
@@ -431,7 +431,7 @@ namespace Coevolution.Controllers
                     var leaf = (Leaf)item;
                     if (leaf.Value.Contains(query))
                     {
-                        dtos.Add(leaf.ToDto());
+                        dtos.Add(new DtoSearchItem(leaf));
                     }
                 }
                 

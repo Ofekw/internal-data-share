@@ -29,11 +29,12 @@ namespace Coevolution.Models
                 Type = "leaf",
                 Parent = this.Parent.Id,
                 Deleted = this.Deleted,
-                Labels = this.Labels.Select(label => label.Content).ToList(),
+                Labels = this.Labels.Select(label => label.ToDto()).ToList(),
                 Notes = DtoNote.NoteListToDtos(this.Notes),
                 Value = this.Value,
                 CreatedOn = this.CreatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
-                UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture)
+                UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
+                Path = this.Path();
             };
         }
     }
