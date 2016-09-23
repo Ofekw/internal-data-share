@@ -24,7 +24,7 @@ class CardExampleExpandable extends React.Component {
   }
 
   update = () => {
-    this.props.handleClick(this.props.cardData,false);
+    this.props.handleClick(this.props.cardData, false);
   }
 
   noteChange(event) {
@@ -33,15 +33,15 @@ class CardExampleExpandable extends React.Component {
   }
 
   // Add a new child.
-  createNew = (key,value) => {
+  createNew = (key, value) => {
     this.editable = false;
     this.props.cardData.LeafChildren.pop();
     var uid = new Date().getTime();
     this.props.cardData.LeafChildren.push({
       'Key': key,
       'Value': value,
-      'newId' : key + uid,
-      'new' : true
+      'newId': key + uid,
+      'new': true
     });
     this.forceUpdate();
   }
@@ -57,10 +57,9 @@ class CardExampleExpandable extends React.Component {
         'Content-Type': 'application/json'
       },
       success: function (result) {
-        debugger;
       },
       failure: function (result) {
-        console.log(result)
+        console.log(result);
       },
     });
   }
@@ -70,12 +69,12 @@ class CardExampleExpandable extends React.Component {
       return <div></div>
     }
 
-    if(this.props.cardData) {
-      if(this.editable){
+    if (this.props.cardData) {
+      if (this.editable) {
         this.props.cardData.LeafChildren.pop();
       }
       // Edit mode
-      if(this.props.editable){
+      if (this.props.editable) {
         this.editable = true;
         this.props.cardData.LeafChildren.push({
           'Key': '',
@@ -84,93 +83,81 @@ class CardExampleExpandable extends React.Component {
         });
       }
 
-    if (this.state.notesDirty && !this.props.editable) {
+      if (this.state.notesDirty && !this.props.editable) {
         this.addNewNotes();
-    }
+      }
 
-    if (this.props.cardData) {
-      this.title = this.props.cardData.Key;
-      const leafChildren = this.props.cardData.LeafChildren;
+      if (this.props.cardData) {
+        this.title = this.props.cardData.Key;
+        const leafChildren = this.props.cardData.LeafChildren;
 
-      this.children = [];
+        this.children = [];
 
-      for (var child in leafChildren) {
-        // Add all the children.
-        if (leafChildren.hasOwnProperty(child)) {
-          const childElement = leafChildren[child];
-          this.children.push(
-            <ModalField new={childElement.new} 
-            add = {childElement.add}
-            editable={this.props.editable} 
-            key={childElement.Id || childElement.newId || childElement.add} 
-            childId={childElement.Id} 
-            identifier={childElement.Key} 
-            value={childElement.Value} 
-            parentId={this.props.cardData.Id} 
-            createNew = {this.createNew}
-            update={this.update}/>
-          );
+        for (var child in leafChildren) {
+          // Add all the children.
+          if (leafChildren.hasOwnProperty(child)) {
+            const childElement = leafChildren[child];
+            this.children.push(
+              <ModalField new={childElement.new}
+                add = {childElement.add}
+                editable={this.props.editable}
+                key={childElement.Id || childElement.newId || childElement.add}
+                childId={childElement.Id}
+                identifier={childElement.Key}
+                value={childElement.Value}
+                parentId={this.props.cardData.Id}
+                createNew = {this.createNew}
+                update={this.update}/>
+            );
+          }
         }
       }
-    }
 
-    var divStyle = {
-      display: 'flex',
-    };
+      var divStyle = {
+        display: 'flex',
+      };
 
-    var itemStyle = {
-      marginLeft: 10,
-      width: '85%',
-      display: 'inline-block',
-      position: 'relative'
-    };
+      var itemStyle = {
+        marginLeft: 10,
+        width: '85%',
+        display: 'inline-block',
+        position: 'relative'
+      };
 
-    var buttonStyle = {
-      display: 'inline-block',
-      position: 'relative',
-      width: '150px'
-    };
+      var buttonStyle = {
+        display: 'inline-block',
+        position: 'relative',
+        width: '150px'
+      };
 
-    var addKeyPairsButton =
-      <div>
-        <FlatButton label="Add Label" secondary={true}  onTouchTap={this.createNew}/>
-        <br/>
-      </div >
-
-    var textArea =
-      <div style={divStyle}>
-        <TextField id="nodeComment" disabled={!this.props.editable} ref="nodeComment" style={itemStyle} hintText="Comment" multiLine={true} value={this.state.nodeComment} onChange={this.noteChange.bind(this) }/>
-      </div>
-
-
-    return (
-      <Card>
-        <CardHeader
-          title={this.title}
-          actAsExpander={false}
-          showExpandableButton={false}
-          />
-        <div>
-          <List ref="theList">
-            {this.children.map(function (child, index) {
-              // Add all the children.
-              return child;
-            }) }
-          </List>
+      var textArea =
+        <div style={divStyle}>
+          <TextField floatingLabelText="Note" id="nodeComment" disabled={!this.props.editable} ref="nodeComment" style={itemStyle} hintText="Note" multiLine={true} value={this.state.nodeComment} onChange={this.noteChange.bind(this) }/>
         </div>
-        <CardActions>
-          {(() => {
-            // Immediately invoked function to add "New" button if in editable mode.
-            if (this.props.editable) {
-              return <div> {addKeyPairsButton} {textArea} </div>
-            }else{
-             return <div> {textArea} </div>
-            }
-          })() }
-        </CardActions>
-      </Card >
 
-    );
+
+      return (
+        <Card>
+          <CardHeader
+            title={this.title}
+            actAsExpander={false}
+            showExpandableButton={false}
+            />
+          <div>
+            <List ref="theList">
+              {this.children.map(function (child, index) {
+                // Add all the children.
+                return child;
+              }) }
+            </List>
+          </div>
+          <CardActions>
+            return <div> {textArea} </div>
+          </CardActions>
+        </Card >
+
+      );
+    }
   }
 }
 
