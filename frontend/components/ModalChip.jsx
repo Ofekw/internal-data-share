@@ -60,7 +60,7 @@ class ModalChip extends React.Component {
         this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.parentId + '/?labelId=' + this.props.identifier, {
           method: 'DELETE',
           complete: function (result) {
-            if (result.status !== 200){
+            if (result.status < 200 || result.status >= 300) {
               console.error(result);
             }
           }
@@ -75,7 +75,7 @@ class ModalChip extends React.Component {
             'Content-Type': 'application/json'
           },
           complete: function (result) {
-            if (result.status !== 200){
+            if (result.status < 200 || result.status >= 300) {
               console.error(result);
             }
           }
