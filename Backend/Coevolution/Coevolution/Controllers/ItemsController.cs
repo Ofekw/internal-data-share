@@ -314,7 +314,7 @@ namespace Coevolution.Controllers
             item.Labels.Remove(label);
 
             db.SaveChanges();
-            return Ok(item);
+            return Ok();
         }
 
         // DELETE: api/Items/5
@@ -347,7 +347,7 @@ namespace Coevolution.Controllers
             db.Notes.Remove(note);
 
             db.SaveChanges();
-            return Ok(item);
+            return Ok();
         }
 
         // Get: api/Items/Search/Note/{query}

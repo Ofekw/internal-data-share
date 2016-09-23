@@ -19,6 +19,6 @@ namespace Coevolution.Models
         /// <summary>
         /// List of Item labels
         /// </summary>
-        public List<string> Labels { get; set; }
+        public List<DtoLabel> Labels { get; set; }
     }
 }

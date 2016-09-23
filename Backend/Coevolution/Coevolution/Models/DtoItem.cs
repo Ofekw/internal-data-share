@@ -37,7 +37,7 @@ namespace Coevolution.Models
         /// <summary>
         /// List of Item labels
         /// </summary>
-        public List<string> Labels { get; set; }
+        public List<DtoLabel> Labels { get; set; }
         /// <summary>
         /// List of Item notes
         /// </summary>
@@ -53,7 +53,7 @@ namespace Coevolution.Models
 
         public DtoItem()
         {
-            Labels = new List<String>();
+            Labels = new List<DtoLabel>();
             Notes = new List<DtoNote>();
         }
 

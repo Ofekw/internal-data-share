@@ -52,7 +52,7 @@ namespace Coevolution.Models
             {
                 Id = this.Id,
                 Key = this.Key,
-                Labels = this.Labels.Select(label => label.Content).ToList(),
+                Labels = this.Labels.Select(label => label.ToDto()).ToList(),
             };
         }
     }
