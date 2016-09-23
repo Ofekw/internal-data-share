@@ -9,9 +9,12 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Coevolution.Models;
+using System.Web.Http.Cors;
 
 namespace Coevolution.Controllers
 {
+    //Enable Cross Origin Resource Sharing for local development
+    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
     public class LabelsController : ApiController
     {
         private ModelContext db = new ModelContext();
