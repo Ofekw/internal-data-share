@@ -18,7 +18,7 @@ namespace Coevolution.Models
         /// </summary>
         public virtual List<DtoItemReduced> NodeChildren { get; set; }
 
-        public string Comment { get; set; }
+        public string Note { get; set; }
 
         public DtoNode()
             : base()
@@ -34,7 +34,7 @@ namespace Coevolution.Models
             {
                 Key = this.Key,
                 Parent = parent,
-                Comment = this.Comment,
+                Note = this.Note,
                 Deleted = this.Deleted,
                 Notes = DtoNote.DtoNoteListToDomainObjecs(this.Notes),
                 //CreatedOn = DateTime.Parse(this.CreatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind),

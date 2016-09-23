@@ -10,7 +10,7 @@ namespace Coevolution.Models
     {
         public virtual List<Item> Children { get; set; }
 
-        public string Comment { get; set; }
+        public string Note { get; set; }
 
         public Node() : base()
         {
@@ -27,7 +27,7 @@ namespace Coevolution.Models
                 Type = "node",
                 Parent = this.Parent == null ? (int?)null : this.Parent.Id,
                 Deleted = this.Deleted,
-                Comment = this.Comment,
+                Note = this.Note,
                 Labels = this.Labels.Select(label => label.ToDto()).ToList(),
                 Notes = DtoNote.NoteListToDtos(this.Notes),
                 LeafChildren = this.Children.Where(n => n is Leaf).Select(n => (DtoLeaf) n.ToDto()).ToList(),
