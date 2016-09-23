@@ -9,6 +9,7 @@ import TextField from 'material-ui/TextField';
 import $ from 'jquery';
 import Clipboard from 'clipboard-js';
 import config from '../config.js';
+import async from '../node_modules/async/dist/async.min.js';
 
 // Icons
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
@@ -40,6 +41,7 @@ const clean = 'clean';
 const dirty = 'dirty';
 const deleted = 'deleted';
 const neww = 'new';
+const newDeleted = 'newDeleted'
 
 // Key value text field that can be toggled between view and edit modes.
 class ModalField extends React.Component {
@@ -49,9 +51,7 @@ class ModalField extends React.Component {
     this.key = props.identifier;
     this.value = props.value;
 
-    var dirty = this.props.new ? neww : dirty;
-
-    console.log(dirty);
+    var dirty = this.props.new ? neww : undefined;
 
     this.state = {
       dirty: dirty,
@@ -83,6 +83,7 @@ class ModalField extends React.Component {
   handleKeyChange = (event) => {
     this.key = event.target.value;
 
+    this.setState({keyValue:this.key});
     // Set state to dirty so we know to save this change.
     if (this.state.dirty !== neww) {
       this.setState({dirty: dirty});
@@ -92,6 +93,7 @@ class ModalField extends React.Component {
   handleValueChange = (event) => {
     this.value = event.target.value;
 
+    this.setState({valueValue: this.value})
     // Set state to dirty so we know to save this change.
     if (this.state.dirty !== neww) {
       this.setState({dirty: dirty});
@@ -99,6 +101,14 @@ class ModalField extends React.Component {
   }
 
   toggleDeleted = (event) => {
+    if(this.state.dirty === neww){
+      this.setState({dirty:newDeleted});
+      return;
+    }
+    if(this.state.dirty === newDeleted){
+      this.setState({dirty: neww})
+      return;
+    }
     if (this.state.dirty !== deleted) {
       // Set state to deleted so we know to save this change.
       this.setState({ dirty: deleted });
@@ -118,8 +128,66 @@ class ModalField extends React.Component {
     );
   }
 
+  createNew = () => {
+    // Does error checking
+    var key = this.state.keyValue;
+    var value = this.state.valueValue;
+    if(!key){
+      this.setState({keyError:"Input a key"});
+    }
+    if(!value){
+      this.setState({valueError:"Input a value"});
+    }
+    if(!key || !value){
+      return;
+    }
+
+    this.setState({
+      keyValue: '',
+      valueValue: ''
+    });
+    this.props.createNew(key,value);
+  }
+
   render() {
+    var buttonStyle = {
+      display: 'inline-block',
+      position: 'relative',
+    };
+
     if (this.props.editable) {
+      // For adding a new item
+      if (this.props.add){
+        return (
+          <ListItem>
+            <div>
+              <TextField
+                name="key"
+                floatingLabelText="Key"
+                style={styles.keyField}
+                onChange={this.handleKeyChange}
+                disabled={this.state.dirty === deleted}
+                errorText={this.state.keyError}
+                value={this.state.keyValue}
+                />
+              <TextField
+                name="value"
+                floatingLabelText="Value"
+                style={styles.keyField}
+                onChange={this.handleValueChange}
+                disabled={this.state.dirty === deleted}
+                errorText={this.state.valueError}
+                value={this.state.valueValue}
+                />
+              <FlatButton
+                style={styles.rightAllign} 
+                label="Add Key Pair" 
+                secondary={true}  
+                onTouchTap={this.createNew}/>
+            </div>
+          </ListItem>
+        )
+      }
       // Render editable field
       return (
         <ListItem>
@@ -130,7 +198,7 @@ class ModalField extends React.Component {
               defaultValue={this.key}
               style={styles.keyField}
               onChange={this.handleKeyChange}
-              disabled={this.state.dirty === deleted}
+              disabled={this.state.dirty === deleted || this.state.dirty === newDeleted}
               />
             <TextField
               name="value"
@@ -138,7 +206,7 @@ class ModalField extends React.Component {
               style={styles.keyField}
               defaultValue={this.value}
               onChange={this.handleValueChange}
-              disabled={this.state.dirty === deleted}
+              disabled={this.state.dirty === deleted || this.state.dirty === newDeleted}
               />
             <FlatButton
               icon={this.state.dirty === deleted ? <Undo/> : <Delete />}
@@ -150,61 +218,84 @@ class ModalField extends React.Component {
       );
     } else {
       // Render viewable field
+      var functions = [];
+      var self = this;
       if (this.state.dirty === dirty) {
-        // Update on server if changes have been made.
-        this.setState({ dirty: clean });
-        this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.childId, {
-          method: 'PUT',
-          data: JSON.stringify({
-            "Id": parseInt(this.props.childId),
-            "Key": this.key,
-            "Value": this.value,
-            "Parent": this.props.parentId,
-            "Type": "leaf"
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          complete: function (result) {
-            if (result.status !== 200){
-              console.error(result);
-            }
-          },
+        // Update on server if changes have been made. 
+        functions.push(function(cb){
+          self.serverRequest = $.ajax(config.apiHost + 'Items/' + self.props.childId, {
+            method: 'PUT',
+            data: JSON.stringify({
+              "Id": parseInt(self.props.childId),
+              "Key": self.key,
+              "Value": self.value,
+              "Parent": self.props.parentId,
+              "Type": "leaf"
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            complete: function (result) {
+              if (result.status !== 200){
+                console.error(result);
+              }
+              cb();
+            },
+          });
         });
+        this.setState({ dirty: clean });  
       } else if (this.state.dirty === deleted) {
         // Send delete request if deleted.
         this.setState({dirty: clean});
-        this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.childId, {
-          method: 'DELETE',
-          complete: function (result) {
-            if (result.status !== 200){
-              console.error(result);
+        functions.push(function(cb){
+          self.serverRequest = $.ajax(config.apiHost + 'Items/' + self.props.childId, {
+            method: 'DELETE',
+            complete: function (result) {
+              if (result.status !== 200){
+                console.error(result);
+              }
+              cb();
             }
-          }
+          });
         });
+        
       } else if (this.state.dirty === neww) {
         // Send delete request if deleted.
         this.setState({dirty: clean});
-        this.serverRequest = $.ajax(config.apiHost + 'Items/', {
-          method: 'POST',
-          data: JSON.stringify({
-            "Key": this.key,
-            "Value": this.value,
-            "Parent": this.props.parentId,
-            "Type": "leaf"
-          }),
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          complete: function (result) {
-            if (result.status !== 200){
-              console.error(result);
+        functions.push(function(cb){
+          self.serverRequest = $.ajax(config.apiHost + 'Items/', {
+            method: 'POST',
+            data: JSON.stringify({
+              "Key": self.key,
+              "Value": self.value,
+              "Parent": self.props.parentId,
+              "Type": "leaf"
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            complete: function (result) {
+              var status = result.status + '';
+              if (status.substring(0,1) !== '2'){
+                console.error(result);
+              }
+              cb();
             }
-          }
+          });
+        });
+        
+      } 
+      if(functions.length > 0){
+        async.parallel(functions,function(){
+          self.props.update();
         });
       }
+      var hide = {display:'block'}
+      if(this.state.dirty === newDeleted) {
+        hide = {display:'none'}
+      }
       return (
-        <ListItem primaryText={this.value} secondaryText={this.key} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard}></ListItem>
+        <ListItem primaryText={this.value} secondaryText={this.key} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard} style={hide}></ListItem>
       );
     }
   }
