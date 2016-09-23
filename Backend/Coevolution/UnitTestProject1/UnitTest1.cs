@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.SelfHost;
 using System.Net.Http.Headers;
@@ -11,6 +10,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Coevolution.Models;
 
 using Coevolution.Controllers;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace UnitTestProject1
 {
@@ -27,9 +28,9 @@ namespace UnitTestProject1
         {
             using (var db = new ModelContext())
             {
-                db.Items.RemoveRange(db.Items);
-                db.Labels.RemoveRange(db.Labels);
-                db.Notes.RemoveRange(db.Notes);
+                db.Items.RemoveRange(db.Items.Where(x => x.Id > 8));
+                //db.Labels.RemoveRange(db.Labels.Where(x => x.Id );
+                db.Notes.RemoveRange(db.Notes.Where(x => x.Id > 6));
                 db.SaveChanges();
             }
 
@@ -82,6 +83,104 @@ namespace UnitTestProject1
                 MatchOnce(result, "\"UpdatedOn\":\\s*\"[0123456789\\-T:]+\"");
             }
 
+        }
+
+        [TestMethod]
+        public void TestPostLabel()
+        {
+            var requestJson = "{\"Content\": \"Label to be created by TestPostLabel!\"}";
+            HttpRequestMessage request = PostLabel(requestJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                MatchOnce(result, "\"Id\":\\s*[0-9]+");
+                MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestPostLabel!\"");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetAllLabels()
+        {
+            int labelID;
+            var requestJson = "{\"Content\": \"Label to be created by TestGetAllLabels!\"}";
+            HttpRequestMessage request = PostLabel(requestJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/labels/");
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                MatchOnce(result, "^\\[");
+                MatchOnce(result, "\"Id\":\\s*" + labelID);
+                MatchOnce(result, "\"Items\":\\s*\\[\\]");
+                MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestGetAllLabels!\"");
+                MatchOnce(result, "\\]$");
+
+            }
+
+        }
+
+        [TestMethod]
+        public void TestDeleteLabel()
+        {
+            int labelID;
+            var requestJson = "{\"Content\": \"Label to be created by TestGetAllLabels!\"}";
+            HttpRequestMessage request = PostLabel(requestJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost:55426/api/labels/"+ labelID);
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            }
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/labels/");
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Regex label = new Regex("\"Id\":\\s*" + labelID);
+                Assert.IsFalse(label.Match(result).Success);
+            }
         }
 
         [TestMethod]
@@ -372,6 +471,128 @@ namespace UnitTestProject1
                 Assert.IsTrue(reg.Match(fourthResult).Success);
 
             }
+        }
+
+        [TestMethod]
+        public void TestSearchNodeKey()
+        {
+
+            String result;
+
+            HttpRequestMessage request = SearchKey("Kiwibank");
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                result = task.Result;
+                var item = JsonConvert.DeserializeObject<List<DtoSearchItem>>(result)[0];
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                Assert.AreEqual(1, item.Id);
+                Assert.AreEqual(false, item.IsLeaf);
+                Assert.AreEqual(null, item.Value);
+                Assert.AreEqual("KiwiBank", item.Key);
+                Assert.AreEqual(1, item.Path[0].Key);
+            }
+        }
+
+        [TestMethod]
+        public void TestSearchLeafKey()
+        {
+
+            String result;
+
+            HttpRequestMessage request = SearchKey("Login");
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                result = task.Result;
+                var item = JsonConvert.DeserializeObject<List<DtoSearchItem>>(result)[0];
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                //Actual node id is 7, but return parent because its a leaf
+                Assert.AreEqual(6, item.Id);
+                Assert.AreEqual(true, item.IsLeaf);
+                Assert.AreEqual("Login", item.Key);
+                Assert.AreEqual("Admin", item.Value);
+                //two parents
+                Assert.AreEqual(1, item.Path[0].Key);
+                Assert.AreEqual(6, item.Path[1].Key);
+            }
+        }
+
+        [TestMethod]
+        public void TestSearchLeafValue()
+        {
+
+            String result;
+            HttpRequestMessage request = SearchValue("testEmail");
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                result = task.Result;
+                var item = JsonConvert.DeserializeObject<List<DtoSearchItem>>(result)[0];
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                //Actual node id is 7, but return parent because its a leaf
+                Assert.AreEqual(1, item.Id);
+                Assert.AreEqual(true, item.IsLeaf);
+                Assert.AreEqual("Email", item.Key);
+                Assert.AreEqual("example@testEmail.com", item.Value);
+                Assert.AreEqual(1, item.Path[0].Key);
+            }
+        }
+
+        [TestMethod]
+        public void TestSearchLabel()
+        {
+
+            String result;
+            HttpRequestMessage request = SearchLabel(1);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                result = task.Result;
+                var items = JsonConvert.DeserializeObject<List<DtoSearchItem>>(result);
+                var item = items[0];
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                Assert.AreEqual(3, items.Count);
+                Assert.AreEqual(1, item.Id);
+                Assert.AreEqual(false, item.IsLeaf);
+                Assert.AreEqual(null, item.Value);
+                Assert.AreEqual("KiwiBank", item.Key);
+                Assert.AreEqual(1, item.Path[0].Key);
+            }
+        }
+
+        private HttpRequestMessage SearchKey(string query)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/Items/Search/Key/"+query);
+            return request;
+        }
+
+        private HttpRequestMessage SearchValue(string query)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/Items/Search/Value/" + query);
+            return request;
+        }
+
+        private HttpRequestMessage SearchLabel(int labelId)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/Items/Search/Label/" + labelId);
+            return request;
+        }
+
+
+        private HttpRequestMessage PostLabel(String jsonString)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/labels");
+            PopulateBody(request, jsonString);
+            return request;
         }
 
         private HttpRequestMessage PostItem(String jsonString)

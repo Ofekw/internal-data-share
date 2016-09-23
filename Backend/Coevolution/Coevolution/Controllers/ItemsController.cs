@@ -70,7 +70,7 @@ namespace Coevolution.Controllers
 
                 var tempList = nodeItem.Children;
 
-                nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
+                nodeItem.Children = db.Items.Include("Labels").Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
 
@@ -214,7 +214,7 @@ namespace Coevolution.Controllers
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
-
+            
             //Check if already labelled
             if (item.Labels.Contains(label))
             {
@@ -223,6 +223,8 @@ namespace Coevolution.Controllers
 
             //Add the label to the item
             item.Labels.Add(label);
+            //Add the item to the label
+            label.Items.Add(item);
             db.SaveChanges();
             return Ok(item.ToDto());
         }
@@ -332,11 +334,12 @@ namespace Coevolution.Controllers
             }
 
             //Remove label from item
-            if (!item.Labels.Contains(label))
+            if (!(item.Labels.Contains(label) || (label.Items.Contains(item))))
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
             item.Labels.Remove(label);
+            label.Items.Remove(item);
 
             db.SaveChanges();
             return Ok();
@@ -400,14 +403,16 @@ namespace Coevolution.Controllers
         /// Search all items for label
         /// Returns an array of ids of the nodes containing the string
         /// </summary>
-        /// <param name="label">The id of the label being searched for</param>
+        /// <param name="id">The id of the label being searched for</param>
         /// 
-        [Route("api/Items/Search/Label/{label}")]
-        public IHttpActionResult GetSearchLabel(Label label)
+        [Route("api/Items/Search/Label/{id}")]
+        public IHttpActionResult GetSearchLabel(int id)
         {
-            var items = db.Items.Include(m => m.Labels).Where(x => x.Labels.Contains(label) && x.Deleted == false).ToArray();
+            var label = db.Labels.Find(id);
+            var items = db.Items.Include(m => m.Labels).ToArray();
+            var containsLabel = items.Where(x => x.Labels.Contains(label) && x.Deleted == false);
             var dtos = new List<DtoSearchItem>();
-            foreach (var item in items)
+            foreach (var item in containsLabel)
             {
                 dtos.Add(new DtoSearchItem(item));
             }

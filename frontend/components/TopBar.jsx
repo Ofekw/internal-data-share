@@ -19,12 +19,11 @@ const TopBar = React.createClass({
   },
 
 // Resets search bar 
-/*  componentWillReceiveProps(next) {
+ componentWillReceiveProps(next) {
     if(next.editButton){
-      this.setState({hidden:true});
       this.refs.searchField.value = "";
     }
-  },*/
+  },
 
 
   handleKeyPress: function(event){
