@@ -20,31 +20,42 @@ class ModalChip extends React.Component {
 
     this.value = props.value;
 
+    if (this.props.new) {
+      console.log('constructor called on new chip');
+    }
+
     var dirty = this.props.new ? neww : clean;
 
     this.state = {
       dirty: dirty,
-      open: false,
+      visible: true,
       editable: props.editable
     };
   }
 
   deleteChip = () => {
-    this.setState({dirty: deleted});
+    this.setState({
+      dirty: deleted,
+      visible: false
+    });
   }
 
   render() {
     if (this.props.editable) {
       // Render editable field
-      return (
-        <Chip
-          onRequestDelete={this.deleteChip}
-          key={this.props.identifier}
-          style={styles.chip}
-        >
-          {this.props.value}
-        </Chip>
-      );
+      if (this.state.visible) {
+        return (
+          <Chip
+            onRequestDelete={this.deleteChip}
+            key={this.props.identifier}
+            style={styles.chip}
+          >
+            {this.props.value}
+          </Chip>
+        );
+      } else {
+        return null;
+      }
     } else {
       // Render viewable field
       if (this.state.dirty === deleted) {
@@ -61,7 +72,7 @@ class ModalChip extends React.Component {
       } else if (this.state.dirty === neww) {
         // Send delete request if deleted.
         this.setState({dirty: clean});
-        this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.parentId + '/?labelId="' + this.props.identifier + '"', {
+        this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.parentId + '/?labelId=' + this.props.identifier, {
           method: 'PUT',
           data: JSON.stringify({}),
           headers: {
@@ -74,14 +85,18 @@ class ModalChip extends React.Component {
           }
         });
       }
-      return (
-        <Chip
-          key={this.props.identifier}
-          style={styles.chip}
-        >
-          {this.props.value}
-        </Chip>
-      );
+      if (this.state.visible) {
+        return (
+          <Chip
+            key={this.props.identifier}
+            style={styles.chip}
+          >
+            {this.props.value}
+          </Chip>
+        );
+      } else {
+        return null;
+      }
     }
   }
 }

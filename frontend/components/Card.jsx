@@ -78,7 +78,8 @@ class CardExampleExpandable extends React.Component {
     this.setState({selectValue: value});
     this.nextLabel = {
       'Id': value,
-      'Content': labelManager.getLabelById(value).Content
+      'Content': labelManager.getLabelById(value).Content,
+      new: true
     };
   }
 
@@ -114,7 +115,7 @@ class CardExampleExpandable extends React.Component {
             identifier={labelElement.Id}
             value={labelElement.Content}
             parentId={this.props.cardData.Id}
-            new={false}
+            new={labelElement.new}
           />
         )
       }
