@@ -31,7 +31,7 @@ namespace UnitTestProject1
             using (var db = new ModelContext())
             {
                 db.Items.RemoveRange(db.Items.Where(x => x.Id > 8));
-                //db.Labels.RemoveRange(db.Labels.Where(x => x.Id );
+                db.Labels.RemoveRange(db.Labels.Where(x => x.Id > 6));
                 db.Notes.RemoveRange(db.Notes.Where(x => x.Id > 6));
                 db.SaveChanges();
             }
@@ -135,7 +135,7 @@ namespace UnitTestProject1
 
                 MatchOnce(result, "^\\[");
                 MatchOnce(result, "\"Id\":\\s*" + labelID);
-                MatchOnce(result, "\"Items\":\\s*\\[\\]");
+                Assert.IsTrue(1 < Regex.Matches(result, "\"Items\":\\s*\\[\\]").Count);
                 MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestGetAllLabels!\"");
                 MatchOnce(result, "\\]$");
 
@@ -474,6 +474,41 @@ namespace UnitTestProject1
 
             }
         }
+
+        [TestMethod]
+        public void TestNotFound()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/0");
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            request = PutItem(0, "{\"id\":\"0\", \"Type\":\"node\"}");
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            request = new HttpRequestMessage(HttpMethod.Delete, address + "/api/items/0");
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+        }
+
+        [TestMethod]
+        public void TestBadRequest()
+        {
+
+            var request = PostItem("");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PostItem("{\"Type\":\"node\"}");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PostItem("{\"key\":\"this should fail\"}");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PutItem(0, "");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PutItem(0, "{\"id\":3}");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+        }
+
+
 
         [TestMethod]
         public void TestSearchNodeKey()
