@@ -214,7 +214,7 @@ namespace Coevolution.Controllers
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
-
+            
             //Check if already labelled
             if (item.Labels.Contains(label))
             {
@@ -223,6 +223,8 @@ namespace Coevolution.Controllers
 
             //Add the label to the item
             item.Labels.Add(label);
+            //Add the item to the label
+            label.Items.Add(item);
             db.SaveChanges();
             return StatusCode(HttpStatusCode.NoContent);
         }
@@ -332,11 +334,12 @@ namespace Coevolution.Controllers
             }
 
             //Remove label from item
-            if (!item.Labels.Contains(label))
+            if (!(item.Labels.Contains(label) || (label.Items.Contains(item))))
             {
                 return StatusCode(HttpStatusCode.NotFound);
             }
             item.Labels.Remove(label);
+            label.Items.Remove(item);
 
             db.SaveChanges();
             return Ok();
