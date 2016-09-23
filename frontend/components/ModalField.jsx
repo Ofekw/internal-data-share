@@ -53,7 +53,7 @@ class ModalField extends React.Component {
     this.key = props.identifier;
     this.value = props.value;
 
-    var dirty = this.props.new ? neww : undefined;
+    var dirty = this.props.new ? neww : dirty;
 
     this.state = {
       dirty: dirty,

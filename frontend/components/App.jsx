@@ -6,7 +6,7 @@ import TopBar from './TopBar.jsx';
 import ParentContainer from './List/ParentContainer.jsx';
 import Paper from 'material-ui/Paper';
 import FlatButton from 'material-ui/FlatButton';
-import Card from './Card.jsx'
+import Card from './Card.jsx';
 
 // Component that renders the top bar and main body
 var App = React.createClass({

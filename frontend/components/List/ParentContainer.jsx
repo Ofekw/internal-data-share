@@ -172,6 +172,9 @@ var ParentContainer = React.createClass({
 
 	// Handles click for breadcrumbs
 	breadcrumbClick: function(crumb){
+		if (crumb.key === "Search Results"){
+			return;
+		}
 		// Remove items from breadcrumbs list
 		var index = this.state.breadcrumbs.indexOf(crumb);
 		var newCrumbs = this.state.breadcrumbs.slice(0,index+1);

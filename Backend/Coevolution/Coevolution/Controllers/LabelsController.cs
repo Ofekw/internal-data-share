@@ -27,7 +27,50 @@ namespace Coevolution.Controllers
         {
             return db.Labels;
         }
-        
+
+        // POST: api/Labels
+        /// <summary>
+        /// Add a new Label to the database
+        /// </summary>
+        [ResponseType(typeof(DtoLabel))]
+        public IHttpActionResult PostLabel(DtoLabel dtoLabel)
+        {
+            //Validate supplied DTO
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            Label label = dtoLabel.ToDomainObject();
+
+            db.Labels.Add(label);
+            db.SaveChanges();
+
+            return CreatedAtRoute("DefaultApi", new { id = label.Id }, label.ToDto());
+        }
+
+        // DELETE: api/Labels/5
+        /// <summary>
+        /// Remove a label with the specified Id from the database
+        /// </summary>
+        [ResponseType(typeof(void))]
+        public IHttpActionResult DeleteLabel(int id)
+        {
+            //Find item with id
+            Label label = db.Labels.Include("Items").First(u => u.Id == id);
+            if (label == null)
+            {
+                return NotFound();
+            }
+            foreach (Item item in label.Items)
+            {
+                item.Labels.Remove(label);
+            }
+            db.Labels.Remove(label);
+            db.SaveChanges();
+            return Ok();
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

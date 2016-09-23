@@ -4,9 +4,24 @@ import Subheader from 'material-ui/Subheader';
 import Delete from 'material-ui/svg-icons/action/delete';
 import Undo from 'material-ui/svg-icons/content/undo';
 import RaisedButton from 'material-ui/RaisedButton';
+import Chip from 'material-ui/Chip'
 import $ from 'jquery';
 import config from '../../config.js';
 import async from '../../node_modules/async/dist/async.min.js';
+
+const styles = {
+	wrapper: {
+		display: 'flex'
+	},
+	chip: {
+		margin: '4px',
+		display: 'inline-block'
+	},
+	labels: {
+		marginLeft: '8px',
+		marginTop: '-12px'
+	}
+};
 
 // Component that renders the List Items view.
 var ListComponent = React.createClass({
@@ -43,7 +58,7 @@ var ListComponent = React.createClass({
 	render: function(){
 		var buttonStyle = {
 			float: 'right',
-			marginTop: 5 
+			marginTop: 5
 		};
 		var self = this;
 
@@ -74,7 +89,6 @@ var ListComponent = React.createClass({
 
 		return (
 			<List>
-				<Subheader>Children Nodes</Subheader>
 				{
 					this.props.listItems.map( item => {
 						// Toggles background colour if an item is going to be deleted
@@ -84,15 +98,48 @@ var ListComponent = React.createClass({
 							icon = <Undo />
 							style = {backgroundColor: '#ddd'}
 						}
-						return <ListItem primaryText={item.Key} key={item.Id} disabled={this.props.editable} onClick={this.onClick.bind(this,item)} style={style}
-									rightIconButton={this.props.editable ? <RaisedButton icon={icon} style={buttonStyle} onTouchTap={this.onDeleteItem.bind(this, item.Id)}/> : null
-								}/>
+
+						var labels = [];
+
+						for (var label in item.Labels) {
+							const labelElement = item.Labels[label];
+							labels.push(
+								<Chip
+									key={labelElement.Id}
+									style={styles.chip}
+								>
+									{labelElement.Content}
+								</Chip>
+							)
+						}
+
+						const text = (
+							<span style={styles.wrapper}>
+								{item.Key}
+								<span style={styles.labels}>
+									{labels.map(function (label, index) {
+										// Add the labels
+										return label;
+									})}
+								</span>
+							</span>
+						);
+
+						return (
+							<div onClick={this.onClick.bind(this,item)}>
+								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style}
+									rightIconButton={this.props.editable ? <RaisedButton icon={icon} style={buttonStyle} onTouchTap={this.onDeleteItem.bind(this, item.Id)}/> : null}
+									/>
+
+							</div>
+						)
 					})
 				}
 			</List>
 		)
 	}
 });
+
 
 
 export default ListComponent;

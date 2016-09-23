@@ -86,6 +86,104 @@ namespace UnitTestProject1
         }
 
         [TestMethod]
+        public void TestPostLabel()
+        {
+            var requestJson = "{\"Content\": \"Label to be created by TestPostLabel!\"}";
+            HttpRequestMessage request = PostLabel(requestJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+                MatchOnce(result, "\"Id\":\\s*[0-9]+");
+                MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestPostLabel!\"");
+            }
+        }
+
+        [TestMethod]
+        public void TestGetAllLabels()
+        {
+            int labelID;
+            var requestJson = "{\"Content\": \"Label to be created by TestGetAllLabels!\"}";
+            HttpRequestMessage request = PostLabel(requestJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/labels/");
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                MatchOnce(result, "^\\[");
+                MatchOnce(result, "\"Id\":\\s*" + labelID);
+                MatchOnce(result, "\"Items\":\\s*\\[\\]");
+                MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestGetAllLabels!\"");
+                MatchOnce(result, "\\]$");
+
+            }
+
+        }
+
+        [TestMethod]
+        public void TestDeleteLabel()
+        {
+            int labelID;
+            var requestJson = "{\"Content\": \"Label to be created by TestGetAllLabels!\"}";
+            HttpRequestMessage request = PostLabel(requestJson);
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
+            }
+
+            request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost:55426/api/labels/"+ labelID);
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            }
+
+            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/labels/");
+
+            using (request)
+            using (HttpResponseMessage response = client.SendAsync(request).Result)
+            {
+                var task = response.Content.ReadAsStringAsync();
+                task.Wait();
+                var result = task.Result;
+
+                Regex label = new Regex("\"Id\":\\s*" + labelID);
+                Assert.IsFalse(label.Match(result).Success);
+            }
+        }
+
+        [TestMethod]
         public void TestPostChild()
         {
             int parentId;
@@ -489,6 +587,13 @@ namespace UnitTestProject1
             return request;
         }
 
+
+        private HttpRequestMessage PostLabel(String jsonString)
+        {
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/labels");
+            PopulateBody(request, jsonString);
+            return request;
+        }
 
         private HttpRequestMessage PostItem(String jsonString)
         {
