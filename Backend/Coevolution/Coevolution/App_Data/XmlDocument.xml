@@ -548,12 +548,12 @@
             <param name="query">The string being searched for</param>
             
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(Coevolution.Models.Label)">
+        <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(System.Int32)">
             <summary>
             Search all items for label
             Returns an array of ids of the nodes containing the string
             </summary>
-            <param name="label">The id of the label being searched for</param>
+            <param name="id">The id of the label being searched for</param>
             
         </member>
         <member name="M:Coevolution.Controllers.ItemsController.GetSearchKeys(System.String)">

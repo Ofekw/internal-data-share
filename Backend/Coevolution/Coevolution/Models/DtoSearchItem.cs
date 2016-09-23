@@ -18,6 +18,11 @@ namespace Coevolution.Models
 
         public string Value { get; set; }
 
+        public DtoSearchItem()
+        {
+
+        }
+
         public DtoSearchItem(Item item)
         {
             IsLeaf = item is Leaf;
