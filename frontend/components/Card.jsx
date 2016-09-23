@@ -1,10 +1,25 @@
 import React from 'react';
+import $ from 'jquery';
 import {List, ListItem} from 'material-ui/List';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
+import Chip from 'material-ui/Chip';
 import ModalField from './ModalField.jsx';
+import labelManager from '../labelManager.js'
+
+const styles = {
+  chip: {
+    margin: 4,
+  },
+  wrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  }
+}
 
 // Card for displaying information for an environemnt.
 class CardExampleExpandable extends React.Component {
@@ -20,15 +35,24 @@ class CardExampleExpandable extends React.Component {
     open: false,
   };
 
-  handleOpen = () => {
+  componentDidMount = () => {
+    var self = this;
+    labelManager.getLabels(function (labels) {
+      self.setState({
+        labels: labels
+      });
+    }.bind(this));
+  }
+
+  handleLabelDialogOpen = () => {
     this.setState({open: true});
   };
 
-  handleClose = () => {
+  handleLabelDialogClose = () => {
     this.setState({open: false});
   };
 
-  handleLabelSave = () => {
+  handleLabelDialogSave = () => {
     this.setState({open: false});
     this.createNewLabel();
   };
@@ -45,15 +69,19 @@ class CardExampleExpandable extends React.Component {
 
   // Add a new child.
   createNewLabel = () => {
-    if (this.nextLabel !== '') {
+    if (this.nextLabel) {
       this.props.cardData.Labels.push(this.nextLabel);
-      this.nextLabel = '';
+      this.nextLabel = undefined;
     }
     this.forceUpdate();
   };
 
-  handleLabelChange = (event) => {
-    this.nextLabel = event.target.value;
+  handleLabelChange = (event, index, value) => {
+    this.setState({selectValue: value});
+    this.nextLabel = {
+      'Id': value,
+      'Content': labelManager.getLabelById(value).Content
+    };
   }
 
   render() {
@@ -64,8 +92,10 @@ class CardExampleExpandable extends React.Component {
     if(this.props.cardData) {
       this.title = this.props.cardData.Key;
       const leafChildren = this.props.cardData.LeafChildren;
+      const labels = this.props.cardData.Labels;
 
       this.children = [];
+      this.labels = [];
 
       for (var child in leafChildren) {
         // Add all the children.
@@ -75,6 +105,18 @@ class CardExampleExpandable extends React.Component {
             <ModalField new={childElement.new} editable={this.props.editable} key={childElement.Id} childId={childElement.Id} identifier={childElement.Key} value={childElement.Value} parentId={this.props.cardData.Id} />
           );
         }
+      }
+
+      for (var label in labels) {
+        const labelElement = labels[label];
+        this.labels.push(
+          <Chip
+            key={labelElement.Id}
+            style={styles.chip}
+          >
+            {labelElement.Content}
+          </Chip>
+        )
       }
     }
 
@@ -93,13 +135,13 @@ class CardExampleExpandable extends React.Component {
       <FlatButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
+        onTouchTap={this.handleLabelDialogClose}
       />,
       <FlatButton
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onTouchTap={this.handleLabelSave}
+        onTouchTap={this.handleLabelDialogSave}
       />,
     ];
 
@@ -110,6 +152,12 @@ class CardExampleExpandable extends React.Component {
           actAsExpander={false}
           showExpandableButton={false}
           />
+        <div style={styles.wrapper}>
+          {this.labels.map(function (label, index) {
+            // Add the labels
+            return label;
+          })}
+        </div>
         <List ref="theList">
           {this.children.map(function (child, index) {
             // Add all the children.
@@ -122,18 +170,21 @@ class CardExampleExpandable extends React.Component {
             if (this.props.editable) {
               return <div>
                 <FlatButton style={buttonStyle} label="Add Key Pair" secondary={true}  onTouchTap={this.createNewField}/>
-                <FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.handleOpen}/>
+                <FlatButton style={buttonStyle} label="Add Label" secondary={true}  onTouchTap={this.handleLabelDialogOpen}/>
                 <Dialog
                   title="Dialog With Actions"
                   actions={actions}
                   modal={false}
                   open={this.state.open}
-                  onRequestClose={this.handleClose}
+                  onRequestClose={this.handleLabelDialogClose}
                 >
-                  <TextField
-                    floatingLabelText="Label Text"
-                    onChange={this.handleLabelChange}
-                  />
+                <div>
+                  <SelectField value={this.state.selectValue} onChange={this.handleLabelChange}>
+                    {this.state.labels && this.state.labels.map(function (label) {
+                      return (<MenuItem key={label.Id} value={label.Id} primaryText={label.Content} />);
+                    })}
+                  </SelectField>
+                </div>
                 </Dialog>
               </div>
             }
