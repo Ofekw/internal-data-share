@@ -70,7 +70,7 @@ namespace Coevolution.Controllers
 
                 var tempList = nodeItem.Children;
 
-                nodeItem.Children = db.Items.Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
+                nodeItem.Children = db.Items.Include("Labels").Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
 
