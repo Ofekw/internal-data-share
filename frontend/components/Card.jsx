@@ -7,6 +7,8 @@ import Dialog from 'material-ui/Dialog';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import TextField from 'material-ui/TextField';
+import Subheader from 'material-ui/Subheader';
+import config from '../config.js';
 import Chip from 'material-ui/Chip';
 import ModalField from './ModalField.jsx';
 import ModalChip from './ModalChip.jsx';
@@ -27,10 +29,21 @@ class CardExampleExpandable extends React.Component {
     this.labels = [];
     this.title = '';
     this.editable = false;
+    if (props.cardData != null) {
+      this.state = {
+        nodeComment: props.cardData.Note == null ? "" : props.cardData.Note,
+        notesDirty: false
+      }
+    }
   }
 
   update = () => {
-    this.props.handleClick(this.props.cardData,false);
+    this.props.handleClick(this.props.cardData, false);
+  }
+
+  noteChange(event) {
+    this.props.cardData.Note = event.target.value;
+    this.setState({ nodeComment: event.target.value, notesDirty: true })
   }
 
   state = {
@@ -68,8 +81,8 @@ class CardExampleExpandable extends React.Component {
     this.props.cardData.LeafChildren.push({
       'Key': key,
       'Value': value,
-      'newId' : key + uid,
-      'new' : true
+      'newId': key + uid,
+      'new': true
     });
     this.forceUpdate();
   };
@@ -92,17 +105,39 @@ class CardExampleExpandable extends React.Component {
     };
   }
 
+  // Add a new comment
+  addNewNotes() {
+    var self = this;
+    var comment = $('#nodeComment').val();
+    this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.cardData.Id + '/Note', {
+      method: 'PUT',
+      data: JSON.stringify(this.state.nodeComment),
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      success: function (result) {
+      },
+      failure: function (result) {
+        console.log(result);
+      },
+    });
+  }
+
   render() {
     if (this.props.hide) {
       return <div></div>
     }
 
-    if(this.props.cardData) {
-      if(this.editable){
+    if (this.state.notesDirty && !this.props.editable) {
+      this.addNewNotes();
+    }
+
+    if (this.props.cardData) {
+      if (this.editable) {
         this.props.cardData.LeafChildren.pop();
       }
       // Edit mode
-      if(this.props.editable){
+      if (this.props.editable) {
         this.editable = true;
         this.props.cardData.LeafChildren.push({
           'Key': '',
@@ -152,16 +187,27 @@ class CardExampleExpandable extends React.Component {
       }
     }
 
-    var itemStyle = {
-      width: '100%',
+    const divStyle = {
+      display: 'flex',
+    };
+
+    const itemStyle = {
+      marginLeft: 10,
+      width: '85%',
       display: 'inline-block',
       position: 'relative'
     };
 
-    var buttonStyle = {
+    const buttonStyle = {
       display: 'inline-block',
       position: 'relative',
+      width: '150px'
     };
+
+    const textArea =
+      <div style={divStyle}>
+        <TextField floatingLabelText="Note" id="nodeComment" disabled={!this.props.editable} ref="nodeComment" style={itemStyle} hintText="Note" multiLine={true} value={this.state.nodeComment} onChange={this.noteChange.bind(this) }/>
+      </div>
 
     const actions = [
       <FlatButton
@@ -221,6 +267,9 @@ class CardExampleExpandable extends React.Component {
             return child;
           }) }
         </List>
+        <CardActions>
+          return <div> {textArea} </div>
+        </CardActions>
       </Card>
 
     );

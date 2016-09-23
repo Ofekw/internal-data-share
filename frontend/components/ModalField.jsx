@@ -13,7 +13,7 @@ import async from '../node_modules/async/dist/async.min.js';
 
 // Icons
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
-import Delete from 'material-ui/svg-icons/action/Delete';
+import Delete from 'material-ui/svg-icons/action/delete';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import FlatButton from 'material-ui/FlatButton';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
