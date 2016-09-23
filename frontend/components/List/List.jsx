@@ -16,6 +16,10 @@ const styles = {
 	chip: {
 		margin: '4px',
 		display: 'inline-block'
+	},
+	labels: {
+		marginLeft: '8px',
+		marginTop: '-12px'
 	}
 };
 
@@ -109,17 +113,24 @@ var ListComponent = React.createClass({
 							)
 						}
 
+						const text = (
+							<span style={styles.wrapper}>
+								{item.Key}
+								<span style={styles.labels}>
+									{labels.map(function (label, index) {
+										// Add the labels
+										return label;
+									})}
+								</span>
+							</span>
+						);
+
 						return (
-							<div style={styles.wrapper} onClick={this.onClick.bind(this,item)}>
-								<ListItem primaryText={item.Key} key={item.Id} disabled={this.props.editable} style={style}
+							<div onClick={this.onClick.bind(this,item)}>
+								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style}
 									rightIconButton={this.props.editable ? <RaisedButton icon={icon} style={buttonStyle} onTouchTap={this.onDeleteItem.bind(this, item.Id)}/> : null}
 									/>
-									<span>
-										{labels.map(function (label, index) {
-											// Add the labels
-											return label;
-										})}
-									</span>
+
 							</div>
 						)
 					})
