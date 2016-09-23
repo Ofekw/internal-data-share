@@ -1,5 +1,6 @@
 import React from 'react';
 import {List, ListItem} from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 
 var SearchList = React.createClass({
     onClick: function (item){
@@ -15,19 +16,15 @@ var SearchList = React.createClass({
             <List>
             {
                 this.props.searchResult.map(result => {
+                    var path = "Home ";
+                    result.Path.forEach(function(element, index, array) {
+                        path = path.concat(" > ");
+                        path = path.concat(element.Value);
+                    }, this);
                     if (result.IsLeaf){
-                        return <ListItem
-                            primaryText={result.Key}
-                            key={result.Id}
-                            secondaryText={result.Value}
-                            onClick={this.onClick.bind(this,result)}
-                        />
+                        return <div> <Divider/> <ListItem primaryText={path} key={result.Id} secondaryText={result.Value} onClick={this.onClick.bind(this,result)}/> </div>
                     }
-                    return <ListItem 
-                        primaryText={result.Key}
-                        key={result.Id}
-                        onClick={this.onClick.bind(this,result)}
-                    />
+                    return <div> <Divider/> <ListItem primaryText={path} key={result.Id} onClick={this.onClick.bind(this,result)}/> </div>
                 })
             }
             </List>

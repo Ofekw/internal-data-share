@@ -100,7 +100,10 @@ var ParentContainer = React.createClass({
 				key: element.Key + "bc"
 			})
 		}, this);
-		crumbs.pop();
+		if (searchResult.IsLeaf){
+			crumbs.pop();
+		}
+
 
 		this.getChildrenNodes(searchResult, crumbs);
 	},
