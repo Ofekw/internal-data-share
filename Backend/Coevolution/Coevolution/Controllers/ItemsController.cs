@@ -405,7 +405,7 @@ namespace Coevolution.Controllers
         [Route("api/Items/Search/Label/{label}")]
         public IHttpActionResult GetSearchLabel(Label label)
         {
-            var items = db.Items.Include(m => m.Labels).Where(x => x.Labels.Contains(label)).ToArray();
+            var items = db.Items.Include(m => m.Labels).Where(x => x.Labels.Contains(label) && x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
             {
@@ -425,7 +425,7 @@ namespace Coevolution.Controllers
         public IHttpActionResult GetSearchKeys(string query)
         {
             query = Regex.Escape(query);
-            var items = db.Items.Where(x => x.Key.Contains(query)).ToArray();
+            var items = db.Items.Where(x => x.Key.Contains(query) && x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             foreach(var item in items)
             {
@@ -445,7 +445,7 @@ namespace Coevolution.Controllers
         public IHttpActionResult GetSearchValues(string query)
         {
             query = Regex.Escape(query);
-            var items = db.Items.Where(x => x.Parent != null).ToList();
+            var items = db.Items.Where(x => x.Parent != null && x.Deleted == false).ToList();
 
                 //.Where(x => x.Value.Contains(query)).ToArray();
             var dtos = new List<DtoSearchItem>();
