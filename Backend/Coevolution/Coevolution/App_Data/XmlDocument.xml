@@ -510,6 +510,11 @@
             Add a note to an existing Item
             </summary>
         </member>
+        <member name="M:Coevolution.Controllers.ItemsController.PutNoteItem(System.Int32,System.String)">
+            <summary>
+            Update comment of an existing Node
+            </summary>
+        </member>
         <member name="M:Coevolution.Controllers.ItemsController.PutItem(System.Int32,System.Int32)">
             <summary>
             Add a label to an existing Item

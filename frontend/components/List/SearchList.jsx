@@ -22,9 +22,9 @@ var SearchList = React.createClass({
                         path = path.concat(element.Value);
                     }, this);
                     if (result.IsLeaf){
-                        return <div> <Divider/> <ListItem primaryText={path} key={result.Id} secondaryText={result.Value} onClick={this.onClick.bind(this,result)}/> </div>
+                        return <div key={result.Id}> <Divider/> <ListItem primaryText={path} key={result.Id} secondaryText={result.Value} onClick={this.onClick.bind(this,result)}/> </div>
                     }
-                    return <div> <Divider/> <ListItem primaryText={path} key={result.Id} onClick={this.onClick.bind(this,result)}/> </div>
+                    return <div key={result.Id}> <Divider/> <ListItem primaryText={path} key={result.Id} onClick={this.onClick.bind(this,result)}/> </div>
                 })
             }
             </List>

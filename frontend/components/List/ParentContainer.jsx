@@ -128,7 +128,7 @@ var ParentContainer = React.createClass({
 					</div>
 				</Paper>
 			)
-		}
+		} else{
 
 		// Search results is shown
 		if(this.state.search){
@@ -153,21 +153,21 @@ var ParentContainer = React.createClass({
 			cardHide = true;
 		}
 
-		return (
-			<Paper style= { paperStyle } zDepth= { 1}>
-				{
-					this.state.breadcrumbs.map( crumb => {
-						return <span key={crumb.key}>
-							<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
-							>
-						</span>
-					})
-				}
-				<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide}/>
-				<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
-			</Paper >
-		)
-		
+			return (
+				<Paper style= { paperStyle } zDepth= { 1}>
+					{
+						this.state.breadcrumbs.map( crumb => {
+							return <span key={crumb.key}>
+								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
+								>
+							</span>
+						})
+					}
+					<Card editable={this.props.editable} cardData={this.state.parent} hide={cardHide} handleClick={this.handleClick}/>
+					<ListNode nodes={this.state.nodes} handleClick={this.handleClick} editable={this.props.editable} parent={this.state.parent}/>
+				</Paper >
+			)
+		}
 	},
 
 	// Handles click for breadcrumbs
