@@ -72,6 +72,7 @@ class CardExampleExpandable extends React.Component {
     if (this.props.cardData) {
       if (this.editable) {
         this.props.cardData.LeafChildren.pop();
+        this.editable = false;
       }
       // Edit mode
       if (this.props.editable) {
