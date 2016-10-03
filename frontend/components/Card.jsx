@@ -28,7 +28,7 @@ class CardExampleExpandable extends React.Component {
     this.children = [];
     this.labels = [];
     this.title = '';
-    this.editable = false;
+    //this.editable = false;
     if (props.cardData != null) {
       this.state = {
         nodeComment: props.cardData.Note == null ? "" : props.cardData.Note,
@@ -74,7 +74,7 @@ class CardExampleExpandable extends React.Component {
 
   // Add a new child.
   createNewField = (key,value) => {
-    this.editable = false;
+    //this.editable = false;
     this.props.cardData.LeafChildren.pop();
     var uid = new Date().getTime();
 
@@ -133,17 +133,18 @@ class CardExampleExpandable extends React.Component {
     }
 
     if (this.props.cardData) {
-      if (this.editable) {
+/*      if (this.editable) {
         this.props.cardData.LeafChildren.pop();
         this.editable = false;
-      }
+      }*/
       // Edit mode
       if (this.props.editable) {
-        this.editable = true;
+        //.editable = true;
         this.props.cardData.LeafChildren.push({
           'Key': '',
           'Value': '',
-          'add': true
+          'add': true,
+          'new': true
         });
       }
 
@@ -156,13 +157,14 @@ class CardExampleExpandable extends React.Component {
 
       for (var child in leafChildren) {
         // Add all the children.
+        var uid = new Date().getTime();
         if (leafChildren.hasOwnProperty(child)) {
           const childElement = leafChildren[child];
           this.children.push(
             <ModalField new={childElement.new}
             add = {childElement.add}
             editable={this.props.editable}
-            key={childElement.Id || childElement.newId || childElement.add}
+            key={childElement.Id || childElement.newId || childElement.add + uid}
             childId={childElement.Id}
             identifier={childElement.Key}
             value={childElement.Value}
