@@ -58,7 +58,12 @@ var ListComponent = React.createClass({
 	render: function(){
 		var buttonStyle = {
 			float: 'right',
-			marginTop: 5
+			marginTop: 2
+		};
+		var innerDivStyle = {
+			height: 28,
+			paddingTop: 14,
+			paddingBottom: 0
 		};
 		var self = this;
 
@@ -127,7 +132,7 @@ var ListComponent = React.createClass({
 
 						return (
 							<div onClick={this.onClick.bind(this,item)}>
-								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style}
+								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style} innerDivStyle={innerDivStyle}
 									rightIconButton={this.props.editable ? <RaisedButton icon={icon} style={buttonStyle} onTouchTap={this.onDeleteItem.bind(this, item.Id)}/> : null}
 									/>
 
