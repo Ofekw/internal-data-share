@@ -182,6 +182,10 @@
     <Compile Include="Migrations\201609020425418_brandnew.Designer.cs">
       <DependentUpon>201609020425418_brandnew.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201609230605207_addnote.cs" />
+    <Compile Include="Migrations\201609230605207_addnote.Designer.cs">
+      <DependentUpon>201609230605207_addnote.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\DtoItemReduced.cs" />
     <Compile Include="Models\DtoLabel.cs" />
@@ -265,6 +269,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201609020425418_brandnew.resx">
       <DependentUpon>201609020425418_brandnew.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609230605207_addnote.resx">
+      <DependentUpon>201609230605207_addnote.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
