@@ -131,11 +131,10 @@ var ListComponent = React.createClass({
 						);
 
 						return (
-							<div onClick={this.onClick.bind(this,item)}>
+							<div onClick={this.onClick.bind(this,item)} key={item.Id}>
 								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style} innerDivStyle={innerDivStyle}
 									rightIconButton={this.props.editable ? <RaisedButton icon={icon} style={buttonStyle} onTouchTap={this.onDeleteItem.bind(this, item.Id)}/> : null}
 									/>
-
 							</div>
 						)
 					})
