@@ -110,7 +110,7 @@ var ParentContainer = React.createClass({
 
 	render: function(){
 		var paperStyle = {
-			width: '90%',
+			width: '100%',
 			margin: 'auto',
 			marginTop: 10,
 		};
@@ -129,36 +129,34 @@ var ParentContainer = React.createClass({
 				</Paper>
 			)
 		} else{
-
-		// Search results is shown
-		if(this.state.search){
-			return (
-			<Paper style= { paperStyle } zDepth= { 1}>
-				{
-					this.state.breadcrumbs.map( crumb => {
-						return <span key={crumb.key}>
-							<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
-							>
-						</span>
-					})
-				}
-				<SearchList searchResult={this.props.searchResult} searchResultClick={this.searchResultClick}/>
-			</Paper >
-			)
-		}
-
-		//Checks if the card needs to be hidden or not.
-		var cardHide = false;
-		if(!this.state.parent){
-			cardHide = true;
-		}
-
-			return (
+			// Search results is shown
+			if(this.state.search){
+				return (
 				<Paper style= { paperStyle } zDepth= { 1}>
 					{
 						this.state.breadcrumbs.map( crumb => {
 							return <span key={crumb.key}>
 								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)}/>
+								>
+							</span>
+						})
+					}
+					<SearchList searchResult={this.props.searchResult} searchResultClick={this.searchResultClick}/>
+				</Paper >
+				)
+			}
+
+			//Checks if the card needs to be hidden or not.
+			var cardHide = false;
+			if(!this.state.parent){
+				cardHide = true;
+			}
+			return (
+				<Paper style= { paperStyle } zDepth= { 1}>
+					{
+						this.state.breadcrumbs.map( crumb => {
+							return <span key={crumb.key}>
+								<FlatButton label={crumb.name} onClick={this.breadcrumbClick.bind(this,crumb)} disabled={this.props.editable}/>
 								>
 							</span>
 						})

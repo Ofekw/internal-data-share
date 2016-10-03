@@ -176,7 +176,7 @@ class ModalField extends React.Component {
       // For adding a new item
       if (this.props.add) {
         return (
-          <ListItem>
+          <ListItem disabled="true">
             <div>
               <TextField
                 name="key"
@@ -207,7 +207,7 @@ class ModalField extends React.Component {
       }
       // Render editable field
       return (
-        <ListItem>
+        <ListItem disabled="true">
           <div>
             <TextField
               name="key"
@@ -237,6 +237,7 @@ class ModalField extends React.Component {
       // Render viewable field
       var functions = [];
       var self = this;
+
       if (this.state.dirty === dirty) {
         // Update on server if changes have been made. 
         functions.push(function (cb) {
@@ -276,8 +277,12 @@ class ModalField extends React.Component {
           });
         });
 
-      } else if (this.state.dirty === neww) {
-        // Send delete request if deleted.
+      } else if (this.state.dirty === neww ) {
+        if(!(this.state.keyValue && this.state.valueValue && this.props.add)){
+          return(<div></div>)
+        }
+        debugger;
+        // Send post request if new.
         this.setState({ dirty: clean });
         functions.push(function (cb) {
           self.serverRequest = $.ajax(config.apiHost + 'Items/', {
@@ -300,7 +305,6 @@ class ModalField extends React.Component {
             }
           });
         });
-
       }
       if (functions.length > 0) {
         async.parallel(functions, function () {
@@ -313,7 +317,7 @@ class ModalField extends React.Component {
       }
       return (
         <div>
-          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide}></ListItem>
+          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
           <Snackbar
             open={this.state.open}
             message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}

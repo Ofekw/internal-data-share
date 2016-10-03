@@ -58,7 +58,11 @@ var ListComponent = React.createClass({
 	render: function(){
 		var buttonStyle = {
 			float: 'right',
-			marginTop: 5
+			marginTop: 2
+		};
+		var innerDivStyle = {
+			height: 28,
+			padding: '0px'
 		};
 		var self = this;
 
@@ -88,15 +92,15 @@ var ListComponent = React.createClass({
 		}
 
 		return (
-			<List>
+			<List style={{paddingTop:0}}>
 				{
 					this.props.listItems.map( item => {
 						// Toggles background colour if an item is going to be deleted
 						var icon = <Delete />;
-						var style={};
+						var style={padding: '14px 16px 0px'};
 						if (this.state.delete.indexOf(item.Id) > -1){
 							icon = <Undo />
-							style = {backgroundColor: '#ddd'}
+							style = {padding: '14px 16px 0px', backgroundColor: '#ddd'}
 						}
 
 						var labels = [];
@@ -126,11 +130,10 @@ var ListComponent = React.createClass({
 						);
 
 						return (
-							<div onClick={this.onClick.bind(this,item)}>
-								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style}
+							<div onClick={this.onClick.bind(this,item)} key={item.Id}>
+								<ListItem primaryText={text} key={item.Id} disabled={this.props.editable} style={style} innerDivStyle={innerDivStyle}
 									rightIconButton={this.props.editable ? <RaisedButton icon={icon} style={buttonStyle} onTouchTap={this.onDeleteItem.bind(this, item.Id)}/> : null}
 									/>
-
 							</div>
 						)
 					})
