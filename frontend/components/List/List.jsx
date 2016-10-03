@@ -62,8 +62,7 @@ var ListComponent = React.createClass({
 		};
 		var innerDivStyle = {
 			height: 28,
-			paddingTop: 14,
-			paddingBottom: 0
+			padding: '0px'
 		};
 		var self = this;
 
@@ -93,15 +92,15 @@ var ListComponent = React.createClass({
 		}
 
 		return (
-			<List>
+			<List style={{paddingTop:0}}>
 				{
 					this.props.listItems.map( item => {
 						// Toggles background colour if an item is going to be deleted
 						var icon = <Delete />;
-						var style={};
+						var style={padding: '14px 16px 0px'};
 						if (this.state.delete.indexOf(item.Id) > -1){
 							icon = <Undo />
-							style = {backgroundColor: '#ddd'}
+							style = {padding: '14px 16px 0px', backgroundColor: '#ddd'}
 						}
 
 						var labels = [];
