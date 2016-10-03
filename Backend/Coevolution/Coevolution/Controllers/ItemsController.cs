@@ -402,34 +402,47 @@ namespace Coevolution.Controllers
         public IHttpActionResult GetSearchNotes(string query)
         {
             query = Regex.Escape(query);
-            var notes = db.Notes.Where(x => x.Content.Contains(query)).ToArray();
-            var dtos = new List<DtoNote>();
-            foreach (var note in notes)
+            var notes = db.Notes.Include("Item").Where(x => x.Content.Contains(query));
+            var items = notes.Select(x => x.Item).Distinct();
+
+            var dtos = new List<DtoSearchItem>();
+            foreach (var item in items)
             {
-                dtos.Add(note.ToDto());
+                dtos.Add(new DtoSearchItem(item));
             }
             return Ok(dtos);
         }
 
-        // Get: api/Items/Search/Note/{label}
+        // Get: api/Items/Search/Label?ids=1&ids=2
         /// <summary>
-        /// Search all items for label
+        /// Search all items for labels
         /// Returns an array of ids of the nodes containing the string
+        /// Use: api/Items/Search/Label?ids=1&ids=2
         /// </summary>
-        /// <param name="id">The id of the label being searched for</param>
+        /// <param name="ids">The ids of the labels being searched for</param>
         /// 
-        [Route("api/Items/Search/Label/{id}")]
+        [Route("api/Items/Search/Label")]
         [ResponseType(typeof(List<DtoSearchItem>))]
-        public IHttpActionResult GetSearchLabel(int id)
+        public IHttpActionResult GetSearchLabel([FromUri] List<int> ids)
         {
-            var label = db.Labels.Find(id);
-            var items = db.Items.Include(m => m.Labels).ToArray();
-            var containsLabel = items.Where(x => x.Labels.Contains(label) && x.Deleted == false);
+            var items = db.Items.Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
-            foreach (var item in containsLabel)
+            var containsLabels = new List<Item>(items);
+            foreach (var item in items)
+            {
+                foreach (var id in ids)
+                {
+                    if (item.Labels.Where(x => x.Id == id).Count() == 0)
+                    {
+                        containsLabels.Remove(item);
+                    }
+                }
+            }
+            foreach (var item in containsLabels)
             {
                 dtos.Add(new DtoSearchItem(item));
             }
+            
             return Ok(dtos);
         }
 
