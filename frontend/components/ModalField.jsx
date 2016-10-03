@@ -176,7 +176,7 @@ class ModalField extends React.Component {
       // For adding a new item
       if (this.props.add) {
         return (
-          <ListItem>
+          <ListItem disabled="true">
             <div>
               <TextField
                 name="key"
@@ -207,7 +207,7 @@ class ModalField extends React.Component {
       }
       // Render editable field
       return (
-        <ListItem>
+        <ListItem disabled="true">
           <div>
             <TextField
               name="key"
