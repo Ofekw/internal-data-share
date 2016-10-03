@@ -317,7 +317,7 @@ class ModalField extends React.Component {
       }
       return (
         <div>
-          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide}></ListItem>
+          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
           <Snackbar
             open={this.state.open}
             message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}

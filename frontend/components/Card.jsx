@@ -232,6 +232,7 @@ class CardExampleExpandable extends React.Component {
           title={this.title}
           actAsExpander={false}
           showExpandableButton={false}
+          style={{padding: '10px 16px 8px'}}
           />
         <div style={styles.wrapper}>
           {this.labels.map(function (label, index) {
@@ -264,14 +265,14 @@ class CardExampleExpandable extends React.Component {
             }
           })() }
         </div>
-        <List ref="theList">
+        <List ref="theList" style={{paddingTop:0, paddingBottom:0}}>
           {this.children.map(function (child, index) {
             // Add all the children.
             return child;
           }) }
         </List>
-        <CardActions>
-          return <div> {textArea} </div>
+        <CardActions style={{padding: '0px 0px 0px 0px'}}>
+          return {textArea}
         </CardActions>
       </Card>
 
