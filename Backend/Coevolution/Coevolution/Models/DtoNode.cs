@@ -18,6 +18,9 @@ namespace Coevolution.Models
         /// </summary>
         public virtual List<DtoItemReduced> NodeChildren { get; set; }
 
+        /// <summary>
+        /// Note made on the node
+        /// </summary>
         public string Note { get; set; }
 
         public DtoNode()

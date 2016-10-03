@@ -51,6 +51,9 @@ namespace Coevolution.Models
         /// </summary>
         public string UpdatedOn { get; set; }
 
+        /// <summary>
+        /// Path of the item for bread crumb use, item id and item name.
+        /// </summary>
         public List<KeyValuePair<int, string>> Path { get; set; }
 
         public DtoItem()

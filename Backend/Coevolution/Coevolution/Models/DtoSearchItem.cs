@@ -7,15 +7,25 @@ namespace Coevolution.Models
 {
     public class DtoSearchItem
     {
-
+        /// <summary>
+        /// Id of the item
+        /// </summary>
         public int Id { get; set; }
-
+        /// <summary>
+        /// Whether the item is a leaf, or a node
+        /// </summary>
         public bool IsLeaf { get; set; }
-
+        /// <summary>
+        /// Path of the item for breadcrumb use
+        /// </summary>
         public List<KeyValuePair<int, string>> Path { get; set; }
-
+        /// <summary>
+        /// Key for title of this item
+        /// </summary>
         public string Key { get; set; }
-
+        /// <summary>
+        /// Value associated with key
+        /// </summary>
         public string Value { get; set; }
 
         public DtoSearchItem()
