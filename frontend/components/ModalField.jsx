@@ -19,6 +19,7 @@ import FlatButton from 'material-ui/FlatButton';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Save from 'material-ui/svg-icons/content/save';
 import Undo from 'material-ui/svg-icons/content/undo';
+import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 
 import Snackbar from 'material-ui/Snackbar';
 
@@ -317,7 +318,7 @@ class ModalField extends React.Component {
       }
       return (
         <div>
-          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
+          <ListItem primaryText= { <p>{this.key} <span style={{color: lightBlack}}>: {this.value}</span></p>} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
           <Snackbar
             open={this.state.open}
             message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}
