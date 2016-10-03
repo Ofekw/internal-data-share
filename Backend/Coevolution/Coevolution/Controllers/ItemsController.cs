@@ -349,7 +349,7 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Remove a note with the specified Id from the database
         /// </summary>
-        [ResponseType(typeof(Item))]
+        [ResponseType(typeof(void))]
         public IHttpActionResult DeleteNote(int id, int noteId)
         {
             //Find item with id
@@ -386,6 +386,7 @@ namespace Coevolution.Controllers
         /// <param name="query">The string being searched for</param>
         /// 
         [Route("api/Items/Search/Note/{query}")]
+        [ResponseType(typeof(List<DtoNote>))]
         public IHttpActionResult GetSearchNotes(string query)
         {
             query = Regex.Escape(query);
@@ -406,6 +407,7 @@ namespace Coevolution.Controllers
         /// <param name="id">The id of the label being searched for</param>
         /// 
         [Route("api/Items/Search/Label/{id}")]
+        [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchLabel(int id)
         {
             var label = db.Labels.Find(id);
