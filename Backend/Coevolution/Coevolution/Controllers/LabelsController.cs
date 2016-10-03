@@ -53,7 +53,6 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Remove a label with the specified Id from the database
         /// </summary>
-        [ResponseType(typeof(void))]
         public IHttpActionResult DeleteLabel(int id)
         {
             //Find item with id

@@ -577,6 +577,16 @@
             Get a list of all Labels
             </summary>
         </member>
+        <member name="M:Coevolution.Controllers.LabelsController.PostLabel(Coevolution.Models.DtoLabel)">
+            <summary>
+            Add a new Label to the database
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.LabelsController.DeleteLabel(System.Int32)">
+            <summary>
+            Remove a label with the specified Id from the database
+            </summary>
+        </member>
         <member name="P:Coevolution.Models.DtoItemReduced.Id">
             <summary>
             Id for storage in DB
@@ -590,6 +600,16 @@
         <member name="P:Coevolution.Models.DtoItemReduced.Labels">
             <summary>
             List of Item labels
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoLabel.Id">
+            <summary>
+            Id of the label
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoLabel.Content">
+            <summary>
+            String content of the label
             </summary>
         </member>
         <member name="T:Coevolution.Models.DtoNote">
@@ -615,6 +635,31 @@
         <member name="P:Coevolution.Models.DtoNote.UpdatedOn">
             <summary>
             Date the note was last updated
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoSearchItem.Id">
+            <summary>
+            Id of the item
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoSearchItem.IsLeaf">
+            <summary>
+            Whether the item is a leaf, or a node
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoSearchItem.Path">
+            <summary>
+            Path of the item for breadcrumb use
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoSearchItem.Key">
+            <summary>
+            Key for title of this item
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoSearchItem.Value">
+            <summary>
+            Value associated with key
             </summary>
         </member>
         <member name="P:Coevolution.Models.JsonCreationConverter`1.CanWrite">
@@ -681,6 +726,11 @@
             Last DateTime item was updated in ISO 8601 Format
             </summary>
         </member>
+        <member name="P:Coevolution.Models.DtoItem.Path">
+            <summary>
+            Path of the item for bread crumb use, item id and item name.
+            </summary>
+        </member>
         <member name="P:Coevolution.Models.DtoLeaf.Value">
             <summary>
             Value of the property defined by the key
@@ -694,6 +744,11 @@
         <member name="P:Coevolution.Models.DtoNode.NodeChildren">
             <summary>
             List of Ids that define the child node items
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoNode.Note">
+            <summary>
+            Note made on the node
             </summary>
         </member>
     </members>

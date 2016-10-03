@@ -29,6 +29,7 @@ namespace Coevolution.Controllers
         /// Whether or not deleted items/children should be shown
         /// </param>
         [HttpGet]
+        [ResponseType(typeof(List<DtoItemReduced>))]
         public List<DtoItemReduced> GetItems(bool showDeleted = false)
         {
             
@@ -284,7 +285,6 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Remove an Item with the specified Id from the database
         /// </summary>
-        [ResponseType(typeof(Item))]
         public IHttpActionResult DeleteItem(int id)
         {
             //Find item with id
@@ -316,7 +316,6 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Remove an label from specified item
         /// </summary>
-        [ResponseType(typeof(void))]
         public IHttpActionResult DeleteItem(int id, int labelId)
         {
             //Find item with id
@@ -349,7 +348,6 @@ namespace Coevolution.Controllers
         /// <summary>
         /// Remove a note with the specified Id from the database
         /// </summary>
-        [ResponseType(typeof(Item))]
         public IHttpActionResult DeleteNote(int id, int noteId)
         {
             //Find item with id
@@ -386,6 +384,7 @@ namespace Coevolution.Controllers
         /// <param name="query">The string being searched for</param>
         /// 
         [Route("api/Items/Search/Note/{query}")]
+        [ResponseType(typeof(List<DtoNote>))]
         public IHttpActionResult GetSearchNotes(string query)
         {
             query = Regex.Escape(query);
@@ -406,6 +405,7 @@ namespace Coevolution.Controllers
         /// <param name="id">The id of the label being searched for</param>
         /// 
         [Route("api/Items/Search/Label/{id}")]
+        [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchLabel(int id)
         {
             var label = db.Labels.Find(id);
@@ -427,6 +427,7 @@ namespace Coevolution.Controllers
         /// <param name="query">The string being searched for</param>
         /// 
         [Route("api/Items/Search/Key/{query}")]
+        [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchKeys(string query)
         {
             query = Regex.Escape(query);
@@ -447,6 +448,7 @@ namespace Coevolution.Controllers
         /// <param name="query">The string being searched for</param>
         /// 
         [Route("api/Items/Search/Value/{query}")]
+        [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchValues(string query)
         {
             query = Regex.Escape(query);
