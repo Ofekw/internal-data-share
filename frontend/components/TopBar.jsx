@@ -82,7 +82,7 @@ const TopBar = React.createClass({
           iconElementRight={
             <div>
               <div style={searchDiv}>
-                <input ref='searchField' style={searchBox} onKeyPress={this.handleKeyPress}/>
+                <input ref='searchField' style={searchBox} onKeyPress={this.handleKeyPress} disabled={this.props.editable}/>
               </div>
               <IconButton label='Search' onTouchTap={ this.handleSearchRequest}> <Search/></IconButton>
               <IconButton label='Edit' onTouchTap={this.props.onGlobalEdit} disabled={!this.props.editButton}>{icon}</IconButton>
