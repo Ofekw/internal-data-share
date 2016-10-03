@@ -577,6 +577,16 @@
             Get a list of all Labels
             </summary>
         </member>
+        <member name="M:Coevolution.Controllers.LabelsController.PostLabel(Coevolution.Models.DtoLabel)">
+            <summary>
+            Add a new Label to the database
+            </summary>
+        </member>
+        <member name="M:Coevolution.Controllers.LabelsController.DeleteLabel(System.Int32)">
+            <summary>
+            Remove a label with the specified Id from the database
+            </summary>
+        </member>
         <member name="P:Coevolution.Models.DtoItemReduced.Id">
             <summary>
             Id for storage in DB
