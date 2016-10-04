@@ -402,13 +402,18 @@ namespace Coevolution.Controllers
         public IHttpActionResult GetSearchNotes(string query)
         {
             query = Regex.Escape(query);
-            var notes = db.Notes.Include("Item").Where(x => x.Content.Contains(query));
-            var items = notes.Select(x => x.Item).Distinct();
-
+            var items = db.Items.ToList();
+           
             var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
             {
-                dtos.Add(new DtoSearchItem(item));
+                if (item is Node)
+                {
+                    if (((Node)item).Note.Contains(query))
+                    {
+                        dtos.Add(new DtoSearchItem(item));
+                    }
+                }
             }
             dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
