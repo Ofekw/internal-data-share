@@ -164,6 +164,7 @@ class BankDetailsCard extends React.Component {
             <ModalField new={childElement.new}
             add = {childElement.add}
             editable={this.props.editable}
+            stale={childElement.Stale}
             key={childElement.Id || childElement.newId || childElement.add + uid}
             childId={childElement.Id}
             identifier={childElement.Key}
@@ -233,7 +234,7 @@ class BankDetailsCard extends React.Component {
           actAsExpander={false}
           showExpandableButton={false}
           style={{padding: '10px 16px 8px'}}
-          />
+        />
         <div style={styles.wrapper}>
           {this.labels.map(function (label, index) {
             // Add the labels
