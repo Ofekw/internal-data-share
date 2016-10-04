@@ -13,6 +13,10 @@ namespace Coevolution.Models
         /// Value of the property defined by the key
         /// </summary>
         public string Value { get; set; }
+        /// <summary>
+        /// Boolean to mark whether this leaf is stale
+        /// </summary>
+        public bool Stale { get; set; }
 
         public DtoLeaf()
             : base()
@@ -30,6 +34,7 @@ namespace Coevolution.Models
                 Deleted = this.Deleted,
                 Value = this.Value,
                 Notes = DtoNote.DtoNoteListToDomainObjecs(this.Notes),
+                Stale = this.Stale,
                 //CreatedOn = DateTime.Parse(this.CreatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind),
                 //UpdatedOn = DateTime.Parse(this.UpdatedOn, null, System.Globalization.DateTimeStyles.RoundtripKind)
 

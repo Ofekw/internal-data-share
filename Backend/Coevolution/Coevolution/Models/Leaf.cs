@@ -9,6 +9,7 @@ namespace Coevolution.Models
     public class Leaf : Item
     {
         public string Value { get; set; }
+        public bool Stale { get; set; }
 
         public Leaf () : base()
         {
@@ -32,6 +33,7 @@ namespace Coevolution.Models
                 Labels = this.Labels.Select(label => label.ToDto()).ToList(),
                 Notes = DtoNote.NoteListToDtos(this.Notes),
                 Value = this.Value,
+                Stale = this.Stale,
                 CreatedOn = this.CreatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
                 UpdatedOn = this.UpdatedOn.ToString("s", System.Globalization.CultureInfo.InvariantCulture),
                 Path = this.Path(),
