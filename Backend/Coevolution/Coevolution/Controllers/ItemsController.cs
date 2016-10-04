@@ -402,7 +402,7 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoNote>))]
         public IHttpActionResult GetSearchNotes(string query)
         {
-            var items = db.Items.ToList();
+            var items = db.Items.OrderBy(c => c.Key).ToList();
            
             var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
@@ -431,7 +431,7 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchLabel(string query)
         {
-            var items = db.Items.Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
+            var items = db.Items.OrderBy(c => c.Key).Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             var containsLabels = new List<Item>();
             foreach (var item in items)
