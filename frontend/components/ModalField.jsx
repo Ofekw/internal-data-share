@@ -129,7 +129,6 @@ class ModalField extends React.Component {
 
   toggleStale = (event) => {
     // Update dirty flag if needed.
-    console.log(this.state.dirty);
     if (this.state.dirty === clean) {
       this.setState({dirty: dirty});
     }
