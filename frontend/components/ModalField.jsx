@@ -19,6 +19,7 @@ import FlatButton from 'material-ui/FlatButton';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Save from 'material-ui/svg-icons/content/save';
 import Undo from 'material-ui/svg-icons/content/undo';
+import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 
 import Snackbar from 'material-ui/Snackbar';
 
@@ -166,6 +167,11 @@ class ModalField extends React.Component {
     this.props.createNew(key, value);
   }
 
+  isUrl(s) {
+     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+     return regexp.test(s);
+  }
+
   render() {
     var buttonStyle = {
       display: 'inline-block',
@@ -281,7 +287,6 @@ class ModalField extends React.Component {
         if(!(this.state.keyValue && this.state.valueValue && this.props.add)){
           return(<div></div>)
         }
-        debugger;
         // Send post request if new.
         this.setState({ dirty: clean });
         functions.push(function (cb) {
@@ -315,9 +320,11 @@ class ModalField extends React.Component {
       if (this.state.dirty === newDeleted) {
         hide = { display: 'none' }
       }
+
+      var keyValue = this.isUrl(this.value) ? <a  style={{}} href={this.value} target="_blank">{this.value}</a> : this.value; 
       return (
         <div>
-          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
+          <ListItem primaryText= { <p>{this.key} <span style={{color: lightBlack}}>: {keyValue}</span></p>} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
           <Snackbar
             open={this.state.open}
             message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}
