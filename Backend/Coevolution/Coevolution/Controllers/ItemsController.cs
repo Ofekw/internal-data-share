@@ -33,7 +33,7 @@ namespace Coevolution.Controllers
         public List<DtoItemReduced> GetItems(bool showDeleted = false)
         {
             
-            var dbItems = db.Items.Include("Labels").Where(x => (!x.Deleted || showDeleted) && x.Parent == null).ToList();
+            var dbItems = db.Items.OrderBy(c => c.Key).Include("Labels").Where(x => (!x.Deleted || showDeleted) && x.Parent == null).ToList();
             if (dbItems != null)
             {
                 return dbItems.Select(item => item.ToDtoReduced()).ToList();
@@ -71,7 +71,7 @@ namespace Coevolution.Controllers
 
                 var tempList = nodeItem.Children;
 
-                nodeItem.Children = db.Items.Include("Labels").Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
+                nodeItem.Children = db.Items.OrderBy(c => c.Key).Include("Labels").Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
 
@@ -315,7 +315,7 @@ namespace Coevolution.Controllers
             while (nodes_to_delete.Count > 0) {
                 Item current_node = nodes_to_delete.Last();
                 nodes_to_delete.RemoveAt(nodes_to_delete.Count-1);
-                List<Item> children = db.Items.Include("Labels").Include("Notes").Where(x => x.Parent.Id == current_node.Id).ToList();
+                List<Item> children = db.Items.OrderBy(c => c.Key).Include("Labels").Include("Notes").Where(x => x.Parent.Id == current_node.Id).ToList();
                 if (children != null)
                 {
                     nodes_to_delete.AddRange(children);
@@ -402,7 +402,7 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoNote>))]
         public IHttpActionResult GetSearchNotes(string query)
         {
-            var items = db.Items.ToList();
+            var items = db.Items.OrderBy(c => c.Key).ToList();
            
             var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
@@ -431,7 +431,7 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchLabel(string query)
         {
-            var items = db.Items.Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
+            var items = db.Items.OrderBy(c => c.Key).Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             var containsLabels = new List<Item>();
             foreach (var item in items)
@@ -464,7 +464,7 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchKeys(string query)
         {
-            var items = db.Items.Where(x => x.Deleted == false).ToArray();
+            var items = db.Items.OrderBy(c => c.Key).Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             foreach(var item in items)
             {
@@ -488,7 +488,7 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchValues(string query)
         {
-            var items = db.Items.Where(x => x.Parent != null && x.Deleted == false).ToList();
+            var items = db.Items.OrderBy(c => c.Key).Where(x => x.Parent != null && x.Deleted == false).ToList();
 
                 //.Where(x => x.Value.Contains(query)).ToArray();
             var dtos = new List<DtoSearchItem>();
