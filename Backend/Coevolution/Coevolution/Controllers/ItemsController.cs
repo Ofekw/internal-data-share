@@ -94,9 +94,13 @@ namespace Coevolution.Controllers
             }
 
             //Check id matches
+            if (dtoItem == null)
+            {
+                return BadRequest("Must supply item in body of request.");
+            }
             if (id != dtoItem.Id)
             {
-                return BadRequest();
+                return BadRequest("Must specify if when putting an item.");
             }
 
             //Get the itemfrom the db
@@ -241,6 +245,16 @@ namespace Coevolution.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (dtoItem == null)
+            {
+                return BadRequest("Must supply item in body of request.");
+            }
+
+            if (dtoItem.Key == null)
+            {
+                return BadRequest("Must supply key when creating item.");
             }
 
             //Get parent item
@@ -388,34 +402,49 @@ namespace Coevolution.Controllers
         public IHttpActionResult GetSearchNotes(string query)
         {
             query = Regex.Escape(query);
-            var notes = db.Notes.Where(x => x.Content.Contains(query)).ToArray();
-            var dtos = new List<DtoNote>();
-            foreach (var note in notes)
-            {
-                dtos.Add(note.ToDto());
-            }
-            return Ok(dtos);
-        }
+            var notes = db.Notes.Include("Item").Where(x => x.Content.Contains(query));
+            var items = notes.Select(x => x.Item).Distinct();
 
-        // Get: api/Items/Search/Note/{label}
-        /// <summary>
-        /// Search all items for label
-        /// Returns an array of ids of the nodes containing the string
-        /// </summary>
-        /// <param name="id">The id of the label being searched for</param>
-        /// 
-        [Route("api/Items/Search/Label/{id}")]
-        [ResponseType(typeof(List<DtoSearchItem>))]
-        public IHttpActionResult GetSearchLabel(int id)
-        {
-            var label = db.Labels.Find(id);
-            var items = db.Items.Include(m => m.Labels).ToArray();
-            var containsLabel = items.Where(x => x.Labels.Contains(label) && x.Deleted == false);
             var dtos = new List<DtoSearchItem>();
-            foreach (var item in containsLabel)
+            foreach (var item in items)
             {
                 dtos.Add(new DtoSearchItem(item));
             }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
+            return Ok(dtos);
+        }
+
+        // Get: api/Items/Search/Label/{query}
+        /// <summary>
+        /// Search all items for labels
+        /// Returns an array of ids of the nodes containing the string
+        /// Use: api/Items/Search/Label?ids=1&ids=2
+        /// </summary>
+        /// <param name="query">The string of the label being searched for</param>
+        /// 
+        [Route("api/Items/Search/Label/{query}")]
+        [ResponseType(typeof(List<DtoSearchItem>))]
+        public IHttpActionResult GetSearchLabel(string query)
+        {
+            var items = db.Items.Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
+            var dtos = new List<DtoSearchItem>();
+            var containsLabels = new List<Item>();
+            foreach (var item in items)
+            {
+                //.Content.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                foreach (var label in item.Labels)
+                {
+                    if (label.Content.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) {
+                        containsLabels.Add(item);
+                        break;
+                    }
+                }
+            }
+            foreach (var item in containsLabels)
+            {
+                dtos.Add(new DtoSearchItem(item));
+            }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 
@@ -437,6 +466,7 @@ namespace Coevolution.Controllers
             {
                 dtos.Add(new DtoSearchItem(item));
             }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 
@@ -468,6 +498,7 @@ namespace Coevolution.Controllers
                 }
                 
             }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 

@@ -27,5 +27,16 @@ namespace Coevolution.Models
                 Content = this.Content
             };
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Label)
+            {
+                return this.Id == ((Label)obj).Id;
+            } else
+            {
+                return false;
+            }
+        }
     }
 }

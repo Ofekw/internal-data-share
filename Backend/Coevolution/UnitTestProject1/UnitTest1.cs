@@ -23,19 +23,21 @@ namespace UnitTestProject1
         private HttpSelfHostServer server;
         private HttpClient client;
 
+        private String address = "http://localhost:55426";
+
         [TestInitialize]
         public void Setup()
         {
             using (var db = new ModelContext())
             {
                 db.Items.RemoveRange(db.Items.Where(x => x.Id > 8));
-                //db.Labels.RemoveRange(db.Labels.Where(x => x.Id );
+                db.Labels.RemoveRange(db.Labels.Where(x => x.Id > 6));
                 db.Notes.RemoveRange(db.Notes.Where(x => x.Id > 6));
                 db.SaveChanges();
             }
 
             var two = typeof(ItemsController).Assembly;
-            config = new HttpSelfHostConfiguration("http://localhost:55426");
+            config = new HttpSelfHostConfiguration(address);
             config.MapHttpAttributeRoutes();
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -120,7 +122,7 @@ namespace UnitTestProject1
                 labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/labels/");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/labels/");
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -133,7 +135,7 @@ namespace UnitTestProject1
 
                 MatchOnce(result, "^\\[");
                 MatchOnce(result, "\"Id\":\\s*" + labelID);
-                MatchOnce(result, "\"Items\":\\s*\\[\\]");
+                Assert.IsTrue(1 < Regex.Matches(result, "\"Items\":\\s*\\[\\]").Count);
                 MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestGetAllLabels!\"");
                 MatchOnce(result, "\\]$");
 
@@ -157,7 +159,7 @@ namespace UnitTestProject1
                 labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
-            request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost:55426/api/labels/"+ labelID);
+            request = new HttpRequestMessage(HttpMethod.Delete, address + "/api/labels/" + labelID);
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -169,7 +171,7 @@ namespace UnitTestProject1
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             }
 
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/labels/");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/labels/");
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -224,7 +226,7 @@ namespace UnitTestProject1
             }
 
             // Check parent has child
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + parentId);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -240,7 +242,7 @@ namespace UnitTestProject1
             }
 
             // Check child doesn't show in top level.
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/");
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -277,7 +279,7 @@ namespace UnitTestProject1
                 createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + createdId);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -312,7 +314,7 @@ namespace UnitTestProject1
                 createdId = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/");
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -361,7 +363,7 @@ namespace UnitTestProject1
             request = PutItem(createdId, newJson);
             Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
 
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + createdId);
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + createdId);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -418,30 +420,30 @@ namespace UnitTestProject1
             }
 
             // Getting the main item should tell us it is there
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + parentId);
             Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
 
             // Delete the main item
-            request = new HttpRequestMessage(HttpMethod.Delete, "http://localhost:55426/api/items/" + parentId);
+            request = new HttpRequestMessage(HttpMethod.Delete, address + "/api/items/" + parentId);
             Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
 
             // Getting the main item should tell us it isn't there
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId);
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + parentId);
             Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
 
             // Getting the child item should tell us it isn't there
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + childId);
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + childId);
             Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
 
             // Getting the main item should tell us it is there if we ask for deleted items
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + parentId + "?showDeleted=true");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + parentId + "?showDeleted=true");
             Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
 
             // Getting the child item should tell us it is there if we ask for deleted items
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/" + childId + "?showDeleted=true");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + childId + "?showDeleted=true");
             Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
 
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items/");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/");
 
             // Getting everything should tell us the main item isn't there
             using (request)
@@ -459,7 +461,7 @@ namespace UnitTestProject1
             }
 
             // Getting everything should tell us the main item is there if we ask for deleted items
-            request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/items?showDeleted=true");
+            request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items?showDeleted=true");
 
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -472,6 +474,41 @@ namespace UnitTestProject1
 
             }
         }
+
+        [TestMethod]
+        public void TestNotFound()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/0");
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            request = PutItem(0, "{\"id\":\"0\", \"Type\":\"node\"}");
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+
+            request = new HttpRequestMessage(HttpMethod.Delete, address + "/api/items/0");
+            Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
+        }
+
+        [TestMethod]
+        public void TestBadRequest()
+        {
+
+            var request = PostItem("");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PostItem("{\"Type\":\"node\"}");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PostItem("{\"key\":\"this should fail\"}");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PutItem(0, "");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+
+            request = PutItem(0, "{\"id\":3}");
+            Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
+        }
+
+
 
         [TestMethod]
         public void TestSearchNodeKey()
@@ -550,7 +587,7 @@ namespace UnitTestProject1
         {
 
             String result;
-            HttpRequestMessage request = SearchLabel(1);
+            HttpRequestMessage request = SearchLabel("bank");
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -561,50 +598,50 @@ namespace UnitTestProject1
                 var item = items[0];
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
                 Assert.AreEqual(3, items.Count);
-                Assert.AreEqual(1, item.Id);
+                Assert.AreEqual(2, item.Id);
                 Assert.AreEqual(false, item.IsLeaf);
                 Assert.AreEqual(null, item.Value);
-                Assert.AreEqual("KiwiBank", item.Key);
-                Assert.AreEqual(1, item.Path[0].Key);
+                Assert.AreEqual("ASB", item.Key);
+                Assert.AreEqual(2, item.Path[0].Key);
             }
         }
 
         private HttpRequestMessage SearchKey(string query)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/Items/Search/Key/"+query);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Key/" + query);
             return request;
         }
 
         private HttpRequestMessage SearchValue(string query)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/Items/Search/Value/" + query);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Value/" + query);
             return request;
         }
 
-        private HttpRequestMessage SearchLabel(int labelId)
+        private HttpRequestMessage SearchLabel(string query)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://localhost:55426/api/Items/Search/Label/" + labelId);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Label/" + query);
             return request;
         }
 
 
         private HttpRequestMessage PostLabel(String jsonString)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/labels");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, address + "/api/labels");
             PopulateBody(request, jsonString);
             return request;
         }
 
         private HttpRequestMessage PostItem(String jsonString)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:55426/api/items");
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, address + "/api/items");
             PopulateBody(request, jsonString);
             return request;
         }
 
         private HttpRequestMessage PutItem(int id, String jsonString)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, "http://localhost:55426/api/items/" + id);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, address + "/api/items/" + id);
             PopulateBody(request, jsonString);
             return request;
         }
