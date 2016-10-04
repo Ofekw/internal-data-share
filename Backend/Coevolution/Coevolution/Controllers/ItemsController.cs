@@ -402,15 +402,14 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoNote>))]
         public IHttpActionResult GetSearchNotes(string query)
         {
-            query = Regex.Escape(query);
             var items = db.Items.ToList();
            
             var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
             {
-                if (item is Node)
+                if (item is Node && ((Node)item).Note != null)
                 {
-                    if (((Node)item).Note.Contains(query))
+                    if (((Node)item).Note.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         dtos.Add(new DtoSearchItem(item));
                     }
@@ -465,12 +464,14 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchKeys(string query)
         {
-            query = Regex.Escape(query);
-            var items = db.Items.Where(x => x.Key.Contains(query) && x.Deleted == false).ToArray();
+            var items = db.Items.Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             foreach(var item in items)
             {
-                dtos.Add(new DtoSearchItem(item));
+                if (item.Key.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    dtos.Add(new DtoSearchItem(item));
+                }
             }
             dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
@@ -487,7 +488,6 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchValues(string query)
         {
-            query = Regex.Escape(query);
             var items = db.Items.Where(x => x.Parent != null && x.Deleted == false).ToList();
 
                 //.Where(x => x.Value.Contains(query)).ToArray();
@@ -497,7 +497,7 @@ namespace Coevolution.Controllers
                 if (item is Leaf)
                 {
                     var leaf = (Leaf)item;
-                    if (leaf.Value.Contains(query))
+                    if (leaf.Value != null && leaf.Value.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         dtos.Add(new DtoSearchItem(leaf));
                     }

@@ -41,6 +41,12 @@ namespace Coevolution.Controllers
                 return BadRequest(ModelState);
             }
 
+            //Check the label content is not
+            if (dtoLabel.Content == null)
+            {
+                return BadRequest("Label must have a not-null content field.");
+            }
+
             Label label = dtoLabel.ToDomainObject();
 
             db.Labels.Add(label);

@@ -31,14 +31,15 @@ class BankDetailsCard extends React.Component {
     //this.editable = false;
     if (props.cardData != null) {
       this.state = {
-        nodeComment: props.cardData.Note == null ? "" : props.cardData.Note,
-        notesDirty: false
+        nodeComment: props.cardData.Note || '',
+        notesDirty: false,
+        open: false
       }
+    } else {
+      this.state = {
+        open: false
+      };
     }
-
-    this.state = {
-      open: false
-    };
   }
 
   update = () => {
