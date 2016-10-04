@@ -93,6 +93,16 @@ const TopBar = React.createClass({
       paddingLeft: 10,
     };
 
+    var searchBoxDisabled = {
+      fontSize: 20,
+      height: '60%',
+      border: 'none',
+      width: '100%',
+      background: 'rgba(121,121,121,0.6)',
+      marginLeft: 15,
+      paddingLeft: 10,
+    };
+
     var searchButtonStyle = {
       position: 'absolute',
       right: 185
@@ -119,9 +129,9 @@ const TopBar = React.createClass({
           iconElementLeft={
             <div>
               <div style={searchDiv}>
-                <input ref='searchField' style={searchBox} onKeyPress={this.handleKeyPress} disabled={this.props.editable}/>
+                <input ref='searchField' style={this.props.editable ? searchBoxDisabled : searchBox} onKeyPress={this.handleKeyPress} disabled={this.props.editable}/>
               </div>
-              <IconButton label='Search' onTouchTap={ this.handleSearchRequest} style={searchButtonStyle}><Search/></IconButton>
+              <IconButton label='Search' onTouchTap={ this.handleSearchRequest} style={searchButtonStyle} disabled={this.props.editable}><Search/></IconButton>
             </div>
           }
           iconElementRight={
