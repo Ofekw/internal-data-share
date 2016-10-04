@@ -33,7 +33,7 @@ namespace Coevolution.Controllers
         public List<DtoItemReduced> GetItems(bool showDeleted = false)
         {
             
-            var dbItems = db.Items.Include("Labels").Where(x => (!x.Deleted || showDeleted) && x.Parent == null).ToList();
+            var dbItems = db.Items.OrderBy(c => c.Key).Include("Labels").Where(x => (!x.Deleted || showDeleted) && x.Parent == null).ToList();
             if (dbItems != null)
             {
                 return dbItems.Select(item => item.ToDtoReduced()).ToList();
