@@ -40,6 +40,10 @@ const TopBar = React.createClass({
   handleSearchRequest: function(event){
     var self = this;
     this.props.disableEditButton();
+    var text = this.refs.searchField.value;
+    if(!text.trim()){
+      return;
+    }
     var searchType = '';
     if (this.state.value === 1){
       searchType = 'Items/Search/Key/'
