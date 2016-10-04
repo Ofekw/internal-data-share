@@ -25,7 +25,7 @@ namespace Coevolution.Controllers
         /// </summary>
         public IQueryable<Label> GetLabels()
         {
-            return db.Labels;
+            return db.Labels.OrderBy(c => c.Content);
         }
 
         // POST: api/Labels
