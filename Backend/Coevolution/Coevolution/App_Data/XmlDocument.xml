@@ -729,6 +729,11 @@
             Value of the property defined by the key
             </summary>
         </member>
+        <member name="P:Coevolution.Models.DtoLeaf.Stale">
+            <summary>
+            Boolean to mark whether this leaf is stale
+            </summary>
+        </member>
         <member name="P:Coevolution.Models.DtoNode.LeafChildren">
             <summary>
             List of Ids that define the child leaf items
