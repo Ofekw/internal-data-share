@@ -22,7 +22,7 @@ const styles = {
 }
 
 // Card for displaying information for an environemnt.
-class CardExampleExpandable extends React.Component {
+class BankDetailsCard extends React.Component {
   constructor(props) {
     super(props);
     this.children = [];
@@ -280,4 +280,4 @@ class CardExampleExpandable extends React.Component {
   }
 }
 
-export default CardExampleExpandable;
+export default BankDetailsCard;
