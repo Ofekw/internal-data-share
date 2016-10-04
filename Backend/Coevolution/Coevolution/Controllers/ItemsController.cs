@@ -100,7 +100,7 @@ namespace Coevolution.Controllers
             }
             if (id != dtoItem.Id)
             {
-                return BadRequest("Must specify if when putting an item.");
+                return BadRequest("Id in url must match id in request body.");
             }
 
             //Get the itemfrom the db
@@ -139,6 +139,7 @@ namespace Coevolution.Controllers
                         throw new System.InvalidOperationException("Item type must match.");
                     }
                     ((Leaf)item).Value = ((Leaf)new_item).Value;
+                    ((Leaf)item).Stale = ((Leaf)new_item).Stale;
                 }
             }
             catch (InvalidDataException exception)
@@ -401,14 +402,18 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoNote>))]
         public IHttpActionResult GetSearchNotes(string query)
         {
-            query = Regex.Escape(query);
-            var notes = db.Notes.Include("Item").Where(x => x.Content.Contains(query));
-            var items = notes.Select(x => x.Item).Distinct();
-
+            var items = db.Items.ToList();
+           
             var dtos = new List<DtoSearchItem>();
             foreach (var item in items)
             {
-                dtos.Add(new DtoSearchItem(item));
+                if (item is Node && ((Node)item).Note != null)
+                {
+                    if (((Node)item).Note.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        dtos.Add(new DtoSearchItem(item));
+                    }
+                }
             }
             dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
@@ -459,12 +464,14 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchKeys(string query)
         {
-            query = Regex.Escape(query);
-            var items = db.Items.Where(x => x.Key.Contains(query) && x.Deleted == false).ToArray();
+            var items = db.Items.Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
             foreach(var item in items)
             {
-                dtos.Add(new DtoSearchItem(item));
+                if (item.Key.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    dtos.Add(new DtoSearchItem(item));
+                }
             }
             dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
@@ -481,7 +488,6 @@ namespace Coevolution.Controllers
         [ResponseType(typeof(List<DtoSearchItem>))]
         public IHttpActionResult GetSearchValues(string query)
         {
-            query = Regex.Escape(query);
             var items = db.Items.Where(x => x.Parent != null && x.Deleted == false).ToList();
 
                 //.Where(x => x.Value.Contains(query)).ToArray();
@@ -491,7 +497,7 @@ namespace Coevolution.Controllers
                 if (item is Leaf)
                 {
                     var leaf = (Leaf)item;
-                    if (leaf.Value.Contains(query))
+                    if (leaf.Value != null && leaf.Value.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         dtos.Add(new DtoSearchItem(leaf));
                     }
