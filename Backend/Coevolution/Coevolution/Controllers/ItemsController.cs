@@ -100,7 +100,7 @@ namespace Coevolution.Controllers
             }
             if (id != dtoItem.Id)
             {
-                return BadRequest("Must specify if when putting an item.");
+                return BadRequest("Id in url must match id in request body.");
             }
 
             //Get the itemfrom the db
@@ -139,6 +139,7 @@ namespace Coevolution.Controllers
                         throw new System.InvalidOperationException("Item type must match.");
                     }
                     ((Leaf)item).Value = ((Leaf)new_item).Value;
+                    ((Leaf)item).Stale = ((Leaf)new_item).Stale;
                 }
             }
             catch (InvalidDataException exception)
