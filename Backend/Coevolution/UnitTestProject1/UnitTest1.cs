@@ -587,7 +587,7 @@ namespace UnitTestProject1
         {
 
             String result;
-            HttpRequestMessage request = SearchLabel(1);
+            HttpRequestMessage request = SearchLabel("bank");
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -598,11 +598,11 @@ namespace UnitTestProject1
                 var item = items[0];
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
                 Assert.AreEqual(3, items.Count);
-                Assert.AreEqual(1, item.Id);
+                Assert.AreEqual(2, item.Id);
                 Assert.AreEqual(false, item.IsLeaf);
                 Assert.AreEqual(null, item.Value);
-                Assert.AreEqual("KiwiBank", item.Key);
-                Assert.AreEqual(1, item.Path[0].Key);
+                Assert.AreEqual("ASB", item.Key);
+                Assert.AreEqual(2, item.Path[0].Key);
             }
         }
 
@@ -618,9 +618,9 @@ namespace UnitTestProject1
             return request;
         }
 
-        private HttpRequestMessage SearchLabel(int labelId)
+        private HttpRequestMessage SearchLabel(string query)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Label/" + labelId);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Label/" + query);
             return request;
         }
 

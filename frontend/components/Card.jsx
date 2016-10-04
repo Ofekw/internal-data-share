@@ -22,7 +22,7 @@ const styles = {
 }
 
 // Card for displaying information for an environemnt.
-class CardExampleExpandable extends React.Component {
+class BankDetailsCard extends React.Component {
   constructor(props) {
     super(props);
     this.children = [];
@@ -35,6 +35,10 @@ class CardExampleExpandable extends React.Component {
         notesDirty: false
       }
     }
+
+    this.state = {
+      open: false
+    };
   }
 
   update = () => {
@@ -43,12 +47,8 @@ class CardExampleExpandable extends React.Component {
 
   noteChange(event) {
     this.props.cardData.Note = event.target.value;
-    this.setState({ nodeComment: event.target.value, notesDirty: true })
+    this.setState({ nodeComment: event.target.value, notesDirty: true, updateNotes:true })
   }
-
-  state = {
-    open: false,
-  };
 
   componentDidMount = () => {
     var self = this;
@@ -84,7 +84,7 @@ class CardExampleExpandable extends React.Component {
       'newId': key + uid,
       'new': true
     });
-    this.forceUpdate();
+    this.setState({updateNotes:false})
   };
 
   // Add a new child.
@@ -106,7 +106,7 @@ class CardExampleExpandable extends React.Component {
   }
 
   // Add a new comment
-  addNewNotes() {
+  addNewNotes = () => {
     var self = this;
     var comment = $('#nodeComment').val();
     this.serverRequest = $.ajax(config.apiHost + 'Items/' + this.props.cardData.Id + '/Note', {
@@ -123,7 +123,7 @@ class CardExampleExpandable extends React.Component {
     });
   }
 
-  render() {
+  render = () => {
     if (this.props.hide) {
       return <div></div>
     }
@@ -133,12 +133,8 @@ class CardExampleExpandable extends React.Component {
     }
 
     if (this.props.cardData) {
-/*      if (this.editable) {
-        this.props.cardData.LeafChildren.pop();
-        this.editable = false;
-      }*/
       // Edit mode
-      if (this.props.editable) {
+      if (this.props.editable && !this.state.updateNotes) {
         //.editable = true;
         var uid = new Date().getTime();
         this.props.cardData.LeafChildren.push({
@@ -167,6 +163,7 @@ class CardExampleExpandable extends React.Component {
             add = {childElement.add}
             editable={this.props.editable}
             key={childElement.Id || childElement.newId }
+            stale={childElement.Stale}
             childId={childElement.Id}
             identifier={childElement.Key}
             value={childElement.Value}
@@ -211,7 +208,7 @@ class CardExampleExpandable extends React.Component {
 
     const textArea =
       <div style={divStyle}>
-        <TextField floatingLabelText="Note" id="nodeComment" disabled={!this.props.editable} ref="nodeComment" style={itemStyle} hintText="Note" multiLine={true} value={this.state.nodeComment} onChange={this.noteChange.bind(this) }/>
+        <TextField floatingLabelText="Note" id="nodeComment" disabled={!this.props.editable} ref="nodeComment" style={itemStyle} hintText="Note" multiLine={true} value={this.state.nodeComment || this.props.cardData.Note} onChange={this.noteChange.bind(this) }/>
       </div>
 
     const actions = [
@@ -235,7 +232,7 @@ class CardExampleExpandable extends React.Component {
           actAsExpander={false}
           showExpandableButton={false}
           style={{padding: '10px 16px 8px'}}
-          />
+        />
         <div style={styles.wrapper}>
           {this.labels.map(function (label, index) {
             // Add the labels
@@ -282,4 +279,4 @@ class CardExampleExpandable extends React.Component {
   }
 }
 
-export default CardExampleExpandable;
+export default BankDetailsCard;

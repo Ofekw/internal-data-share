@@ -41,5 +41,16 @@ namespace Coevolution.Models
             Key = item.Key;
             Value = IsLeaf ? ((Leaf)item).Value : null;
         }
+
+        public class SearchSorter : Comparer<DtoSearchItem>
+        {
+            // Compares by Length, Height, and Width.
+            public override int Compare(DtoSearchItem x, DtoSearchItem y)
+            {
+                return x.Key.CompareTo(y.Key);
+            }
+
+        }
+
     }
 }

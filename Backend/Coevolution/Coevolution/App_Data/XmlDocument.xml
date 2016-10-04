@@ -548,14 +548,7 @@
             <param name="query">The string being searched for</param>
             
         </member>
-        <member name="M:Coevolution.Controllers.ItemsController.GetSearchLabel(System.Int32)">
-            <summary>
-            Search all items for label
-            Returns an array of ids of the nodes containing the string
-            </summary>
-            <param name="id">The id of the label being searched for</param>
-            
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:Coevolution.Controllers.ItemsController.GetSearchLabel(System.String)" -->
         <member name="M:Coevolution.Controllers.ItemsController.GetSearchKeys(System.String)">
             <summary>
             Search all items keys for query string
@@ -734,6 +727,11 @@
         <member name="P:Coevolution.Models.DtoLeaf.Value">
             <summary>
             Value of the property defined by the key
+            </summary>
+        </member>
+        <member name="P:Coevolution.Models.DtoLeaf.Stale">
+            <summary>
+            Boolean to mark whether this leaf is stale
             </summary>
         </member>
         <member name="P:Coevolution.Models.DtoNode.LeafChildren">

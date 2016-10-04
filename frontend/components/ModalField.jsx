@@ -10,6 +10,8 @@ import $ from 'jquery';
 import Clipboard from 'clipboard-js';
 import config from '../config.js';
 import async from '../node_modules/async/dist/async.min.js';
+import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
+import Snackbar from 'material-ui/Snackbar';
 
 // Icons
 import Edit from 'material-ui/svg-icons/editor/mode-edit';
@@ -19,8 +21,8 @@ import FlatButton from 'material-ui/FlatButton';
 import ContentCopy from 'material-ui/svg-icons/content/content-copy';
 import Save from 'material-ui/svg-icons/content/save';
 import Undo from 'material-ui/svg-icons/content/undo';
-
-import Snackbar from 'material-ui/Snackbar';
+import Error from 'material-ui/svg-icons/alert/error';
+import ErrorOutline from 'material-ui/svg-icons/alert/error-outline';
 
 const styles = {
   paleGrey: {
@@ -53,10 +55,12 @@ class ModalField extends React.Component {
     this.key = props.identifier;
     this.value = props.value;
 
-    var dirty = this.props.new ? neww : dirty;
-    
+    var isDirty = this.props.new ? neww : clean;
+    var stale = this.props.stale;
+
     this.state = {
-      dirty: dirty,
+      dirty: isDirty,
+      stale: stale,
       open: false,
       copy: false,
       editable: props.editable
@@ -96,7 +100,7 @@ class ModalField extends React.Component {
   handleValueChange = (event) => {
     this.value = event.target.value;
 
-    this.setState({ valueValue: this.value })
+    this.setState({ valueValue: this.value });
     // Set state to dirty so we know to save this change.
     if (this.state.dirty !== neww) {
       this.setState({ dirty: dirty });
@@ -120,6 +124,27 @@ class ModalField extends React.Component {
       if (this.state.dirty !== neww) {
         this.setState({ dirty: clean });
       }
+    }
+  }
+
+  toggleStale = (event) => {
+    // Update dirty flag if needed.
+    if (this.state.dirty === clean) {
+      this.setState({dirty: dirty});
+    }
+
+    // Toggle staleness
+    if (this.state.stale) {
+      this.setState({
+        stale: false
+      });
+      return;
+    }
+    if (!this.state.stale) {
+      this.setState({
+        stale: true
+      });
+      return;
     }
   }
 
@@ -166,7 +191,12 @@ class ModalField extends React.Component {
     this.props.createNew(key, value);
   }
 
-  render = () => {
+  isUrl(s) {
+     var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+     return regexp.test(s);
+  }
+
+  render() {
     var buttonStyle = {
       display: 'inline-block',
       position: 'relative',
@@ -176,7 +206,7 @@ class ModalField extends React.Component {
       // For adding a new item
       if (this.props.add) {
         return (
-          <ListItem>
+          <ListItem disabled={true}>
             <div>
               <TextField
                 name="key"
@@ -207,7 +237,7 @@ class ModalField extends React.Component {
       }
       // Render editable field
       return (
-        <ListItem>
+        <ListItem disabled={true}>
           <div>
             <TextField
               name="key"
@@ -230,6 +260,11 @@ class ModalField extends React.Component {
               style={styles.rightAllign}
               onTouchTap={this.toggleDeleted}
               />
+            <FlatButton
+              icon={this.state.stale ? <Error/> : <ErrorOutline />}
+              style={styles.rightAllign}
+              onTouchTap={this.toggleStale}
+              />
           </div>
         </ListItem>
       );
@@ -239,7 +274,7 @@ class ModalField extends React.Component {
       var self = this;
       
       if (this.state.dirty === dirty) {
-        // Update on server if changes have been made. 
+        // Update on server if changes have been made.
         functions.push(function (cb) {
           self.serverRequest = $.ajax(config.apiHost + 'Items/' + self.props.childId, {
             method: 'PUT',
@@ -248,6 +283,7 @@ class ModalField extends React.Component {
               "Key": self.key,
               "Value": self.value,
               "Parent": self.props.parentId,
+              "Stale": self.state.stale,
               "Type": "leaf"
             }),
             headers: {
@@ -291,6 +327,7 @@ class ModalField extends React.Component {
               "Key": self.key,
               "Value": self.value,
               "Parent": self.props.parentId,
+              "Stale": self.state.stale,
               "Type": "leaf"
             }),
             headers: {
@@ -315,9 +352,12 @@ class ModalField extends React.Component {
       if (this.state.dirty === newDeleted) {
         hide = { display: 'none' }
       }
+
+      var keyValue = this.isUrl(this.value) ? <a  style={{}} href={this.value} target="_blank">{this.value}</a> : this.value;
+      const errorIcon = this.state.stale ? <Error /> : '';
       return (
         <div>
-          <ListItem primaryText= {this.key + ': ' + this.value} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
+          <ListItem primaryText= { <p>{this.key} <span style={{color: lightBlack}}>: {keyValue} {errorIcon} </span></p>} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
           <Snackbar
             open={this.state.open}
             message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}
