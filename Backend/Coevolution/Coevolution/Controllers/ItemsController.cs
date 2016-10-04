@@ -71,7 +71,7 @@ namespace Coevolution.Controllers
 
                 var tempList = nodeItem.Children;
 
-                nodeItem.Children = db.Items.Include("Labels").Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
+                nodeItem.Children = db.Items.OrderBy(c => c.Key).Include("Labels").Where(x => x.Parent.Id == item.Id && (!x.Deleted || showDeleted)).ToList();
                 return Ok(nodeItem.ToDto());
             }
 
@@ -315,7 +315,7 @@ namespace Coevolution.Controllers
             while (nodes_to_delete.Count > 0) {
                 Item current_node = nodes_to_delete.Last();
                 nodes_to_delete.RemoveAt(nodes_to_delete.Count-1);
-                List<Item> children = db.Items.Include("Labels").Include("Notes").Where(x => x.Parent.Id == current_node.Id).ToList();
+                List<Item> children = db.Items.OrderBy(c => c.Key).Include("Labels").Include("Notes").Where(x => x.Parent.Id == current_node.Id).ToList();
                 if (children != null)
                 {
                     nodes_to_delete.AddRange(children);
