@@ -35,6 +35,10 @@ const TopBar = React.createClass({
   handleSearchRequest: function(event){
     var self = this;
     this.props.disableEditButton();
+    var text = this.refs.searchField.value;
+    if(!text.trim()){
+      return;
+    }
     $.get(config.apiHost+'Items/Search/Key/'+this.refs.searchField.value, function (result) {
       self.props.searchInput(result);
     });
