@@ -7,13 +7,13 @@ namespace Coevolution.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class unicode : IMigrationMetadata
+    public sealed partial class Stale : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(unicode));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Stale));
         
         string IMigrationMetadata.Id
         {
-            get { return "201610040116477_unicode"; }
+            get { return "201610040135008_Stale"; }
         }
         
         string IMigrationMetadata.Source

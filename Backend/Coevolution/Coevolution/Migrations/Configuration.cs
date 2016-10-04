@@ -52,9 +52,9 @@ namespace Coevolution.Migrations
             );
             context.SaveChanges();
             var bankLabel = context.Labels.First(x => x.Content.Equals("Bank"));
-            var passwordLabel = context.Labels.First(x=>x.Content.Equals("Password"));
-            var outOfDateLabel = context.Labels.First(x=>x.Content.Equals("Out of Date"));
-            var vmLabel = context.Labels.First(x=>x.Content.Equals("Virtual Machine"));
+            var passwordLabel = context.Labels.First(x => x.Content.Equals("Password"));
+            var outOfDateLabel = context.Labels.First(x => x.Content.Equals("Out of Date"));
+            var vmLabel = context.Labels.First(x => x.Content.Equals("Virtual Machine"));
 
             context.Items.AddOrUpdate(
                 n => n.Id,
@@ -87,7 +87,7 @@ namespace Coevolution.Migrations
                     Labels = new List<Label>() { bankLabel },
                     Parent = null,
                     Key = "BNZ",
-                    Notes = new List<Note>() {new Note("CreatedBySeedMethod")},
+                    Notes = new List<Note>() { new Note("CreatedBySeedMethod") },
                     UpdatedOn = DateTime.Now,
                     CreatedOn = DateTime.Now
                 }
@@ -109,7 +109,8 @@ namespace Coevolution.Migrations
                         },
                     Value = "example@testEmail.com",
                     UpdatedOn = DateTime.Now,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = DateTime.Now,
+                    Stale = false
                 },
                 new Leaf()
                 {
@@ -125,25 +126,26 @@ namespace Coevolution.Migrations
                         },
                     Value = "ExamplePassword",
                     UpdatedOn = DateTime.Now,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = DateTime.Now,
+                    Stale = false
                 });
             context.SaveChanges();
             context.Items.AddOrUpdate(x => x.Id,
                 new Node()
-                  {
-                      Id = 6,
-                      Deleted = false,
-                      Labels = new List<Label>() { vmLabel },
-                      Parent = context.Items.Find(1),
-                      Key = "VirtualMachine",
-                      Notes =
+                {
+                    Id = 6,
+                    Deleted = false,
+                    Labels = new List<Label>() { vmLabel },
+                    Parent = context.Items.Find(1),
+                    Key = "VirtualMachine",
+                    Notes =
                         new List<Note>()
                         {
                             new Note("CreatedBySeedMethod")
                         },
-                      UpdatedOn = DateTime.Now,
-                      CreatedOn = DateTime.Now
-                  }
+                    UpdatedOn = DateTime.Now,
+                    CreatedOn = DateTime.Now
+                }
             );
             context.SaveChanges();
             context.Items.AddOrUpdate(x => x.Id,
@@ -151,7 +153,7 @@ namespace Coevolution.Migrations
                 {
                     Id = 7,
                     Deleted = false,
-                    Labels = new List<Label>() {},
+                    Labels = new List<Label>() { },
                     Parent = context.Items.Find(6),
                     Key = "Login",
                     Notes =
@@ -161,13 +163,14 @@ namespace Coevolution.Migrations
                         },
                     Value = "Admin",
                     UpdatedOn = DateTime.Now,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = DateTime.Now,
+                    Stale = false
                 },
                 new Leaf()
                 {
                     Id = 8,
                     Deleted = false,
-                    Labels = new List<Label>() {},
+                    Labels = new List<Label>() { },
                     Parent = context.Items.Find(6),
                     Key = "Password",
                     Notes =
@@ -177,7 +180,8 @@ namespace Coevolution.Migrations
                         },
                     Value = "ExamplePassword",
                     UpdatedOn = DateTime.Now,
-                    CreatedOn = DateTime.Now
+                    CreatedOn = DateTime.Now,
+                    Stale = false
                 }
             );
         }
