@@ -41503,7 +41503,7 @@
 	                underlineStyle: { visibility: 'hidden' },
 	                onChange: this.handleSearchTypeChange
 	              },
-	              _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: 'Node/Key' }),
+	              _react2.default.createElement(_MenuItem2.default, { value: 1, primaryText: 'Key' }),
 	              _react2.default.createElement(_MenuItem2.default, { value: 2, primaryText: 'Value' }),
 	              _react2.default.createElement(_MenuItem2.default, { value: 3, primaryText: 'Notes' }),
 	              _react2.default.createElement(_MenuItem2.default, { value: 4, primaryText: 'Labels' })

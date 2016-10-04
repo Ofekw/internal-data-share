@@ -143,7 +143,7 @@ const TopBar = React.createClass({
                 underlineStyle={{visibility: 'hidden'}}
                 onChange={this.handleSearchTypeChange}
               >
-                <MenuItem value={1} primaryText="Node/Key" />
+                <MenuItem value={1} primaryText="Key" />
                 <MenuItem value={2} primaryText="Value" />
                 <MenuItem value={3} primaryText="Notes" />
                 <MenuItem value={4} primaryText="Labels" />
