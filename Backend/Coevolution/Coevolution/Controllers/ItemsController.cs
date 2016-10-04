@@ -414,28 +414,29 @@ namespace Coevolution.Controllers
             return Ok(dtos);
         }
 
-        // Get: api/Items/Search/Label?ids=1&ids=2
+        // Get: api/Items/Search/Label/{query}
         /// <summary>
         /// Search all items for labels
         /// Returns an array of ids of the nodes containing the string
         /// Use: api/Items/Search/Label?ids=1&ids=2
         /// </summary>
-        /// <param name="ids">The ids of the labels being searched for</param>
+        /// <param name="query">The string of the label being searched for</param>
         /// 
-        [Route("api/Items/Search/Label")]
+        [Route("api/Items/Search/Label/{query}")]
         [ResponseType(typeof(List<DtoSearchItem>))]
-        public IHttpActionResult GetSearchLabel([FromUri] List<int> ids)
+        public IHttpActionResult GetSearchLabel(string query)
         {
             var items = db.Items.Include(m => m.Labels).Where(x => x.Deleted == false).ToArray();
             var dtos = new List<DtoSearchItem>();
-            var containsLabels = new List<Item>(items);
+            var containsLabels = new List<Item>();
             foreach (var item in items)
             {
-                foreach (var id in ids)
+                //.Content.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0)
+                foreach (var label in item.Labels)
                 {
-                    if (item.Labels.Where(x => x.Id == id).Count() == 0)
-                    {
-                        containsLabels.Remove(item);
+                    if (label.Content.IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0) {
+                        containsLabels.Add(item);
+                        break;
                     }
                 }
             }

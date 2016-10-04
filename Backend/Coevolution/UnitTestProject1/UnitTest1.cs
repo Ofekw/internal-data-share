@@ -587,7 +587,7 @@ namespace UnitTestProject1
         {
 
             String result;
-            HttpRequestMessage request = SearchLabel(1);
+            HttpRequestMessage request = SearchLabel("bank");
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
             {
@@ -618,9 +618,9 @@ namespace UnitTestProject1
             return request;
         }
 
-        private HttpRequestMessage SearchLabel(int labelId)
+        private HttpRequestMessage SearchLabel(string query)
         {
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Label?ids=" + labelId);
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, address + "/api/Items/Search/Label/" + query);
             return request;
         }
 

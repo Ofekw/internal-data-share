@@ -548,7 +548,7 @@
             <param name="query">The string being searched for</param>
             
         </member>
-        <!-- Badly formed XML comment ignored for member "M:Coevolution.Controllers.ItemsController.GetSearchLabel(System.Collections.Generic.List{System.Int32})" -->
+        <!-- Badly formed XML comment ignored for member "M:Coevolution.Controllers.ItemsController.GetSearchLabel(System.String)" -->
         <member name="M:Coevolution.Controllers.ItemsController.GetSearchKeys(System.String)">
             <summary>
             Search all items keys for query string
