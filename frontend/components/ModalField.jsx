@@ -54,12 +54,12 @@ class ModalField extends React.Component {
     this.value = props.value;
 
     var dirty = this.props.new ? neww : dirty;
-
+    
     this.state = {
       dirty: dirty,
       open: false,
       copy: false,
-      editable: props.editable,
+      editable: props.editable
     };
   }
 
@@ -166,7 +166,7 @@ class ModalField extends React.Component {
     this.props.createNew(key, value);
   }
 
-  render() {
+  render = () => {
     var buttonStyle = {
       display: 'inline-block',
       position: 'relative',
@@ -176,7 +176,7 @@ class ModalField extends React.Component {
       // For adding a new item
       if (this.props.add) {
         return (
-          <ListItem disabled="true">
+          <ListItem>
             <div>
               <TextField
                 name="key"
@@ -207,7 +207,7 @@ class ModalField extends React.Component {
       }
       // Render editable field
       return (
-        <ListItem disabled="true">
+        <ListItem>
           <div>
             <TextField
               name="key"
@@ -237,7 +237,7 @@ class ModalField extends React.Component {
       // Render viewable field
       var functions = [];
       var self = this;
-
+      
       if (this.state.dirty === dirty) {
         // Update on server if changes have been made. 
         functions.push(function (cb) {
@@ -278,10 +278,10 @@ class ModalField extends React.Component {
         });
 
       } else if (this.state.dirty === neww ) {
-        if(!(this.state.keyValue && this.state.valueValue && this.props.add)){
+        
+        if(!this.state.keyValue && !this.state.valueValue && this.props.add){
           return(<div></div>)
         }
-        debugger;
         // Send post request if new.
         this.setState({ dirty: clean });
         functions.push(function (cb) {
