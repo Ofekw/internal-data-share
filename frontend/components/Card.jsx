@@ -28,7 +28,7 @@ class BankDetailsCard extends React.Component {
     this.children = [];
     this.labels = [];
     this.title = '';
-    //this.editable = false;
+    this.editable = false;
     if (props.cardData != null) {
       this.state = {
         nodeComment: props.cardData.Note || '',
@@ -85,6 +85,7 @@ class BankDetailsCard extends React.Component {
       'newId': key + uid,
       'new': true
     });
+    this.editable = false;
     this.setState({updateNotes:false})
   };
 
@@ -135,8 +136,8 @@ class BankDetailsCard extends React.Component {
 
     if (this.props.cardData) {
       // Edit mode
-      if (this.props.editable && !this.state.updateNotes) {
-        //.editable = true;
+      if (this.props.editable && !this.state.updateNotes && !this.editable) {
+        this.editable = true;
         var uid = new Date().getTime();
         this.props.cardData.LeafChildren.push({
           'Key': '',

@@ -353,11 +353,11 @@ class ModalField extends React.Component {
         hide = { display: 'none' }
       }
 
-      var keyValue = this.isUrl(this.value) ? <a  style={{}} href={this.value} target="_blank">{this.value}</a> : this.value;
+      var keyValue = this.isUrl(this.value) ? <a  style={{}} href={this.value} target="_blank">{this.value}</a>: this.value;
       const errorIcon = this.state.stale ? <Error /> : '';
       return (
         <div>
-          <ListItem primaryText= { <p>{this.key} <span style={{color: lightBlack}}>: {keyValue} {errorIcon} </span></p>} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
+          <ListItem primaryText= { <p>{this.key}<span style={{color: lightBlack}}>: {keyValue} {errorIcon} </span></p>} rightIcon={<ContentCopy />} onTouchTap={this.copyToClipboard.bind(this)} style={hide} innerDivStyle={{padding: '10px 16px 10px'}}></ListItem>
           <Snackbar
             open={this.state.open}
             message={this.state.copy ? "Copied to clipboard" : "Couldn't copy to clipboard"}
