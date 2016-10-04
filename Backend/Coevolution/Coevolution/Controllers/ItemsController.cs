@@ -410,6 +410,7 @@ namespace Coevolution.Controllers
             {
                 dtos.Add(new DtoSearchItem(item));
             }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 
@@ -442,7 +443,7 @@ namespace Coevolution.Controllers
             {
                 dtos.Add(new DtoSearchItem(item));
             }
-            
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 
@@ -464,6 +465,7 @@ namespace Coevolution.Controllers
             {
                 dtos.Add(new DtoSearchItem(item));
             }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 
@@ -495,6 +497,7 @@ namespace Coevolution.Controllers
                 }
                 
             }
+            dtos.Sort(new DtoSearchItem.SearchSorter());
             return Ok(dtos);
         }
 
