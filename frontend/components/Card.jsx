@@ -35,6 +35,10 @@ class BankDetailsCard extends React.Component {
         notesDirty: false
       }
     }
+
+    this.state = {
+      open: false
+    };
   }
 
   update = () => {
@@ -45,10 +49,6 @@ class BankDetailsCard extends React.Component {
     this.props.cardData.Note = event.target.value;
     this.setState({ nodeComment: event.target.value, notesDirty: true })
   }
-
-  state = {
-    open: false,
-  };
 
   componentDidMount = () => {
     var self = this;
