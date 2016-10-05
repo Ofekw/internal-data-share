@@ -71,11 +71,13 @@ namespace UnitTestProject1
             server.Dispose();
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test the basic post case for an item, by creating one and checking the returned item matches.")]
         public void TestPost()
         {
+            // Create DtoItem as json
             var requestJson = "{\"Type\": \"node\",\"key\":\"Object to created by TestPost!\"}";
 
+            // Make post item request
             HttpRequestMessage request = PostItem(requestJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -84,8 +86,10 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Check fields match submitted item
                 MatchOnce(result, "\"Id\":\\s*[0-9]+");
                 MatchOnce(result, "\"Key\":\\s*\"Object to created by TestPost!\"");
                 MatchOnce(result, "\"Type\":\\s*\"node\"");
@@ -101,10 +105,13 @@ namespace UnitTestProject1
 
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test the basic post case for an label, by creating one and checking the returned label matches.")]
         public void TestPostLabel()
         {
+            // Create DtoLabel as json
             var requestJson = "{\"Content\": \"Label to be created by TestPostLabel!\"}";
+
+            // Make post label request
             HttpRequestMessage request = PostLabel(requestJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -113,18 +120,24 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Check fields match submitted label
                 MatchOnce(result, "\"Id\":\\s*[0-9]+");
                 MatchOnce(result, "\"Content\":\\s*\"Label to be created by TestPostLabel!\"");
             }
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test getting all labels, by adding a label, getting all labels, and ensuring the label added is present.")]
         public void TestGetAllLabels()
         {
             int labelID;
+
+            // Create DtoLabel as json
             var requestJson = "{\"Content\": \"Label to be created by TestGetAllLabels!\"}";
+
+            // Make post label request
             HttpRequestMessage request = PostLabel(requestJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -133,9 +146,11 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Extract the label's Id from the response body
                 labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
+            // Make get all labels request (no id specified)
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/labels/");
 
             using (request)
@@ -145,8 +160,10 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
+                // Check an array of labels is returned, and check the added label is present
                 MatchOnce(result, "^\\[");
                 MatchOnce(result, "\"Id\":\\s*" + labelID);
                 Assert.IsTrue(1 < Regex.Matches(result, "\"Items\":\\s*\\[\\]").Count);
@@ -157,11 +174,15 @@ namespace UnitTestProject1
 
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test label deletion, by adding a label, removing it by Id, and checking it is deleted.")]
         public void TestDeleteLabel()
         {
             int labelID;
+
+            // Create DtoLabel as json
             var requestJson = "{\"Content\": \"Label to be created by TestGetAllLabels!\"}";
+
+            // Make post label request
             HttpRequestMessage request = PostLabel(requestJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -170,9 +191,11 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Extract the label's Id from the response body
                 labelID = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
+            // Make delete label request using Id
             request = new HttpRequestMessage(HttpMethod.Delete, address + "/api/labels/" + labelID);
 
             using (request)
@@ -182,9 +205,11 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
             }
 
+            // Make get all labels request (no id specified)
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/labels/");
 
             using (request)
@@ -194,22 +219,26 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Check that the deleted label's Id is not present
                 Regex label = new Regex("\"Id\":\\s*" + labelID);
                 Assert.IsFalse(label.Match(result).Success);
             }
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test post when creating parent-child relationship, and ensure this shows.")]
         public void TestPostChild()
         {
             int parentId;
             int childId;
 
+            // Create DtoItem as json, to act as parent
             var parentJson = "{\"Type\": \"node\",\"key\":\"Parent to created by TestPostChild!\"}";
 
             String firstResult;
 
             // Create parent
+
+            // Make post item request
             HttpRequestMessage request = PostItem(parentJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -218,13 +247,19 @@ namespace UnitTestProject1
                 task.Wait();
                 firstResult = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Extract the parent's Id from the response body
                 parentId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
-            // Create child
+            // Create DtoItem as json, to act as child
             var childJson = "{\"Type\": \"node\",\"key\":\"Child to created by TestPostChild!\",\"Parent\":" + parentId + "}";
+
+            // Create child
+
+            // Make post item request
             request = PostItem(childJson);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -233,13 +268,18 @@ namespace UnitTestProject1
                 task.Wait();
                 var secondResult = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                // Ensure parent relationship is shown in the child Dto
                 MatchOnce(secondResult, "\"Parent\":\\s*" + parentId);
 
+                // Extract the parent's Id from the response body
                 childId = int.Parse(Regex.Match(secondResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
             // Check parent has child
+
+            // Make get item request using parent's Id
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + parentId);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -248,14 +288,20 @@ namespace UnitTestProject1
                 task.Wait();
                 var thirdResult = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
+                // Extract children list from json list of children (ew)
                 Regex nodeChildrenRegex = new Regex("\"NodeChildren\":\\s*\\[(\\{[^\\}]*\\})\\]");
                 var child = nodeChildrenRegex.Match(thirdResult).Groups[1].Value;
+
+                // Check child's Id is present
                 MatchOnce(child, "\"Id\":\\s*" + childId);
             }
 
             // Check child doesn't show in top level.
+
+            // Make get item request with no Id (all top level items)
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/");
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -264,22 +310,27 @@ namespace UnitTestProject1
                 task.Wait();
                 var fourthResult = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+
+                // Check child's Id is not present
                 Regex regChild = new Regex("\"Id\":\\s*" + childId);
                 Assert.IsFalse(regChild.Match(fourthResult).Success);
 
             }
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test getting a single Item's information, by adding one and making a request for it.")]
         public void TestGetOne()
         {
             int createdId;
 
+            // Create DtoItem as json
             var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestGetOne!\"}";
 
             String firstResult;
 
+            // Make post item request
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -288,11 +339,14 @@ namespace UnitTestProject1
                 task.Wait();
                 firstResult = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Extract the item's Id from the response body
                 createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
+            // Make get item request for that item
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + createdId);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -301,20 +355,24 @@ namespace UnitTestProject1
                 task.Wait();
                 var secondResult = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
+                // Ensure extracted id matches in item returned by request
                 Assert.AreEqual(firstResult, secondResult);
             }
 
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test getting all Items by adding an item, making a request for all items, and checking it's there.")]
         public void TestGetAll()
         {
             int createdId;
 
+            // Create DtoItem as json
             var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestGetAll!\"}";
 
+            // Make post item request
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -323,11 +381,14 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Extract the item's Id from the response body
                 createdId = int.Parse(Regex.Match(result, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
+            // Make get all items request (no id specified)
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/");
 
             using (request)
@@ -337,8 +398,10 @@ namespace UnitTestProject1
                 task.Wait();
                 var result = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
 
+                // Check an array of items is returned, and check the added item is present
                 MatchOnce(result, "^\\[");
                 MatchOnce(result, "\"Id\":\\s*" + createdId);
                 MatchOnce(result, "\"Key\":\\s*\"Object to created by TestGetAll!\"");
@@ -348,15 +411,17 @@ namespace UnitTestProject1
 
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test the basic put case for an item, by creating one, updating it, and checking the update shows.")]
         public void TestPut()
         {
             int createdId;
 
+            // Create DtoItem as json
             var jsonString = "{\"Type\": \"node\",\"key\":\"Object to created by TestPut!\"}";
 
             String firstResult;
 
+            // Make post item request
             HttpRequestMessage request = PostItem(jsonString);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -365,18 +430,23 @@ namespace UnitTestProject1
                 task.Wait();
                 firstResult = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Extract the item's Id from the response body
                 createdId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
-
+            // Change the json's content (i.e, replace the key)
             Regex reg = new Regex("Object to created by TestPut!");
             var newJson = reg.Replace(firstResult, "Object to edited by TestPut!");
 
+            // Make put item request, with this updated item
             request = PutItem(createdId, newJson);
+            // Ensure request was OK
             Assert.AreEqual(HttpStatusCode.OK, GetRequestStatus(request));
 
+            // Make get item request using the item's Id
             request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/" + createdId);
             using (request)
             using (HttpResponseMessage response = client.SendAsync(request).Result)
@@ -385,19 +455,22 @@ namespace UnitTestProject1
                 task.Wait();
                 var secondResult = task.Result;
 
+                // Ensure request was OK
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+                // Ensure that the returned item reflects the change
                 Regex reg2 = new Regex("Object to edited by TestPut!");
                 Assert.IsTrue(reg2.Match(secondResult).Success);
             }
 
         }
 
-        [TestMethod]
+        [TestMethod, Description("Test deletion of an item, ensure that it can still be found using the correct paramaters, and ensure deletion interacts with children correctly.")]
         public void TestDelete()
         {
             int parentId;
             int childId;
 
+            // Create DtoItem as json, to act as parent
             var parentJson = "{\"Type\": \"node\",\"key\":\"Parent to created by TestDelete!\"}";
 
             String firstResult;
@@ -411,11 +484,14 @@ namespace UnitTestProject1
                 task.Wait();
                 firstResult = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
 
+                // Extract the parent's Id from the response body
                 parentId = int.Parse(Regex.Match(firstResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
+            // Create DtoItem as json, to act as child
             var childJson = "{\"Type\": \"node\",\"key\":\"Child to created by TestDelete!\",\"Parent\":" + parentId + "}";
 
             // Posting the child item
@@ -427,9 +503,12 @@ namespace UnitTestProject1
                 task.Wait();
                 var secondResult = task.Result;
 
+                // Ensure status code reflects creation
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                // Ensure the child has the parent specified and correct
                 MatchOnce(secondResult, "\"Parent\":\\s*" + parentId);
 
+                // Extract the child's Id from the response body
                 childId = int.Parse(Regex.Match(secondResult, "\"Id\":\\s*([0-9]+)").Groups[1].Value);
             }
 
@@ -466,9 +545,12 @@ namespace UnitTestProject1
                 var task = response.Content.ReadAsStringAsync();
                 task.Wait();
                 var thirdResult = task.Result;
+
+                // Ensure parent it not there
                 Regex regParent = new Regex("\"Id\":\\s*" + parentId);
                 Assert.IsFalse(regParent.Match(thirdResult).Success);
 
+                // Ensure child is not there
                 Regex regChild = new Regex("\"Id\":\\s*" + childId);
                 Assert.IsFalse(regChild.Match(thirdResult).Success);
 
@@ -483,41 +565,50 @@ namespace UnitTestProject1
                 var task = response.Content.ReadAsStringAsync();
                 task.Wait();
                 var fourthResult = task.Result;
+
                 Regex reg = new Regex("\"Id\":\\s*" + parentId);
                 Assert.IsTrue(reg.Match(fourthResult).Success);
 
             }
         }
 
-        [TestMethod]
+        [TestMethod, Description("Tests 404 cases for Item get, put and delete.")]
         public void TestNotFound()
         {
+            // Get item 0 (which will never exist)
             var request = new HttpRequestMessage(HttpMethod.Get, address + "/api/items/0");
             Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
 
+            // Put to item 0 (which doesn't exist)
             request = PutItem(0, "{\"id\":\"0\", \"Type\":\"node\"}");
             Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
 
+            // Delete to item 0 (which doesn't exist)
             request = new HttpRequestMessage(HttpMethod.Delete, address + "/api/items/0");
             Assert.AreEqual(HttpStatusCode.NotFound, GetRequestStatus(request));
         }
 
-        [TestMethod]
+        [TestMethod, Description("Tests cases where the provided Dto is not valid for put and post.")]
         public void TestBadRequest()
         {
 
+            // Ensure empty body fails for post
             var request = PostItem("");
             Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
 
+            // Ensure missing fields fails for post, key is required
             request = PostItem("{\"Type\":\"node\"}");
             Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
 
+            // Ensure missing fields fails for post, type is required
             request = PostItem("{\"key\":\"this should fail\"}");
             Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
 
+            // Ensure empty string fails for put
             request = PutItem(0, "");
             Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
 
+            // Ensure id mismatch fails for put
             request = PutItem(0, "{\"id\":3}");
             Assert.AreEqual(HttpStatusCode.BadRequest, GetRequestStatus(request));
         }
