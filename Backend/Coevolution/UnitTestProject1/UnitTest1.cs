@@ -25,6 +25,19 @@ namespace UnitTestProject1
 
         private String address = "http://localhost:55426";
 
+        /* This test suite tests all supported API calls provided by Items and Labels Controller.
+         * Two different testing methodologies are used, one which is present
+         * in the Search tests, the other which is present in all others.
+         * For the search tests, no items are explicitly inserted, instead, checks are made
+         * based on objects created by the seed. Return requests are handled by Json deserialisation.
+         * These tests also work under the assumption that the database is clean.
+         * For all other tests, no assumptions are made regarding the database state, and instead,
+         * items are inserted and checked for. Return requests are handled by Regex on the response body.
+         * Both methods of testing work, and future tests can be added based on developer preference.
+         * Methods which are not tests are helper methods for them, as all tests follow the make request ->
+         * check request pattern and hence there is potential for repeated code.
+         * */
+
         [TestInitialize]
         public void Setup()
         {
