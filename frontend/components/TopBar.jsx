@@ -91,6 +91,7 @@ const TopBar = React.createClass({
       background: 'rgba(255,255,255,0.6)',
       marginLeft: 15,
       paddingLeft: 10,
+      paddingRight: 40,
     };
 
     var searchBoxDisabled = {
@@ -105,7 +106,7 @@ const TopBar = React.createClass({
 
     var searchButtonStyle = {
       position: 'absolute',
-      right: 185
+      right: 145
     }
 
     var dropDownDiv = {
