@@ -37,4 +37,4 @@ webpack-dev-server --hot
 Open a browser and navigate to <http://localhost:8080/>. Your changes will be rebuilt automatically.
 
 Note: 
-Check that the src property in the body tag of the index.html file is changed to "./index.js"
+Check that the src property in the body tag of the index.html file is changed to "./index.js" when hosting the frontend on a local machine
