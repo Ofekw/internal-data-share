@@ -1,6 +1,6 @@
 # Project Coevolution
 
-Data sharing solution for Fiserv
+Simple and elegant data sharing solution
 
 ## Usage
 
